@@ -1,22 +1,33 @@
 {
   "name": "ngxsmk-tel-input",
-  "version": "0.0.6",
+  "version": "0.0.0-watch+1755080814771",
   "description": "Angular telephone input with intl-tel-input + libphonenumber-js",
   "license": "MIT",
   "private": false,
   "sideEffects": false,
-  "publishConfig": { "access": "public" },
-
+  "publishConfig": {
+    "access": "public"
+  },
   "peerDependencies": {
     "@angular/core": ">=17",
     "@angular/common": ">=17",
     "@angular/forms": ">=17",
     "rxjs": ">=7.8.0"
   },
-
   "dependencies": {
     "intl-tel-input": "^25.3.2",
     "libphonenumber-js": "^1.12.10",
     "tslib": "^2.3.0"
+  },
+  "module": "fesm2022/ngxsmk-tel-input.mjs",
+  "typings": "index.d.ts",
+  "exports": {
+    "./package.json": {
+      "default": "./package.json"
+    },
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./fesm2022/ngxsmk-tel-input.mjs"
+    }
   }
 }
