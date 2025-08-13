@@ -1,0 +1,117 @@
+version: 2
+
+updates:
+  # Root workspace (package.json at /)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "07:00"
+      timezone: "Asia/Colombo"
+    open-pull-requests-limit: 10
+    labels: ["dependencies"]
+    assignees: ["toozuuu"]
+    reviewers: ["toozuuu"]
+    commit-message:
+      prefix: "chore(deps)"
+      prefix-development: "chore(deps-dev)"
+      include: "scope"
+    # Avoid surprise major upgrades; we target Angular 17–19 for now
+    ignore:
+      - dependency-name: "@angular/*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "rxjs"
+        update-types: ["version-update:semver-major"]
+    groups:
+      angular-minor-patch:
+        patterns: ["@angular/*"]
+        update-types: ["minor", "patch"]
+      tooling-minor-patch:
+        patterns:
+          - "@angular-devkit/*"
+          - "@angular/cli"
+          - "@angular-eslint/*"
+          - "eslint*"
+          - "typescript"
+          - "zone.js"
+          - "karma*"
+          - "jasmine*"
+          - "@types/*"
+          - "ng-packagr"
+        update-types: ["minor", "patch"]
+
+  # Library (projects/ngxsmk-tel-input)
+  - package-ecosystem: "npm"
+    directory: "/projects/ngxsmk-tel-input"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "07:05"
+      timezone: "Asia/Colombo"
+    open-pull-requests-limit: 10
+    labels: ["dependencies", "library"]
+    assignees: ["toozuuu"]
+    reviewers: ["toozuuu"]
+    commit-message:
+      prefix: "chore(deps)"
+      prefix-development: "chore(deps-dev)"
+      include: "scope"
+    ignore:
+      - dependency-name: "@angular/*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "rxjs"
+        update-types: ["version-update:semver-major"]
+    groups:
+      angular-minor-patch:
+        patterns: ["@angular/*"]
+        update-types: ["minor", "patch"]
+      lib-runtime:
+        patterns:
+          - "intl-tel-input"
+          - "libphonenumber-js"
+          - "tslib"
+        update-types: ["minor", "patch"]
+
+  # Demo app (optional; remove if you don't have /projects/demo)
+  - package-ecosystem: "npm"
+    directory: "/projects/demo"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "07:10"
+      timezone: "Asia/Colombo"
+    open-pull-requests-limit: 5
+    labels: ["dependencies", "demo"]
+    assignees: ["toozuuu"]
+    reviewers: ["toozuuu"]
+    commit-message:
+      prefix: "chore(deps)"
+      prefix-development: "chore(deps-dev)"
+      include: "scope"
+    ignore:
+      - dependency-name: "@angular/*"
+        update-types: ["version-update:semver-major"]
+    groups:
+      angular-minor-patch:
+        patterns: ["@angular/*"]
+        update-types: ["minor", "patch"]
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "07:30"
+      timezone: "Asia/Colombo"
+    open-pull-requests-limit: 5
+    labels: ["dependencies", "ci"]
+    assignees: ["toozuuu"]
+    reviewers: ["toozuuu"]
+    commit-message:
+      prefix: "ci(deps)"
+    groups:
+      actions-minor-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
