@@ -1,0 +1,10 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "rangeStrategy": "bump",
+  "labels": ["deps"],
+  "schedule": ["after 9am on monday"],
+  "packageRules": [
+    { "matchManagers": ["npm"], "groupName": "npm (minor/patch)", "matchUpdateTypes": ["minor", "patch"] }
+  ]
+}
