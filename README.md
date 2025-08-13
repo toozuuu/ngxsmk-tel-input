@@ -237,19 +237,6 @@ npm i ../path-to-workspace/dist/ngxsmk-tel-input/ngxsmk-tel-input-<version>.tgz
 
 ---
 
-## 🛫 Publish
-
-```bash
-# bump version in projects/ngxsmk-tel-input/package.json
-ng build ngxsmk-tel-input
-cd dist/ngxsmk-tel-input
-npm publish --access public
-```
-
-> If you get `403 You cannot publish over the previously published versions`, bump the version (SemVer).
-
----
-
 ## 🧯 Troubleshooting
 
 **UI looks unstyled / bullets in dropdown**
