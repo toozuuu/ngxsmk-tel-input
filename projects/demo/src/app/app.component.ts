@@ -8,8 +8,8 @@ import {NgxsmkTelInputComponent} from '../../../ngxsmk-tel-input/src/lib/ngxsmk-
   standalone: true,
   imports: [ReactiveFormsModule, JsonPipe, NgxsmkTelInputComponent],
   template: `
-    <form [formGroup]="fg" style="max-width:420px;padding:16px;display:block;gap:12px">
-      <label for="phone">Phone</label>
+    <form [formGroup]="fg">
+      <label for="phone">Phone Number</label>
       <ngxsmk-tel-input id="phone" formControlName="phone"></ngxsmk-tel-input>
       <pre style="margin-top:12px">{{ fg.value | json }}</pre>
     </form>
