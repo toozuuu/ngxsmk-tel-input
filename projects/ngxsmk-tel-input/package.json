@@ -5,18 +5,21 @@
   "license": "MIT",
   "private": false,
   "sideEffects": false,
-  "publishConfig": { "access": "public" },
-
+  "publishConfig": {
+    "access": "public"
+  },
   "peerDependencies": {
-    "@angular/core": ">=17",
     "@angular/common": ">=17",
+    "@angular/core": ">=17",
     "@angular/forms": ">=17",
     "rxjs": ">=7.8.0"
   },
-
   "dependencies": {
     "intl-tel-input": "^25.3.2",
     "libphonenumber-js": "^1.12.10",
     "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.29.5"
   }
 }
