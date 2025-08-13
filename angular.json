@@ -3,23 +3,23 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ngx-tel-input": {
+    "ngxsmk-tel-input": {
       "projectType": "library",
-      "root": "projects/ngx-tel-input",
-      "sourceRoot": "projects/ngx-tel-input/src",
+      "root": "projects/ngxsmk-tel-input",
+      "sourceRoot": "projects/ngxsmk-tel-input/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/ngx-tel-input/ng-package.json"
+            "project": "projects/ngxsmk-tel-input/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/ngx-tel-input/tsconfig.lib.prod.json"
+              "tsConfig": "projects/ngxsmk-tel-input/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/ngx-tel-input/tsconfig.lib.json"
+              "tsConfig": "projects/ngxsmk-tel-input/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -27,7 +27,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "tsConfig": "projects/ngx-tel-input/tsconfig.spec.json",
+            "tsConfig": "projects/ngxsmk-tel-input/tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"

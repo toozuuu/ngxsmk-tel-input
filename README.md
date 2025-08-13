@@ -1,4 +1,4 @@
-# ngx-tel-input
+# ngxsmk-tel-input
 
 An Angular **telephone input** component with country dropdown, flag icons, and robust validation/formatting.
 Wraps [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input) for UI and uses [`libphonenumber-js`](https://github.com/catamphetamine/libphonenumber-js) for parsing & validation. Implements `ControlValueAccessor` so it plugs right into Angular Forms.
@@ -29,7 +29,7 @@ Wraps [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input) for UI and 
 
 ```bash
 # your app
-npm i ngx-tel-input intl-tel-input libphonenumber-js
+npm i ngxsmk-tel-input intl-tel-input libphonenumber-js
 ```
 
 ### Add styles & assets
@@ -71,7 +71,7 @@ npm i ngx-tel-input intl-tel-input libphonenumber-js
 // app.component.ts
 import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TelInputComponent } from 'ngx-tel-input';
+import { TelInputComponent } from 'ngxsmk-tel-input';
 
 @Component({
   selector: 'app-root',
@@ -80,13 +80,13 @@ import { TelInputComponent } from 'ngx-tel-input';
   template: `
     <form [formGroup]="fg" class="space-y-3">
       <label for="phone">Phone</label>
-      <ngx-tel-input
+      <ngxsmk-tel-input
         id="phone"
         formControlName="phone"
         [initialCountry]="'US'"
         [preferredCountries]="['US','GB','AU']"
         (countryChange)="onCountry($event)">
-      </ngx-tel-input>
+      </ngxsmk-tel-input>
 
       <p *ngIf="fg.get('phone')?.hasError('phoneInvalid') && fg.get('phone')?.touched">
         Please enter a valid phone number.
@@ -113,7 +113,7 @@ export class AppComponent {
 
 ```html
 <form #f="ngForm">
-  <ngx-tel-input name="phone" [(ngModel)]="phone"></ngx-tel-input>
+  <ngxsmk-tel-input name="phone" [(ngModel)]="phone"></ngxsmk-tel-input>
 </form>
 
 <!-- phone is a string (E.164) or null -->
@@ -154,7 +154,7 @@ export class AppComponent {
 ## Validation examples
 
 ```html
-<ngx-tel-input formControlName="phone"></ngx-tel-input>
+<ngxsmk-tel-input formControlName="phone"></ngxsmk-tel-input>
 
 <div class="error" *ngIf="fg.get('phone')?.hasError('required')">
   Phone is required
@@ -176,11 +176,11 @@ export class AppComponent {
 
 ## Theming
 
-The component applies a minimal class to the input: `.ngx-tel-input`.
+The component applies a minimal class to the input: `.ngxsmk-tel-input`.
 You can style it or the `intl-tel-input` container globally:
 
 ```css
-.ngx-tel-input {
+.ngxsmk-tel-input {
   width: 100%;
   padding: 0.5rem 0.75rem;
 }
@@ -218,7 +218,7 @@ No special setup required for Angular Universal. If you still see SSR errors, en
 ## Example: national mode
 
 ```html
-<ngx-tel-input formControlName="phone" [nationalMode]="true" [initialCountry]="'GB'"></ngx-tel-input>
+<ngxsmk-tel-input formControlName="phone" [nationalMode]="true" [initialCountry]="'GB'"></ngxsmk-tel-input>
 <!-- Value will be a national format string like '020 7946 0958' with validation tied to the selected country -->
 ```
 
@@ -232,7 +232,7 @@ This repo is structured as an Angular workspace with a library:
 
 ```bash
 # Build the library
-ng build ngx-tel-input
+ng build ngxsmk-tel-input
 
 # (Optional) create a demo app and try it locally
 ng g application demo
@@ -245,8 +245,8 @@ ng g application demo
 
 ```bash
 # Bump version, then:
-ng build ngx-tel-input
-cd dist/ngx-tel-input
+ng build ngxsmk-tel-input
+cd dist/ngxsmk-tel-input
 npm publish --access public
 ```
 

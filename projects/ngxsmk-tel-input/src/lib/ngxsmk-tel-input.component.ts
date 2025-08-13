@@ -23,19 +23,19 @@ import {
   ValidationErrors
 } from '@angular/forms';
 import type {CountryCode} from 'libphonenumber-js';
-import {NgxTelInputService} from './ngx-tel-input.service';
+import {ngxsmkTelInputService} from './ngxsmk-tel-input.service';
 
 type IntlTelInstance = any; // keep loose to avoid typing the plugin's full API
 
 @Component({
-  selector: 'ngx-tel-input',
+  selector: 'ngxsmk-tel-input',
   standalone: true,
   template: `
-    <div class="ngx-tel-input__wrapper">
+    <div class="ngxsmk-tel-input__wrapper">
       <input
         #telInput
         type="tel"
-        class="ngx-tel-input__control"
+        class="ngxsmk-tel-input__control"
         [id]="inputId || null"
         [attr.name]="name || null"
         [attr.placeholder]="placeholder || null"
@@ -46,11 +46,11 @@ type IntlTelInstance = any; // keep loose to avoid typing the plugin's full API
     </div>
   `,
   providers: [
-    {provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => NgxTelInputComponent), multi: true},
-    {provide: NG_VALIDATORS, useExisting: forwardRef(() => NgxTelInputComponent), multi: true}
+    {provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => ngxsmkTelInputComponent), multi: true},
+    {provide: NG_VALIDATORS, useExisting: forwardRef(() => ngxsmkTelInputComponent), multi: true}
   ],
 })
-export class NgxTelInputComponent
+export class ngxsmkTelInputComponent
   implements AfterViewInit, OnChanges, OnDestroy, ControlValueAccessor {
   @ViewChild('telInput', {static: true}) inputRef!: ElementRef<HTMLInputElement>;
 
@@ -92,7 +92,7 @@ export class NgxTelInputComponent
 
   constructor(
     private readonly zone: NgZone,
-    private readonly tel: NgxTelInputService,
+    private readonly tel: ngxsmkTelInputService,
     @Inject(PLATFORM_ID) private readonly platformId: Object
   ) {
   }
@@ -187,7 +187,7 @@ export class NgxTelInputComponent
       import('intl-tel-input'),
     ]);
 
-    // Minimal config – we rely on NgxTelInputService for validation/formatting
+    // Minimal config – we rely on ngxsmkTelInputService for validation/formatting
     const config: any = {
       initialCountry: this.initialCountry === 'auto' ? 'auto' : (this.initialCountry?.toLowerCase() || 'us'),
       preferredCountries: (this.preferredCountries ?? []).map(c => c.toLowerCase()),

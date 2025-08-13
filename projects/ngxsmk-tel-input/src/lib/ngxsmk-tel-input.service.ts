@@ -8,14 +8,14 @@ import {
 
 export type E164 = `+${string}`;
 
-export interface NgxTelDefaults {
+export interface ngxsmkTelDefaults {
   /** Default country used when input is not in international form */
   defaultCountry?: CountryCode;
   /** If true, treat input/formatting as national by default */
   nationalMode?: boolean;
 }
 
-export const NGX_TEL_DEFAULTS = new InjectionToken<NgxTelDefaults>('NGX_TEL_DEFAULTS');
+export const ngxsmk_TEL_DEFAULTS = new InjectionToken<ngxsmkTelDefaults>('ngxsmk_TEL_DEFAULTS');
 
 /** Result of parsing a phone input */
 export interface ParsedPhone {
@@ -34,22 +34,22 @@ export interface ParsedPhone {
 }
 
 @Injectable({ providedIn: 'root' })
-export class NgxTelInputService {
-  private defaults: Required<NgxTelDefaults> = {
+export class ngxsmkTelInputService {
+  private defaults: Required<ngxsmkTelDefaults> = {
     defaultCountry: 'US',
     nationalMode: false
   };
 
-  constructor(@Optional() @Inject(NGX_TEL_DEFAULTS) cfg?: NgxTelDefaults) {
+  constructor(@Optional() @Inject(ngxsmk_TEL_DEFAULTS) cfg?: ngxsmkTelDefaults) {
     this.defaults = { ...this.defaults, ...(cfg ?? {}) };
   }
 
   /** Update defaults at runtime if you need to (multi-tenant apps, theming, etc.) */
-  setDefaults(partial: NgxTelDefaults) {
+  setDefaults(partial: ngxsmkTelDefaults) {
     this.defaults = { ...this.defaults, ...partial };
   }
 
-  getDefaults(): Readonly<Required<NgxTelDefaults>> {
+  getDefaults(): Readonly<Required<ngxsmkTelDefaults>> {
     return this.defaults;
   }
 

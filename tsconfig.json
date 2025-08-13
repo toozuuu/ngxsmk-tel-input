@@ -8,8 +8,8 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "ngx-tel-input": [
-        "./dist/ngx-tel-input"
+      "ngxsmk-tel-input": [
+        "./dist/ngxsmk-tel-input"
       ]
     },
     "skipLibCheck": true,
