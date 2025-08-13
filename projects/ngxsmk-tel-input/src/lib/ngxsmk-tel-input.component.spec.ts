@@ -1,18 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { PLATFORM_ID } from '@angular/core';
+import { NgxsmkTelInputComponent } from './ngxsmk-tel-input.component';
 
-import { ngxsmkTelInputComponent } from './ngxsmk-tel-input.component';
-
-describe('ngxsmkTelInputComponent', () => {
-  let component: ngxsmkTelInputComponent;
-  let fixture: ComponentFixture<ngxsmkTelInputComponent>;
+describe('NgxsmkTelInputComponent', () => {
+  let component: NgxsmkTelInputComponent;
+  let fixture: ComponentFixture<NgxsmkTelInputComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ngxsmkTelInputComponent]
-    })
-    .compileComponents();
+      imports: [NgxsmkTelInputComponent],
+      // Pretend we're on the server so ngAfterViewInit skips intl-tel-input init
+      providers: [{ provide: PLATFORM_ID, useValue: 'server' }],
+    }).compileComponents();
 
-    fixture = TestBed.createComponent(ngxsmkTelInputComponent);
+    fixture = TestBed.createComponent(NgxsmkTelInputComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

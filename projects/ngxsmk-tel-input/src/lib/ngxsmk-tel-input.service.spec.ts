@@ -1,13 +1,12 @@
 import { TestBed } from '@angular/core/testing';
+import { NgxsmkTelInputService } from './ngxsmk-tel-input.service';
 
-import { ngxsmkTelInputService } from './ngxsmk-tel-input.service';
-
-describe('ngxsmkTelInputService', () => {
-  let service: ngxsmkTelInputService;
+describe('NgxsmkTelInputService', () => {
+  let service: NgxsmkTelInputService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ngxsmkTelInputService);
+    service = TestBed.inject(NgxsmkTelInputService);
   });
 
   it('should be created', () => {
