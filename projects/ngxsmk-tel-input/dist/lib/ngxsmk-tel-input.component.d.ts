@@ -1,42 +1,54 @@
 import { AfterViewInit, ElementRef, EventEmitter, NgZone, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, ValidationErrors } from '@angular/forms';
 import type { CountryCode } from 'libphonenumber-js';
-import { ngxsmkTelInputService } from './ngxsmk-tel-input.service';
+import { NgxsmkTelInputService } from './ngxsmk-tel-input.service';
 import * as i0 from "@angular/core";
-export declare class ngxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDestroy, ControlValueAccessor {
+export declare class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDestroy, ControlValueAccessor {
     private readonly zone;
     private readonly tel;
     private readonly platformId;
     inputRef: ElementRef<HTMLInputElement>;
-    /** Initial country (ISO2) or 'auto' to pick a default via geoIpLookup stub */
     initialCountry: CountryCode | 'auto';
-    /** Preferred countries on top of the dropdown */
     preferredCountries: CountryCode[];
-    /** Limit to these countries only (omit for all) */
     onlyCountries?: CountryCode[];
-    /** Show national numbers instead of E.164 in the box (emits E.164) */
     nationalMode: boolean;
-    /** Show the dial code separately before the input (intl-tel-input option) */
     separateDialCode: boolean;
-    /** Allow opening the country dropdown */
     allowDropdown: boolean;
-    /** Plain input attributes */
     placeholder: string;
     autocomplete: string;
     name?: string;
     inputId?: string;
-    /** Disabled state (also settable via Angular Forms) */
     disabled: boolean;
+    label?: string;
+    hint?: string;
+    errorText?: string;
+    size: 'sm' | 'md' | 'lg';
+    variant: 'outline' | 'filled' | 'underline';
+    showClear: boolean;
+    autoFocus: boolean;
+    selectOnFocus: boolean;
+    formatOnBlur: boolean;
+    showErrorWhenTouched: boolean;
+    /** Dropdown plumbing */
+    dropdownAttachToBody: boolean;
+    dropdownZIndex: number;
     countryChange: EventEmitter<{
         iso2: CountryCode;
     }>;
     validityChange: EventEmitter<boolean>;
+    inputChange: EventEmitter<{
+        raw: string;
+        e164: string | null;
+        iso2: CountryCode;
+    }>;
     private iti;
     private onChange;
-    private onTouched;
+    private onTouchedCb;
     private lastEmittedValid;
     private pendingWrite;
-    constructor(zone: NgZone, tel: ngxsmkTelInputService, platformId: Object);
+    private touched;
+    readonly resolvedId: string;
+    constructor(zone: NgZone, tel: NgxsmkTelInputService, platformId: Object);
     ngAfterViewInit(): Promise<void>;
     ngOnChanges(changes: SimpleChanges): void;
     ngOnDestroy(): void;
@@ -47,15 +59,18 @@ export declare class ngxsmkTelInputComponent implements AfterViewInit, OnChanges
     validate(_: AbstractControl): ValidationErrors | null;
     focus(): void;
     selectCountry(iso2: CountryCode): void;
-    markTouched(): void;
+    clearInput(): void;
     private initIntlTelInput;
     private reinitPlugin;
     private destroyPlugin;
     private bindDomListeners;
+    onBlur(): void;
+    onFocus(): void;
     private handleInput;
-    private currentRaw;
+    currentRaw(): string;
     private currentIso2;
     private setInputValue;
-    static ɵfac: i0.ɵɵFactoryDeclaration<ngxsmkTelInputComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<ngxsmkTelInputComponent, "ngxsmk-tel-input", never, { "initialCountry": { "alias": "initialCountry"; "required": false; }; "preferredCountries": { "alias": "preferredCountries"; "required": false; }; "onlyCountries": { "alias": "onlyCountries"; "required": false; }; "nationalMode": { "alias": "nationalMode"; "required": false; }; "separateDialCode": { "alias": "separateDialCode"; "required": false; }; "allowDropdown": { "alias": "allowDropdown"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "autocomplete": { "alias": "autocomplete"; "required": false; }; "name": { "alias": "name"; "required": false; }; "inputId": { "alias": "inputId"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; }, { "countryChange": "countryChange"; "validityChange": "validityChange"; }, never, never, true, never>;
+    get showError(): boolean;
+    static ɵfac: i0.ɵɵFactoryDeclaration<NgxsmkTelInputComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<NgxsmkTelInputComponent, "ngxsmk-tel-input", never, { "initialCountry": { "alias": "initialCountry"; "required": false; }; "preferredCountries": { "alias": "preferredCountries"; "required": false; }; "onlyCountries": { "alias": "onlyCountries"; "required": false; }; "nationalMode": { "alias": "nationalMode"; "required": false; }; "separateDialCode": { "alias": "separateDialCode"; "required": false; }; "allowDropdown": { "alias": "allowDropdown"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "autocomplete": { "alias": "autocomplete"; "required": false; }; "name": { "alias": "name"; "required": false; }; "inputId": { "alias": "inputId"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "label": { "alias": "label"; "required": false; }; "hint": { "alias": "hint"; "required": false; }; "errorText": { "alias": "errorText"; "required": false; }; "size": { "alias": "size"; "required": false; }; "variant": { "alias": "variant"; "required": false; }; "showClear": { "alias": "showClear"; "required": false; }; "autoFocus": { "alias": "autoFocus"; "required": false; }; "selectOnFocus": { "alias": "selectOnFocus"; "required": false; }; "formatOnBlur": { "alias": "formatOnBlur"; "required": false; }; "showErrorWhenTouched": { "alias": "showErrorWhenTouched"; "required": false; }; "dropdownAttachToBody": { "alias": "dropdownAttachToBody"; "required": false; }; "dropdownZIndex": { "alias": "dropdownZIndex"; "required": false; }; }, { "countryChange": "countryChange"; "validityChange": "validityChange"; "inputChange": "inputChange"; }, never, never, true, never>;
 }

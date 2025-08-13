@@ -1,40 +1,42 @@
 # ngxsmk-tel-input
 
-An Angular **telephone input** component with country dropdown, flag icons, and robust validation/formatting.
-Wraps [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input) for UI and uses [`libphonenumber-js`](https://github.com/catamphetamine/libphonenumber-js) for parsing & validation. Implements `ControlValueAccessor` so it plugs right into Angular Forms.
+An Angular **telephone input** component with country dropdown, flags, and robust validation/formatting.
+Wraps [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input) for the UI and [`libphonenumber-js`](https://github.com/catamphetamine/libphonenumber-js) for parsing/validation. Implements `ControlValueAccessor` so it plugs into Angular Forms.
 
-> Emits E.164 numbers by default (e.g., `+14155550123`). SSR-safe via lazy imports.
-
----
-
-## Features
-
-* ✅ Country dropdown with flags
-* ✅ E.164 output (configurable for national numbers)
-* ✅ Works with Reactive/Template-driven Forms (`ControlValueAccessor`)
-* ✅ Built-in validation (uses `libphonenumber-js`)
-* ✅ SSR-friendly (lazy `intl-tel-input` import)
-* ✅ Tiny API surface, easy to theme
+> Emits **E.164** by default (e.g. `+14155550123`). SSR‑safe via lazy browser‑only import.
 
 ---
 
-## Requirements
+## ✨ Features
 
-* Angular **17+**
-* Node **18+** / **20+**
+* Country dropdown with flags
+* E.164 output (display can be national with `nationalMode`)
+* Reactive & template‑driven Forms support (CVA)
+* Built‑in validation using libphonenumber‑js
+* SSR‑friendly (no `window` on the server)
+* Easy theming via CSS variables
+* Nice UX options: label/hint/error text, sizes, variants, clear button, autofocus, select-on-focus
 
 ---
 
-## Install
+## ✅ Requirements
+
+* Angular **17 – 19**
+* Node **18** or **20**
+
+> Library `peerDependencies` target Angular `>=17 <20`. Your app can be 17, 18, or 19.
+
+---
+
+## 📦 Install
 
 ```bash
-# your app
 npm i ngxsmk-tel-input intl-tel-input libphonenumber-js
 ```
 
-### Add styles & assets
+### Add styles & flag assets (in your **app**, not the library)
 
-`intl-tel-input` ships its own CSS and flag images. Add them to your app’s `angular.json`:
+Update your app’s `angular.json`:
 
 ```jsonc
 {
@@ -47,11 +49,7 @@ npm i ngxsmk-tel-input intl-tel-input libphonenumber-js
               "node_modules/intl-tel-input/build/css/intlTelInput.css"
             ],
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "node_modules/intl-tel-input/build/img",
-                "output": "assets/intl-tel-input/img"
-              }
+              { "glob": "**/*", "input": "node_modules/intl-tel-input/build/img", "output": "assets/intl-tel-input/img" }
             ]
           }
         }
@@ -61,34 +59,43 @@ npm i ngxsmk-tel-input intl-tel-input libphonenumber-js
 }
 ```
 
-> If you use a custom builder, copy the flags folder to `/assets/intl-tel-input/img`.
+Optional override to ensure flags resolve (e.g., Vite/Angular 17+): add to your global styles
+
+```css
+.iti__flag { background-image: url("/assets/intl-tel-input/img/flags.png"); }
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .iti__flag { background-image: url("/assets/intl-tel-input/img/flags@2x.png"); }
+}
+```
+
+Restart the dev server after changes.
 
 ---
 
-## Quick start (Reactive Forms)
+## 🚀 Quick start (Reactive Forms)
 
 ```ts
 // app.component.ts
 import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TelInputComponent } from 'ngxsmk-tel-input';
+import { NgxsmkTelInputComponent } from 'ngxsmk-tel-input';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [ReactiveFormsModule, TelInputComponent],
+  imports: [ReactiveFormsModule, NgxsmkTelInputComponent],
   template: `
-    <form [formGroup]="fg" class="space-y-3">
-      <label for="phone">Phone</label>
+    <form [formGroup]="fg" style="max-width:420px;display:grid;gap:12px">
       <ngxsmk-tel-input
-        id="phone"
         formControlName="phone"
+        label="Phone"
+        hint="Include area code"
         [initialCountry]="'US'"
         [preferredCountries]="['US','GB','AU']"
         (countryChange)="onCountry($event)">
       </ngxsmk-tel-input>
 
-      <p *ngIf="fg.get('phone')?.hasError('phoneInvalid') && fg.get('phone')?.touched">
+      <p class="err" *ngIf="fg.get('phone')?.hasError('phoneInvalid') && fg.get('phone')?.touched">
         Please enter a valid phone number.
       </p>
 
@@ -97,199 +104,176 @@ import { TelInputComponent } from 'ngxsmk-tel-input';
   `
 })
 export class AppComponent {
-  fg = this.fb.group({
-    phone: ['', Validators.required] // control value will be E.164 string or null
-  });
-  constructor(private fb: FormBuilder) {}
-  onCountry(e: { iso2: any }) { console.log('Country changed:', e.iso2); }
+  fg = this.fb.group({ phone: ['', Validators.required] });
+  constructor(private readonly fb: FormBuilder) {}
+  onCountry(e: { iso2: any }) { console.log('country:', e.iso2); }
 }
 ```
 
-**Result:** `form.get('phone')?.value` → `'+14155550123'` (E.164) when valid, or `null` while empty/invalid.
+**Value semantics:** the form control value is **E.164** (e.g., `+14155550123`) when valid, or `null` when empty/invalid.
 
 ---
 
-## Template-driven usage
+## 📝 Template‑driven usage
 
 ```html
 <form #f="ngForm">
   <ngxsmk-tel-input name="phone" [(ngModel)]="phone"></ngxsmk-tel-input>
 </form>
-
-<!-- phone is a string (E.164) or null -->
+<!-- phone is an E.164 string or null -->
 ```
 
 ---
 
-## API
+## ⚙️ API
 
 ### Inputs
 
-| Name                 | Type                    | Default                | Description                                         |
-| -------------------- | ----------------------- | ---------------------- | --------------------------------------------------- |
-| `initialCountry`     | `CountryCode \| 'auto'` | `'auto'`               | Starting country. `'auto'` uses the plugin default. |
-| `preferredCountries` | `CountryCode[]`         | `['US','GB']`          | Pinned countries at the top.                        |
-| `onlyCountries`      | `CountryCode[]`         | `undefined`            | Restrict selectable countries.                      |
-| `nationalMode`       | `boolean`               | `false`                | If `true`, emits national numbers; otherwise E.164. |
-| `placeholder`        | `string`                | `'Enter phone number'` | Input placeholder.                                  |
-| `autocomplete`       | `string`                | `'tel'`                | Native autocomplete attribute.                      |
-| `disabled`           | `boolean`               | `false`                | Disables the input.                                 |
+| Name                   | Type                                   | Default                | Description                                                                   |
+| ---------------------- | -------------------------------------- | ---------------------- | ----------------------------------------------------------------------------- |
+| `initialCountry`       | `CountryCode \| 'auto'`                | `'US'`                 | Starting country. `'auto'` uses geoIp stub (`US` by default).                 |
+| `preferredCountries`   | `CountryCode[]`                        | `['US','GB']`          | Pin these at the top.                                                         |
+| `onlyCountries`        | `CountryCode[]`                        | —                      | Limit selectable countries.                                                   |
+| `nationalMode`         | `boolean`                              | `false`                | If `true`, **display** national format in the input. Value still emits E.164. |
+| `separateDialCode`     | `boolean`                              | `false`                | Show dial code outside the input.                                             |
+| `allowDropdown`        | `boolean`                              | `true`                 | Enable/disable dropdown.                                                      |
+| `placeholder`          | `string`                               | `'Enter phone number'` | Input placeholder.                                                            |
+| `autocomplete`         | `string`                               | `'tel'`                | Native autocomplete.                                                          |
+| `disabled`             | `boolean`                              | `false`                | Disable the control.                                                          |
+| `label`                | `string`                               | —                      | Optional floating label text.                                                 |
+| `hint`                 | `string`                               | —                      | Helper text below the control.                                                |
+| `errorText`            | `string`                               | —                      | Custom error text.                                                            |
+| `size`                 | `'sm' \| 'md' \| 'lg'`                 | `'md'`                 | Control height/typography.                                                    |
+| `variant`              | `'outline' \| 'filled' \| 'underline'` | `'outline'`            | Visual variant.                                                               |
+| `showClear`            | `boolean`                              | `true`                 | Show a clear (×) button when not empty.                                       |
+| `autoFocus`            | `boolean`                              | `false`                | Focus on init.                                                                |
+| `selectOnFocus`        | `boolean`                              | `false`                | Select all text on focus.                                                     |
+| `formatOnBlur`         | `boolean`                              | `true`                 | Pretty‑print on blur (national if `nationalMode`).                            |
+| `showErrorWhenTouched` | `boolean`                              | `true`                 | Show error styles only after blur.                                            |
+| `dropdownAttachToBody` | `boolean`                              | `true`                 | Attach dropdown to `<body>` (avoids clipping/overflow).                       |
+| `dropdownZIndex`       | `number`                               | `2000`                 | Z‑index for dropdown panel.                                                   |
 
-> `CountryCode` is the ISO-2 uppercase code from `libphonenumber-js` (e.g., `US`, `GB`, `AU`).
+> `CountryCode` is the ISO‑2 uppercase code from `libphonenumber-js` (e.g. `US`, `GB`).
 
 ### Outputs
 
-| Event           | Payload                 | Description                              |
-| --------------- | ----------------------- | ---------------------------------------- |
-| `countryChange` | `{ iso2: CountryCode }` | Fires when the selected country changes. |
+| Event            | Payload                                                    | Description                          |
+| ---------------- | ---------------------------------------------------------- | ------------------------------------ |
+| `countryChange`  | `{ iso2: CountryCode }`                                    | Fired when selected country changes. |
+| `validityChange` | `boolean`                                                  | Fired when validity flips.           |
+| `inputChange`    | `{ raw: string; e164: string \| null; iso2: CountryCode }` | Emitted on every keystroke.          |
 
-### Value semantics
+### Public methods
 
-* **When valid:** emits **E.164** string (e.g., `+33123456789`) unless `nationalMode` is `true`.
-* **When empty or invalid:** emits `null`.
-* **Validation:** adds `phoneInvalid` error key when the input cannot be parsed as a valid number for the selected country.
+* `focus(): void`
+* `selectCountry(iso2: CountryCode): void`
 
 ---
 
-## Validation examples
+## 🎨 Theming (CSS variables)
+
+Override on the element or a parent container:
+
+```html
+<ngxsmk-tel-input style="
+  --tel-border:#cbd5e1;
+  --tel-ring:#22c55e;
+  --tel-radius:14px;
+  --tel-dd-item-hover: rgba(34,197,94,.12);
+  --tel-dd-z: 3000;
+"></ngxsmk-tel-input>
+```
+
+Available tokens:
+
+* Input: `--tel-bg`, `--tel-fg`, `--tel-border`, `--tel-border-hover`, `--tel-ring`, `--tel-placeholder`, `--tel-error`, `--tel-radius`, `--tel-focus-shadow`
+* Dropdown: `--tel-dd-bg`, `--tel-dd-border`, `--tel-dd-shadow`, `--tel-dd-radius`, `--tel-dd-item-hover`, `--tel-dd-search-bg`, `--tel-dd-z`
+
+Dark mode: wrap in a `.dark` parent — tokens adapt automatically.
+
+---
+
+## ✔️ Validation patterns
 
 ```html
 <ngxsmk-tel-input formControlName="phone"></ngxsmk-tel-input>
 
-<div class="error" *ngIf="fg.get('phone')?.hasError('required')">
-  Phone is required
-</div>
-<div class="error" *ngIf="fg.get('phone')?.hasError('phoneInvalid')">
-  Please enter a valid phone number
-</div>
+<div class="error" *ngIf="fg.get('phone')?.hasError('required')">Phone is required</div>
+<div class="error" *ngIf="fg.get('phone')?.hasError('phoneInvalid')">Please enter a valid phone number</div>
 ```
 
----
+* When **valid** → control value = **E.164** string
+* When **invalid/empty** → value = **null**, and validator sets `{ phoneInvalid: true }`
 
-## Accessibility
-
-* Pair with a `<label for="phone">` or wrap the input and label together.
-* The country dropdown is keyboard navigable (via `intl-tel-input`).
-* Consider additional ARIA attributes if you customize the template.
+> Need national string instead of E.164? Use `(inputChange)` and store `raw`/`national` yourself, or adapt the emitter to output national.
 
 ---
 
-## Theming
+## 🌐 SSR notes
 
-The component applies a minimal class to the input: `.ngxsmk-tel-input`.
-You can style it or the `intl-tel-input` container globally:
-
-```css
-.ngxsmk-tel-input {
-  width: 100%;
-  padding: 0.5rem 0.75rem;
-}
-
-.iti {
-  width: 100%; /* make dropdown stretch */
-}
-```
+* The library lazy‑imports `intl-tel-input` only in the **browser** (guards with `isPlatformBrowser`).
+* No `window`/`document` usage on the server path.
 
 ---
 
-## SSR notes
+## 🧪 Local development
 
-This library lazily imports `intl-tel-input` **only in the browser**.
-No special setup required for Angular Universal. If you still see SSR errors, ensure you’re not referencing `window` in your own wrappers.
-
----
-
-## Troubleshooting
-
-* **No flags / broken images**
-  Ensure `angular.json` asset mapping is present and that the output path matches your app’s `/assets` directory.
-
-* **Styles not applied**
-  Add `"node_modules/intl-tel-input/build/css/intlTelInput.css"` to the `styles` array in `angular.json`.
-
-* **Form value doesn’t update**
-  Use Angular Forms APIs (Reactive or Template-driven). For Reactive Forms, confirm the control is bound via `formControlName` and that `ReactiveFormsModule` is imported.
-
-* **Always invalid**
-  Some numbers are only valid with the correct country selected. Try typing with the `+` international prefix or set `initialCountry` appropriately.
-
----
-
-## Example: national mode
-
-```html
-<ngxsmk-tel-input formControlName="phone" [nationalMode]="true" [initialCountry]="'GB'"></ngxsmk-tel-input>
-<!-- Value will be a national format string like '020 7946 0958' with validation tied to the selected country -->
-```
-
-> When using `nationalMode=true`, you’ll typically store the country code alongside the value, using `(countryChange)`.
-
----
-
-## Development
-
-This repo is structured as an Angular workspace with a library:
+This repo is an Angular workspace with a library.
 
 ```bash
 # Build the library
 ng build ngxsmk-tel-input
 
-# (Optional) create a demo app and try it locally
-ng g application demo
-# import TelInputComponent in your demo app and test
+# Option A: use it inside a demo app in the same workspace
+ng serve demo
+
+# Option B: install locally via tarball in another app
+cd dist/ngxsmk-tel-input && npm pack
+# in your other app
+npm i ../path-to-workspace/dist/ngxsmk-tel-input/ngxsmk-tel-input-<version>.tgz
 ```
+
+> Workspace aliasing via `tsconfig.paths` also works (map `"ngxsmk-tel-input": ["dist/ngxsmk-tel-input"]`).
 
 ---
 
-## Publish
+## 🛫 Publish
 
 ```bash
-# Bump version, then:
+# bump version in projects/ngxsmk-tel-input/package.json
 ng build ngxsmk-tel-input
 cd dist/ngxsmk-tel-input
 npm publish --access public
 ```
 
-> Ensure `peerDependencies` in the library’s `package.json` reflect your Angular support range.
+> If you get `403 You cannot publish over the previously published versions`, bump the version (SemVer).
 
 ---
 
-## Contributing
+## 🧯 Troubleshooting
 
-PRs welcome! Please:
+**UI looks unstyled / bullets in dropdown**
+Add the CSS and assets in `angular.json` (see Install). Restart the dev server.
 
-1. Run `npm ci` and `ng build`.
-2. Add/adjust unit or e2e tests if you change behavior.
-3. Update this README for any API changes.
+**Flags don’t show**
+Ensure the assets copy exists under `/assets/intl-tel-input/img` and add the CSS override block above.
+
+**`TS2307: Cannot find module 'ngxsmk-tel-input'`**
+Build the library first so `dist/ngxsmk-tel-input` exists. If using workspace aliasing, add a `paths` entry to the root `tsconfig.base.json`.
+
+**Peer dependency conflict when installing**
+The lib peers are `@angular/* >=17 <20`. Upgrade your app or install a compatible version.
+
+**Vite/Angular “Failed to resolve import …”**
+Clear `.angular/cache`, rebuild the lib, and restart `ng serve`.
 
 ---
 
-## License
+## 📃 License
 
 [MIT](./LICENSE)
 
----
-
-## Credits
+## 🙌 Credits
 
 * UI powered by [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input)
-* Parsing/validation by [`libphonenumber-js`](https://github.com/catamphetamine/libphonenumber-js)
-
----
-
-### Appendix: `angular.json` snippet (copy-paste)
-
-```jsonc
-{
-  "styles": [
-    "node_modules/intl-tel-input/build/css/intlTelInput.css"
-  ],
-  "assets": [
-    {
-      "glob": "**/*",
-      "input": "node_modules/intl-tel-input/build/img",
-      "output": "assets/intl-tel-input/img"
-    }
-  ]
-}
-```
+* Parsing & validation by [`libphonenumber-js`](https://github.com/catamphetamine/libphonenumber-js)

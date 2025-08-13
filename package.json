@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "description": "Angular telephone input with intl-tel-input + libphonenumber-js",
   "license": "MIT",
-  "publishConfig": { "access": "public" },
+  "publishConfig": {
+    "access": "public"
+  },
   "author": {
     "email": "sachindilshan040@gmail.com",
     "name": "Sachin Dilshan",
@@ -27,6 +29,7 @@
     "@angular/router": "^19.2.0",
     "intl-tel-input": "^25.3.2",
     "libphonenumber-js": "^1.12.10",
+    "ngxsmk-tel-input": "^0.0.5",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"

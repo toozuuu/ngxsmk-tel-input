@@ -8,9 +8,8 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "ngxsmk-tel-input": [
-        "./dist/ngxsmk-tel-input"
-      ]
+      "ngxsmk-tel-input": ["./dist/ngxsmk-tel-input"],
+      "ngxsmk-tel-input/*": ["./dist/ngxsmk-tel-input/*"]
     },
     "skipLibCheck": true,
     "isolatedModules": true,
