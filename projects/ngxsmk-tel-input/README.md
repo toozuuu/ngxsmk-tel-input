@@ -1,44 +1,56 @@
-# ngxsmk-tel-input
+# ngxsmk-tel-input — International Telephone Input for Angular
 
-An Angular **telephone input** with country dropdown, flags, formatting and validation.
+[![npm version](https://img.shields.io/npm/v/ngxsmk-tel-input)](https://www.npmjs.com/package/ngxsmk-tel-input)
+[![npm downloads](https://img.shields.io/npm/dm/ngxsmk-tel-input)](https://www.npmjs.com/package/ngxsmk-tel-input)
+[![license: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/toozuuu/ngxsmk-tel-input/blob/main/LICENSE)
+[![bundle size](https://img.shields.io/bundlephobia/minzip/ngxsmk-tel-input)](https://bundlephobia.com/package/ngxsmk-tel-input)
+[![GitHub stars](https://img.shields.io/github/stars/toozuuu/ngxsmk-tel-input?style=social)](https://github.com/toozuuu/ngxsmk-tel-input)
 
-* UI: [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input)
-* Parsing/validation: [`libphonenumber-js`](https://github.com/catamphetamine/libphonenumber-js)
-* Forms: Implements **ControlValueAccessor** (Reactive & Template‑driven)
-* Output: Emits **E.164** (e.g. `+14155550123`) when valid
+An Angular component for entering and validating **international telephone numbers**. It adds a country flag dropdown, formats input, and validates using real numbering rules.
 
----
+* UI powered by [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input)
+* Parsing & validation via [`libphonenumber-js`](https://github.com/catamphetamine/libphonenumber-js)
+* Implements Angular **ControlValueAccessor** (works with Reactive & Template‑driven Forms)
 
-## Requirements
-
-* Angular **17 – 19**
-* Node **18** or **20**
-
-> Peer deps: `@angular/* >=17 <20`
+> Emits **E.164** by default (e.g. `+14155550123`). SSR‑safe via lazy, browser‑only import.
 
 ---
 
-## Install
+## Compatibility
+
+| ngxsmk-tel-input | Angular         |
+| ---------------- | --------------- |
+| `0.0.x`          | `17.x` – `19.x` |
+
+> The library declares `peerDependencies` of `@angular/* >=17 <20`.
+
+---
+
+## Installation
+
+### 1) Install dependencies
 
 ```bash
 npm i ngxsmk-tel-input intl-tel-input libphonenumber-js
 ```
 
-### Add styles & flags (in your **app**, not the library)
+### 2) Add styles & flag assets (in your **app**, not the library)
 
-Add `intl-tel-input` CSS and copy flag images via `angular.json`:
+Add intl‑tel‑input CSS and copy its flag images via `angular.json`:
 
 ```jsonc
 {
   "projects": {
-    "<your-app-name>": {
+    "your-app": {
       "architect": {
         "build": {
           "options": {
             "styles": [
-              "node_modules/intl-tel-input/build/css/intlTelInput.css"
+              "node_modules/intl-tel-input/build/css/intlTelInput.css",
+              "src/styles.css"
             ],
             "assets": [
+              { "glob": "**/*", "input": "src/assets" },
               { "glob": "**/*", "input": "node_modules/intl-tel-input/build/img", "output": "assets/intl-tel-input/img" }
             ]
           }
@@ -49,7 +61,7 @@ Add `intl-tel-input` CSS and copy flag images via `angular.json`:
 }
 ```
 
-Optional flag URL override (put in your app’s global styles):
+Optional (helps some bundlers resolve flags): add to your global styles
 
 ```css
 .iti__flag { background-image: url("/assets/intl-tel-input/img/flags.png"); }
@@ -58,11 +70,13 @@ Optional flag URL override (put in your app’s global styles):
 }
 ```
 
-Restart the dev server after changes.
+Restart your dev server after editing `angular.json`.
 
 ---
 
-## Quick Start (Reactive Forms)
+## Usage
+
+### Reactive Forms
 
 ```ts
 // app.component.ts
@@ -85,7 +99,7 @@ import { NgxsmkTelInputComponent } from 'ngxsmk-tel-input';
         (countryChange)="onCountry($event)">
       </ngxsmk-tel-input>
 
-      <p class="err" *ngIf="fg.get('phone')?.hasError('phoneInvalid') && fg.get('phone')?.touched">
+      <p *ngIf="fg.get('phone')?.hasError('phoneInvalid') && fg.get('phone')?.touched">
         Please enter a valid phone number.
       </p>
 
@@ -96,137 +110,154 @@ import { NgxsmkTelInputComponent } from 'ngxsmk-tel-input';
 export class AppComponent {
   fg = this.fb.group({ phone: ['', Validators.required] });
   constructor(private readonly fb: FormBuilder) {}
-  onCountry(e: { iso2: string }) { console.log('country:', e.iso2); }
+  onCountry(e: { iso2: any }) { console.log('Country changed:', e.iso2); }
 }
 ```
 
-**Value semantics**
+**Value semantics:** The control emits **E.164** when valid, or `null` when empty/invalid.
 
-* Valid → control value is **E.164** string (e.g. `+14155550123`)
-* Empty/invalid → value is **`null`**; validator sets `{ phoneInvalid: true }`
-
----
-
-## Template‑driven
+### Template‑driven
 
 ```html
 <form #f="ngForm">
   <ngxsmk-tel-input name="phone" [(ngModel)]="phone"></ngxsmk-tel-input>
 </form>
-<!-- phone is an E.164 string or null -->
 ```
 
 ---
 
-## API
+## Options (Inputs)
 
-### Inputs
+| Option                 | Type                                   | Default                | Description                                                            |
+| ---------------------- | -------------------------------------- | ---------------------- | ---------------------------------------------------------------------- |
+| `initialCountry`       | `CountryCode \| 'auto'`                | `'US'`                 | Starting country. `'auto'` uses a simple geo‑IP stub (defaults to US). |
+| `preferredCountries`   | `CountryCode[]`                        | `['US','GB']`          | Countries pinned at the top.                                           |
+| `onlyCountries`        | `CountryCode[]`                        | —                      | Restrict selectable countries.                                         |
+| `nationalMode`         | `boolean`                              | `false`                | Display national format in the box. Value still emits E.164.           |
+| `separateDialCode`     | `boolean`                              | `false`                | Show dial code separately to the left.                                 |
+| `allowDropdown`        | `boolean`                              | `true`                 | Enable/disable country dropdown.                                       |
+| `placeholder`          | `string`                               | `'Enter phone number'` | Input placeholder.                                                     |
+| `autocomplete`         | `string`                               | `'tel'`                | Native autocomplete attribute.                                         |
+| `disabled`             | `boolean`                              | `false`                | Disable the control.                                                   |
+| `label`                | `string`                               | —                      | Optional label text.                                                   |
+| `hint`                 | `string`                               | —                      | Helper text shown below.                                               |
+| `errorText`            | `string`                               | —                      | Custom error message.                                                  |
+| `size`                 | `'sm' \| 'md' \| 'lg'`                 | `'md'`                 | Preset sizing.                                                         |
+| `variant`              | `'outline' \| 'filled' \| 'underline'` | `'outline'`            | Visual style.                                                          |
+| `showClear`            | `boolean`                              | `true`                 | Show a clear (×) button when not empty.                                |
+| `autoFocus`            | `boolean`                              | `false`                | Focus on init.                                                         |
+| `selectOnFocus`        | `boolean`                              | `false`                | Select text on focus.                                                  |
+| `formatOnBlur`         | `boolean`                              | `true`                 | Pretty‑print on blur (national if `nationalMode`).                     |
+| `showErrorWhenTouched` | `boolean`                              | `true`                 | Only show error styles after the control is touched.                   |
+| `dropdownAttachToBody` | `boolean`                              | `true`                 | Attach dropdown to `<body>` to avoid clipping.                         |
+| `dropdownZIndex`       | `number`                               | `2000`                 | Z‑index for dropdown panel.                                            |
 
-| Name                   | Type                                   | Default                | Description                                                  |
-| ---------------------- | -------------------------------------- | ---------------------- | ------------------------------------------------------------ |
-| `initialCountry`       | `CountryCode \| 'auto'`                | `'US'`                 | Starting country (`'auto'` uses a stubbed US by default).    |
-| `preferredCountries`   | `CountryCode[]`                        | `['US','GB']`          | Pinned at the top.                                           |
-| `onlyCountries`        | `CountryCode[]`                        | —                      | Limit selectable countries.                                  |
-| `nationalMode`         | `boolean`                              | `false`                | Display national format in the box; value still emits E.164. |
-| `separateDialCode`     | `boolean`                              | `false`                | Show dial code separately.                                   |
-| `allowDropdown`        | `boolean`                              | `true`                 | Enable/disable dropdown.                                     |
-| `placeholder`          | `string`                               | `'Enter phone number'` | Native placeholder.                                          |
-| `autocomplete`         | `string`                               | `'tel'`                | Native autocomplete.                                         |
-| `disabled`             | `boolean`                              | `false`                | Disable input.                                               |
-| `label`                | `string`                               | —                      | Label text.                                                  |
-| `hint`                 | `string`                               | —                      | Helper text.                                                 |
-| `errorText`            | `string`                               | —                      | Custom error text.                                           |
-| `size`                 | `'sm' \| 'md' \| 'lg'`                 | `'md'`                 | Sizing preset.                                               |
-| `variant`              | `'outline' \| 'filled' \| 'underline'` | `'outline'`            | Visual style.                                                |
-| `showClear`            | `boolean`                              | `true`                 | Show clear (×) button.                                       |
-| `autoFocus`            | `boolean`                              | `false`                | Focus on init.                                               |
-| `selectOnFocus`        | `boolean`                              | `false`                | Select all text on focus.                                    |
-| `formatOnBlur`         | `boolean`                              | `true`                 | Pretty‑print on blur (national if `nationalMode`).           |
-| `showErrorWhenTouched` | `boolean`                              | `true`                 | Only show error style after blur.                            |
-| `dropdownAttachToBody` | `boolean`                              | `true`                 | Append dropdown to `<body>` to avoid clipping.               |
-| `dropdownZIndex`       | `number`                               | `2000`                 | Z‑index for dropdown panel.                                  |
+> `CountryCode` is the ISO‑2 code from `libphonenumber-js` (e.g. `US`, `GB`).
 
-> `CountryCode` is the ISO‑2 code from `libphonenumber-js` (e.g., `US`, `GB`).
+### Outputs (Events)
 
-### Outputs
+| Event            | Payload                                                    | Description                              |
+| ---------------- | ---------------------------------------------------------- | ---------------------------------------- |
+| `countryChange`  | `{ iso2: CountryCode }`                                    | Fires when the selected country changes. |
+| `validityChange` | `boolean`                                                  | Emits when validity toggles.             |
+| `inputChange`    | `{ raw: string; e164: string \| null; iso2: CountryCode }` | Emitted on each input.                   |
 
-| Event            | Payload                                                    | Description                        |
-| ---------------- | ---------------------------------------------------------- | ---------------------------------- |
-| `countryChange`  | `{ iso2: CountryCode }`                                    | When the selected country changes. |
-| `validityChange` | `boolean`                                                  | Emits when validity toggles.       |
-| `inputChange`    | `{ raw: string; e164: string \| null; iso2: CountryCode }` | Emitted on each input.             |
-
-### Public methods
+### Public Methods
 
 * `focus(): void`
 * `selectCountry(iso2: CountryCode): void`
 
 ---
 
-## Theming
+## Supported Formats
 
-The component exposes CSS variables for easy theming. Example:
+* **E164** → `+41446681800`
+* **International** (display) → `+41 44 668 18 00`
+* **National** (display) → `044 668 18 00`
+
+> The control **emits E.164** by default. If you need the currently typed format too, use `(inputChange)`.
+
+---
+
+## Theming & Styling
+
+This component exposes CSS variables for quick theming:
 
 ```html
 <ngxsmk-tel-input style="
   --tel-border:#cbd5e1;
-  --tel-ring:#22c55e;
-  --tel-radius:14px;
-  --tel-dd-item-hover: rgba(34,197,94,.12);
+  --tel-ring:#2563eb;
+  --tel-radius:12px;
+  --tel-dd-item-hover: rgba(37,99,235,.08);
   --tel-dd-z: 3000;
 "></ngxsmk-tel-input>
 ```
 
-Key tokens:
+Key variables: `--tel-bg`, `--tel-fg`, `--tel-border`, `--tel-border-hover`, `--tel-ring`, `--tel-placeholder`, `--tel-error`, `--tel-radius`, `--tel-focus-shadow`, `--tel-dd-bg`, `--tel-dd-border`, `--tel-dd-shadow`, `--tel-dd-radius`, `--tel-dd-item-hover`, `--tel-dd-search-bg`, `--tel-dd-z`.
 
-* Input: `--tel-bg`, `--tel-fg`, `--tel-border`, `--tel-border-hover`, `--tel-ring`, `--tel-placeholder`, `--tel-error`, `--tel-radius`, `--tel-focus-shadow`
-* Dropdown: `--tel-dd-bg`, `--tel-dd-border`, `--tel-dd-shadow`, `--tel-dd-radius`, `--tel-dd-item-hover`, `--tel-dd-search-bg`, `--tel-dd-z`
-
-Dark mode: wrap in a `.dark` container – tokens adapt.
+Dark mode: wrap in a `.dark` container; tokens adapt.
 
 ---
 
 ## SSR
 
-* `intl-tel-input` is lazy‑loaded **only in the browser** using `isPlatformBrowser` guards.
-* No direct `window`/`document` usage on the server path.
+The library guards `intl-tel-input` import behind `isPlatformBrowser`, so Angular Universal builds won’t try to access `window` during SSR.
 
 ---
 
-## Troubleshooting
+## Local Development
 
-* **Unstyled UI / bullets** → Add CSS + assets in `angular.json`, restart dev server.
-* **Flags missing** → Verify the images were copied to `/assets/intl-tel-input/img` or add the CSS override.
-* **`TS2307: Cannot find module 'ngxsmk-tel-input'`** → Build the lib first; or add a `paths` alias to your app’s `tsconfig` if consuming locally.
-* **Peer dependency conflict** → App Angular version must satisfy `>=17 <20`.
-
----
-
-## Local dev & publish
+This repository is an Angular workspace with a library.
 
 ```bash
 # Build the library
 ng build ngxsmk-tel-input
 
-# Test via tarball in another app
-cd dist/ngxsmk-tel-input && npm pack
-# in your app
-npm i ../path-to/dist/ngxsmk-tel-input/ngxsmk-tel-input-<version>.tgz
+# Try it in a demo app inside the workspace
+ng serve demo
 
-# Publish (from the built dist folder)
-# bump version in projects/ngxsmk-tel-input/package.json
-ng build ngxsmk-tel-input
-cd dist/ngxsmk-tel-input
-npm publish --access public
+# Or pack and install in another app locally
+cd dist/ngxsmk-tel-input && npm pack
+
+# in your other app
+npm i ../path/to/dist/ngxsmk-tel-input/ngxsmk-tel-input-<version>.tgz
 ```
+
+Tip: you can also map a workspace path alias in `tsconfig.base.json`:
+
+```jsonc
+{
+  "compilerOptions": {
+    "paths": {
+      "ngxsmk-tel-input": ["dist/ngxsmk-tel-input"]
+    }
+  }
+}
+```
+
+---
+
+## Troubleshooting
+
+* **Unstyled dropdown / bullets / missing flags** → Ensure CSS & assets are added in your app’s `angular.json`, then restart the dev server.
+* **`TS2307: Cannot find module 'ngxsmk-tel-input'`** → Build the library first so `dist/ngxsmk-tel-input` exists (or install from npm).
+* **Peer dependency conflict** → Your app must be Angular 17–19 to satisfy peers.
+* **Dropdown clipped by parent** → Keep `dropdownAttachToBody=true` or raise `dropdownZIndex`.
+
+---
+
+## Contributing
+
+PRs welcome! Please:
+
+1. `npm ci` and `ng build`
+2. Cover behavior changes with tests if possible
+3. Update README for any API changes
+
+This project is open to using the [all-contributors](https://github.com/all-contributors/all-contributors) spec. Contributions of any kind welcome!
 
 ---
 
 ## License
 
 [MIT](./LICENSE)
-
-## Credits
-
-* UI: `intl-tel-input`
-* Parsing/validation: `libphonenumber-js`
