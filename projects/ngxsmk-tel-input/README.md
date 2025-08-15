@@ -3,7 +3,6 @@
 [![npm version](https://img.shields.io/npm/v/ngxsmk-tel-input)](https://www.npmjs.com/package/ngxsmk-tel-input)
 [![npm downloads](https://img.shields.io/npm/dm/ngxsmk-tel-input)](https://www.npmjs.com/package/ngxsmk-tel-input)
 [![license: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/toozuuu/ngxsmk-tel-input/blob/main/LICENSE)
-[![bundle size](https://img.shields.io/bundlephobia/minzip/ngxsmk-tel-input)](https://bundlephobia.com/package/ngxsmk-tel-input)
 [![GitHub stars](https://img.shields.io/github/stars/toozuuu/ngxsmk-tel-input?style=social)](https://github.com/toozuuu/ngxsmk-tel-input)
 
 An Angular component for entering and validating **international telephone numbers**. It adds a country flag dropdown, formats input, and validates using real numbering rules.
