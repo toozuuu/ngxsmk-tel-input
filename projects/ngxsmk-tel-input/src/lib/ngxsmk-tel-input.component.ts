@@ -14,7 +14,7 @@ import {
   SimpleChanges,
   ViewChild
 } from '@angular/core';
-import { isPlatformBrowser, NgIf } from '@angular/common';
+import {isPlatformBrowser} from '@angular/common';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -22,18 +22,20 @@ import {
   NG_VALUE_ACCESSOR,
   ValidationErrors
 } from '@angular/forms';
-import type { CountryCode } from 'libphonenumber-js';
-import { NgxsmkTelInputService } from './ngxsmk-tel-input.service';
+import type {CountryCode} from 'libphonenumber-js';
+import {NgxsmkTelInputService} from './ngxsmk-tel-input.service';
 
 type IntlTelInstance = any;
 
 @Component({
   selector: 'ngxsmk-tel-input',
   standalone: true,
-  imports: [NgIf],
+  imports: [],
   template: `
     <div class="ngx-tel" [class.disabled]="disabled" [attr.data-size]="size" [attr.data-variant]="variant">
-      <label *ngIf="label" class="ngx-tel__label" [for]="resolvedId">{{ label }}</label>
+      @if (label) {
+        <label class="ngx-tel__label" [for]="resolvedId">{{ label }}</label>
+      }
 
       <div class="ngx-tel__wrap" [class.has-error]="showError">
         <div class="ngxsmk-tel-input__wrapper">
@@ -52,22 +54,30 @@ type IntlTelInstance = any;
           />
         </div>
 
-        <button *ngIf="showClear && currentRaw()"
-                type="button"
-                class="ngx-tel__clear"
-                (click)="clearInput()"
-                [attr.aria-label]="'Clear phone number'">
-          ×
-        </button>
+        @if (showClear && currentRaw()) {
+          <button type="button"
+                  class="ngx-tel__clear"
+                  (click)="clearInput()"
+                  [attr.aria-label]="'Clear phone number'">
+            ×
+          </button>
+        }
+
       </div>
 
-      <div class="ngx-tel__hint" *ngIf="hint && !showError">{{ hint }}</div>
-      <div class="ngx-tel__error" *ngIf="showError">{{ errorText || 'Please enter a valid phone number.' }}</div>
+      @if (hint && !showError) {
+        <div class="ngx-tel__hint">{{ hint }}</div>
+      }
+
+      @if (showError) {
+        <div class="ngx-tel__error">{{ errorText || 'Please enter a valid phone number.' }}</div>
+      }
+
     </div>
   `,
   providers: [
-    { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => NgxsmkTelInputComponent), multi: true },
-    { provide: NG_VALIDATORS, useExisting: forwardRef(() => NgxsmkTelInputComponent), multi: true }
+    {provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => NgxsmkTelInputComponent), multi: true},
+    {provide: NG_VALIDATORS, useExisting: forwardRef(() => NgxsmkTelInputComponent), multi: true}
   ],
   styles: [`
     /* ---------- Theme tokens ---------- */
@@ -85,14 +95,16 @@ type IntlTelInstance = any;
       /* dropdown tokens */
       --tel-dd-bg: var(--tel-bg);
       --tel-dd-border: var(--tel-border);
-      --tel-dd-shadow: 0 24px 60px rgba(0,0,0,.18);
+      --tel-dd-shadow: 0 24px 60px rgba(0, 0, 0, .18);
       --tel-dd-radius: 12px;
-      --tel-dd-item-hover: rgba(37,99,235,.08);
+      --tel-dd-item-hover: rgba(37, 99, 235, .08);
       --tel-dd-z: 2000;
-      --tel-dd-search-bg: rgba(148,163,184,.08);
+      --tel-dd-search-bg: rgba(148, 163, 184, .08);
 
       display: block;
+
     }
+
     :host-context(.dark) {
       --tel-bg: #0b0f17;
       --tel-fg: #e5e7eb;
@@ -103,19 +115,35 @@ type IntlTelInstance = any;
 
       --tel-dd-bg: #0f1521;
       --tel-dd-border: #324056;
-      --tel-dd-search-bg: rgba(148,163,184,.12);
+      --tel-dd-search-bg: rgba(148, 163, 184, .12);
     }
 
     /* ---------- Structure ---------- */
-    .ngx-tel { width: 100%; color: var(--tel-fg); }
-    .ngx-tel.disabled { opacity: .7; cursor: not-allowed; }
+    .ngx-tel {
+      width: 100%;
+      color: var(--tel-fg);
+    }
 
-    .ngx-tel__label { display: inline-block; margin-bottom: 6px; font-size: .875rem; font-weight: 500; }
+    .ngx-tel.disabled {
+      opacity: .7;
+      cursor: not-allowed;
+    }
 
-    .ngx-tel__wrap { position: relative; }
+    .ngx-tel__label {
+      display: inline-block;
+      margin-bottom: 6px;
+      font-size: .875rem;
+      font-weight: 500;
+    }
+
+    .ngx-tel__wrap {
+      position: relative;
+    }
 
     .ngxsmk-tel-input__wrapper,
-    :host ::ng-deep .iti { width: 100%; }
+    :host ::ng-deep .iti {
+      width: 100%;
+    }
 
     .ngxsmk-tel-input__control {
       width: 100%;
@@ -129,18 +157,52 @@ type IntlTelInstance = any;
       outline: none;
       transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
     }
-    .ngxsmk-tel-input__control::placeholder { color: var(--tel-placeholder); }
-    .ngxsmk-tel-input__control:hover { border-color: var(--tel-border-hover); }
-    .ngxsmk-tel-input__control:focus { border-color: var(--tel-ring); box-shadow: var(--tel-focus-shadow); }
+
+    .ngxsmk-tel-input__control::placeholder {
+      color: var(--tel-placeholder);
+    }
+
+    .ngxsmk-tel-input__control:hover {
+      border-color: var(--tel-border-hover);
+    }
+
+    .ngxsmk-tel-input__control:focus {
+      border-color: var(--tel-ring);
+      box-shadow: var(--tel-focus-shadow);
+    }
 
     /* Size presets */
-    [data-size="sm"] .ngxsmk-tel-input__control { height: 34px; font-size: 13px; padding: 6px 36px 6px 10px; border-radius: 10px; }
-    [data-size="lg"] .ngxsmk-tel-input__control { height: 46px; font-size: 16px; padding: 12px 44px 12px 14px; border-radius: 14px; }
+    [data-size="sm"] .ngxsmk-tel-input__control {
+      height: 34px;
+      font-size: 13px;
+      padding: 6px 36px 6px 10px;
+      border-radius: 10px;
+    }
+
+    [data-size="lg"] .ngxsmk-tel-input__control {
+      height: 46px;
+      font-size: 16px;
+      padding: 12px 44px 12px 14px;
+      border-radius: 14px;
+    }
 
     /* Variants */
-    [data-variant="filled"] .ngxsmk-tel-input__control { background: rgba(148, 163, 184, .08); }
-    [data-variant="underline"] .ngxsmk-tel-input__control { border: 0; border-bottom: 2px solid var(--tel-border); border-radius: 0; padding-left: 0; padding-right: 34px; }
-    [data-variant="underline"] .ngxsmk-tel-input__control:focus { border-bottom-color: var(--tel-ring); box-shadow: none; }
+    [data-variant="filled"] .ngxsmk-tel-input__control {
+      background: rgba(148, 163, 184, .08);
+    }
+
+    [data-variant="underline"] .ngxsmk-tel-input__control {
+      border: 0;
+      border-bottom: 2px solid var(--tel-border);
+      border-radius: 0;
+      padding-left: 0;
+      padding-right: 34px;
+    }
+
+    [data-variant="underline"] .ngxsmk-tel-input__control:focus {
+      border-bottom-color: var(--tel-ring);
+      box-shadow: none;
+    }
 
     /* ---------- intl-tel-input dropdown (deep selectors) ---------- */
     :host ::ng-deep .iti__flag-container {
@@ -150,7 +212,13 @@ type IntlTelInstance = any;
       border-right: none;
       background: var(--tel-bg);
     }
-    :host ::ng-deep .iti__selected-flag { height: 100%; padding: 0 10px; display: inline-flex; align-items: center; }
+
+    :host ::ng-deep .iti__selected-flag {
+      height: 100%;
+      padding: 0 10px;
+      display: inline-flex;
+      align-items: center;
+    }
 
     /* Core dropdown panel */
     :host ::ng-deep .iti__country-list {
@@ -164,6 +232,7 @@ type IntlTelInstance = any;
       width: max(280px, 100%);
       z-index: var(--tel-dd-z);
     }
+
     /* When attached to <body>, it's wrapped in .iti--container */
     :host ::ng-deep .iti--container .iti__country-list {
       z-index: var(--tel-dd-z);
@@ -171,15 +240,21 @@ type IntlTelInstance = any;
 
     /* Search input (sticky header) */
     :host ::ng-deep .iti__search-input {
-      position: sticky; top: 0;
-      margin: 0; padding: 10px 12px;
+      position: sticky;
+      top: 0;
+      margin: 0;
+      padding: 10px 12px;
       width: 100%;
-      border: 0; border-bottom: 1px solid var(--tel-dd-border);
+      border: 0;
+      border-bottom: 1px solid var(--tel-dd-border);
       outline: none;
       background: var(--tel-dd-search-bg);
       color: var(--tel-fg);
     }
-    :host ::ng-deep .iti__search-input::placeholder { color: var(--tel-placeholder); }
+
+    :host ::ng-deep .iti__search-input::placeholder {
+      color: var(--tel-placeholder);
+    }
 
     /* Rows: flag | country name | dial code (right) */
     :host ::ng-deep .iti__country {
@@ -190,44 +265,107 @@ type IntlTelInstance = any;
       padding: 10px 12px;
       cursor: pointer;
     }
-    :host ::ng-deep .iti__flag-box { width: 28px; display: inline-flex; justify-content: center; }
-    :host ::ng-deep .iti__country-name { color: var(--tel-fg); }
-    :host ::ng-deep .iti__dial-code { color: var(--tel-placeholder); font-weight: 600; margin-left: 10px; }
-    :host ::ng-deep .iti__country:hover,
-    :host ::ng-deep .iti__country.iti__highlight { background: var(--tel-dd-item-hover); }
-    :host ::ng-deep .iti__country:focus { outline: 2px solid var(--tel-ring); outline-offset: -2px; }
 
-    :host ::ng-deep .iti__divider { margin: 6px 0; border-top: 1px dashed var(--tel-dd-border); }
+    :host ::ng-deep .iti__flag-box {
+      width: 28px;
+      display: inline-flex;
+      justify-content: center;
+    }
+
+    :host ::ng-deep .iti__country-name {
+      color: var(--tel-fg);
+    }
+
+    :host ::ng-deep .iti__dial-code {
+      color: var(--tel-placeholder);
+      font-weight: 600;
+      margin-left: 10px;
+    }
+
+    :host ::ng-deep .iti__country:hover,
+    :host ::ng-deep .iti__country.iti__highlight {
+      background: var(--tel-dd-item-hover);
+    }
+
+    :host ::ng-deep .iti__country:focus {
+      outline: 2px solid var(--tel-ring);
+      outline-offset: -2px;
+    }
+
+    :host ::ng-deep .iti__divider {
+      margin: 6px 0;
+      border-top: 1px dashed var(--tel-dd-border);
+    }
 
     /* Separate dial code pushes input text */
-    :host ::ng-deep .iti--separate-dial-code .ngxsmk-tel-input__control { padding-left: 56px; }
+    :host ::ng-deep .iti--separate-dial-code .ngxsmk-tel-input__control {
+      padding-left: 56px;
+    }
 
     /* Custom scrollbar (WebKit/Chromium) */
-    :host ::ng-deep .iti__country-list::-webkit-scrollbar { width: 10px; }
-    :host ::ng-deep .iti__country-list::-webkit-scrollbar-thumb { background: rgba(148,163,184,.4); border-radius: 8px; }
-    :host ::ng-deep .iti__country-list::-webkit-scrollbar-track { background: transparent; }
+    :host ::ng-deep .iti__country-list::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    :host ::ng-deep .iti__country-list::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, .4);
+      border-radius: 8px;
+    }
+
+    :host ::ng-deep .iti__country-list::-webkit-scrollbar-track {
+      background: transparent;
+    }
 
     /* Mobile tweak: make it breathe */
     @media (max-width: 480px) {
-      :host ::ng-deep .iti__country-list { width: 100vw; max-width: 100vw; }
+      :host ::ng-deep .iti__country-list {
+        width: 100vw;
+        max-width: 100vw;
+      }
     }
 
     /* Clear button */
     .ngx-tel__clear {
-      position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
-      border: 0; background: transparent; font-size: 18px; line-height: 1;
-      width: 28px; height: 28px; border-radius: 50%; cursor: pointer; color: var(--tel-placeholder);
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 0;
+      background: transparent;
+      font-size: 18px;
+      line-height: 1;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      color: var(--tel-placeholder);
     }
-    .ngx-tel__clear:hover { background: rgba(148, 163, 184, .15); }
+
+    .ngx-tel__clear:hover {
+      background: rgba(148, 163, 184, .15);
+    }
 
     /* Hint & Error */
-    .ngx-tel__hint { margin-top: 6px; font-size: 12px; color: var(--tel-placeholder); }
-    .ngx-tel__error { margin-top: 6px; font-size: 12px; color: var(--tel-error); }
-    .ngx-tel__wrap.has-error .ngxsmk-tel-input__control { border-color: var(--tel-error); box-shadow: 0 0 0 3px rgba(239, 68, 68, .15); }
+    .ngx-tel__hint {
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--tel-placeholder);
+    }
+
+    .ngx-tel__error {
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--tel-error);
+    }
+
+    .ngx-tel__wrap.has-error .ngxsmk-tel-input__control {
+      border-color: var(--tel-error);
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, .15);
+    }
   `]
 })
 export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDestroy, ControlValueAccessor {
-  @ViewChild('telInput', { static: true }) inputRef!: ElementRef<HTMLInputElement>;
+  @ViewChild('telInput', {static: true}) inputRef!: ElementRef<HTMLInputElement>;
 
   /* Existing inputs */
   @Input() initialCountry: CountryCode | 'auto' = 'US';
@@ -266,8 +404,10 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
 
   /* Internal */
   private iti: IntlTelInstance | null = null;
-  private onChange: (val: string | null) => void = () => {};
-  private onTouchedCb: () => void = () => {};
+  private onChange: (val: string | null) => void = () => {
+  };
+  private onTouchedCb: () => void = () => {
+  };
   private lastEmittedValid = false;
   private pendingWrite: string | null = null;
   private touched = false;
@@ -278,7 +418,8 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     private readonly zone: NgZone,
     private readonly tel: NgxsmkTelInputService,
     @Inject(PLATFORM_ID) private readonly platformId: Object
-  ) {}
+  ) {
+  }
 
   async ngAfterViewInit() {
     if (!isPlatformBrowser(this.platformId)) return;
@@ -300,21 +441,33 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
 
   ngOnChanges(changes: SimpleChanges): void {
     if (!isPlatformBrowser(this.platformId)) return;
-    const configChanged = ['initialCountry','preferredCountries','onlyCountries','separateDialCode','allowDropdown','nationalMode']
+    const configChanged = ['initialCountry', 'preferredCountries', 'onlyCountries', 'separateDialCode', 'allowDropdown', 'nationalMode']
       .some(k => k in changes && !changes[k].firstChange);
     if (configChanged && this.iti) this.reinitPlugin();
   }
 
-  ngOnDestroy(): void { this.destroyPlugin(); }
+  ngOnDestroy(): void {
+    this.destroyPlugin();
+  }
 
   // ----- CVA -----
   writeValue(val: string | null): void {
     if (!this.inputRef) return;
-    if (!this.iti) { this.pendingWrite = val ?? ''; return; }
+    if (!this.iti) {
+      this.pendingWrite = val ?? '';
+      return;
+    }
     this.setInputValue(val ?? '');
   }
-  registerOnChange(fn: any): void { this.onChange = fn; }
-  registerOnTouched(fn: any): void { this.onTouchedCb = fn; }
+
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouchedCb = fn;
+  }
+
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
     if (this.inputRef) this.inputRef.nativeElement.disabled = isDisabled;
@@ -329,7 +482,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
       this.lastEmittedValid = valid;
       this.validityChange.emit(valid);
     }
-    return valid ? null : { phoneInvalid: true };
+    return valid ? null : {phoneInvalid: true};
   }
 
   // ----- Public helpers -----
@@ -340,16 +493,23 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
       queueMicrotask(() => el.setSelectionRange(0, el.value.length));
     }
   }
+
   selectCountry(iso2: CountryCode): void {
-    if (this.iti) { this.iti.setCountry(iso2.toLowerCase()); this.handleInput(); }
+    if (this.iti) {
+      this.iti.setCountry(iso2.toLowerCase());
+      this.handleInput();
+    }
   }
+
   clearInput() {
-    this.setInputValue(''); this.handleInput(); this.inputRef.nativeElement.focus();
+    this.setInputValue('');
+    this.handleInput();
+    this.inputRef.nativeElement.focus();
   }
 
   // ----- Plugin wiring -----
   private async initIntlTelInput() {
-    const [{ default: intlTelInput }] = await Promise.all([ import('intl-tel-input') ]);
+    const [{default: intlTelInput}] = await Promise.all([import('intl-tel-input')]);
     const config: any = {
       initialCountry: this.initialCountry === 'auto' ? 'auto' : (this.initialCountry?.toLowerCase() || 'us'),
       preferredCountries: (this.preferredCountries ?? []).map(c => c.toLowerCase()),
@@ -361,7 +521,9 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
       utilsScript: undefined,
       dropdownContainer: this.dropdownAttachToBody && typeof document !== 'undefined' ? document.body : undefined
     };
-    this.zone.runOutsideAngular(() => { this.iti = intlTelInput(this.inputRef.nativeElement, config); });
+    this.zone.runOutsideAngular(() => {
+      this.iti = intlTelInput(this.inputRef.nativeElement, config);
+    });
 
     // expose z-index var to host (so CSS picks it up)
     (this.inputRef.nativeElement as HTMLElement).style.setProperty('--tel-dd-z', String(this.dropdownZIndex));
@@ -371,12 +533,18 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     const current = this.currentRaw();
     this.destroyPlugin();
     this.initIntlTelInput().then(() => {
-      if (current) { this.setInputValue(current); this.handleInput(); }
+      if (current) {
+        this.setInputValue(current);
+        this.handleInput();
+      }
     });
   }
 
   private destroyPlugin() {
-    if (this.iti) { this.iti.destroy(); this.iti = null; }
+    if (this.iti) {
+      this.iti.destroy();
+      this.iti = null;
+    }
     if (this.inputRef?.nativeElement) {
       const el = this.inputRef.nativeElement;
       const clone = el.cloneNode(true) as HTMLInputElement;
@@ -391,7 +559,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
       el.addEventListener('input', () => this.handleInput());
       el.addEventListener('countrychange', () => {
         const iso2 = this.currentIso2();
-        this.zone.run(() => this.countryChange.emit({ iso2 }));
+        this.zone.run(() => this.countryChange.emit({iso2}));
         this.handleInput();
       });
       el.addEventListener('paste', () => queueMicrotask(() => this.handleInput()));
@@ -423,19 +591,25 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     const iso2 = this.currentIso2();
     const parsed = this.tel.parse(raw, iso2);
     this.zone.run(() => this.onChange(parsed.e164)); // E.164 or null
-    this.zone.run(() => this.inputChange.emit({ raw, e164: parsed.e164, iso2 }));
+    this.zone.run(() => this.inputChange.emit({raw, e164: parsed.e164, iso2}));
     if (raw && this.nationalMode && parsed.national) {
       const normalized = parsed.national.replace(/\s{2,}/g, ' ');
       if (normalized !== raw) this.setInputValue(normalized);
     }
   }
 
-  currentRaw(): string { return (this.inputRef?.nativeElement.value ?? '').trim(); }
+  currentRaw(): string {
+    return (this.inputRef?.nativeElement.value ?? '').trim();
+  }
+
   private currentIso2(): CountryCode {
     const iso2 = (this.iti?.getSelectedCountryData?.().iso2 ?? this.initialCountry ?? 'US').toString().toUpperCase();
     return iso2 as CountryCode;
   }
-  private setInputValue(v: string) { this.inputRef.nativeElement.value = v ?? ''; }
+
+  private setInputValue(v: string) {
+    this.inputRef.nativeElement.value = v ?? '';
+  }
 
   get showError(): boolean {
     const invalid = !!this.validate({} as AbstractControl);

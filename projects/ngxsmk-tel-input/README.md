@@ -15,6 +15,16 @@ An Angular component for entering and validating **international telephone numbe
 
 ---
 
+## Screenshots
+
+<p align="left">
+  <img src="readme-assets/valid.png" alt="Valid phone number - formatted and passing validation" width="420" />
+  &nbsp;&nbsp;
+  <img src="readme-assets/invalid.png" alt="Invalid phone number - error state and null value" width="420" />
+</p>
+
+---
+
 ## Compatibility
 
 | ngxsmk-tel-input | Angular         |
