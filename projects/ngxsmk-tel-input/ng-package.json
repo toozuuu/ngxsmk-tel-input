@@ -7,5 +7,10 @@
   "allowedNonPeerDependencies": [
     "intl-tel-input",
     "libphonenumber-js"
+  ],
+  "assets": [
+    "README.md",
+    "LICENSE",
+    { "glob": "**/*", "input": "projects/ngxsmk-tel-input/docs", "output": "docs" }
   ]
 }
