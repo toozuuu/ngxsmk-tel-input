@@ -1,0 +1,30 @@
+name: NPM Publish (with provenance)
+
+on:
+  push:
+    tags:
+      - 'v*'          # publish when you push a tag like v1.2.3
+
+permissions:
+  contents: read
+  id-token: write     # required for --provenance
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+
+      - run: npm ci
+      - run: npx ng build ngxsmk-tel-input --configuration production
+
+      - name: Publish to npm (with provenance)
+        working-directory: dist/ngxsmk-tel-input
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}   # create this secret in the repo
+        run: npm publish --access public --provenance
