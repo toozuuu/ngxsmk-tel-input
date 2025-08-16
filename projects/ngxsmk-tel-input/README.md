@@ -28,8 +28,8 @@ An Angular component for entering and validating **international telephone numbe
 ## Compatibility
 
 | ngxsmk-tel-input | Angular         |
-| ---------------- | --------------- |
-| `0.0.x`          | `17.x` – `19.x` |
+|------------------| --------------- |
+| `1.0.x`          | `17.x` – `19.x` |
 
 > The library declares `peerDependencies` of `@angular/* >=17 <20`.
 
