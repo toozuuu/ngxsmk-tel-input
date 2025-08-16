@@ -1,18 +1,51 @@
 {
   "name": "ngxsmk-tel-input",
-  "version": "1.0.6",
+  "version": "1.0.7",
+  "description": "Angular international telephone input with country flag dropdown, formatting & validation (intl-tel-input + libphonenumber). ControlValueAccessor. Supports Angular 17–19.",
+  "keywords": [
+    "angular",
+    "angular-forms",
+    "controlvalueaccessor",
+    "phone-input",
+    "telephone",
+    "tel-input",
+    "international",
+    "intl-tel-input",
+    "libphonenumber",
+    "e164",
+    "phone-number-validation",
+    "country-flag"
+  ],
+  "homepage": "https://github.com/toozuuu/ngxsmk-tel-input#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/toozuuu/ngxsmk-tel-input.git"
+  },
+  "bugs": {
+    "url": "https://github.com/toozuuu/ngxsmk-tel-input/issues"
+  },
   "author": {
-    "email": "sachindilshan040@gmail.com",
     "name": "Sachin Dilshan",
+    "email": "sachindilshan040@gmail.com",
     "url": "https://www.linkedin.com/in/sachindilshan"
   },
-  "description": "Angular telephone input with intl-tel-input + libphonenumber-js",
   "license": "MIT",
   "private": false,
   "sideEffects": false,
   "publishConfig": {
     "access": "public"
   },
+  "files": [
+    "bundles/",
+    "fesm*",
+    "esm*",
+    "schematics/",
+    "migrations/",
+    "src/",
+    "README.md",
+    "LICENSE",
+    "docs/"
+  ],
   "peerDependencies": {
     "@angular/common": ">=17",
     "@angular/core": ">=17",

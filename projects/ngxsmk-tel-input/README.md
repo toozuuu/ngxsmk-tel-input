@@ -18,9 +18,9 @@ An Angular component for entering and validating **international telephone numbe
 ## Screenshots
 
 <p align="left">
-  <img src="https://unpkg.com/ngxsmk-tel-input@1.0.4/docs/valid.png" alt="Valid phone number" width="420" />
+  <img src="https://unpkg.com/ngxsmk-tel-input@1.0.4/docs/valid.png" alt="Angular international phone input - valid" width="420" />
   &nbsp;&nbsp;
-  <img src="https://unpkg.com/ngxsmk-tel-input@1.0.4/docs/invalid.png" alt="Invalid phone number" width="420" />
+  <img src="https://unpkg.com/ngxsmk-tel-input@1.0.4/docs/invalid.png" alt="Angular international phone input - Invalid" width="420" />
 </p>
 
 ---
