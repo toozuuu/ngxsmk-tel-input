@@ -11,6 +11,6 @@
   "assets": [
     "README.md",
     "LICENSE",
-    { "glob": "**/*", "input": "projects/ngxsmk-tel-input/docs", "output": "docs" }
+    "docs"
   ]
 }
