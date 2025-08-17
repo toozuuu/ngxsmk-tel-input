@@ -10,9 +10,9 @@ Wraps [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input) for the UI 
 ## Screenshots
 
 <p align="left">
-  <img src="projects/ngxsmk-tel-input/docs/valid.png" alt="Valid phone number" width="420" />
+  <img src="https://unpkg.com/ngxsmk-tel-input@latest/docs/valid.png" alt="Angular international phone input - valid" width="420" />
   &nbsp;&nbsp;
-  <img src="projects/ngxsmk-tel-input/docs/invalid.png" alt="Invalid phone number" width="420" />
+  <img src="https://unpkg.com/ngxsmk-tel-input@latest/docs/invalid.png" alt="Angular international phone input - Invalid" width="420" />
 </p>
 
 ---
@@ -157,7 +157,7 @@ export class AppComponent {
 
 You can localize the dropdown/search labels and override country names.
 
-<img src="https://unpkg.com/ngxsmk-tel-input@1.0.4/docs/kr.png" alt="Angular international phone input - Korean Localization & RTL" width="420" />
+<img src="https://unpkg.com/ngxsmk-tel-input@latest/docs/kr.png" alt="Angular international phone input - Korean Localization & RTL" width="420" />
 
 Korean example
 
