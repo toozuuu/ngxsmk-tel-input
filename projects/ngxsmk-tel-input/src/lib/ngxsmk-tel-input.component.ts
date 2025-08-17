@@ -32,12 +32,12 @@ type IntlTelInstance = any;
   standalone: true,
   imports: [],
   template: `
-    <div class="ngx-tel" [class.disabled]="disabled" [attr.data-size]="size" [attr.data-variant]="variant">
+    <div class="ngxsmk-tel" [class.disabled]="disabled" [attr.data-size]="size" [attr.data-variant]="variant">
       @if (label) {
-        <label class="ngx-tel__label" [for]="resolvedId">{{ label }}</label>
+        <label class="ngxsmk-tel__label" [for]="resolvedId">{{ label }}</label>
       }
 
-      <div class="ngx-tel__wrap" [class.has-error]="showError">
+      <div class="ngxsmk-tel__wrap" [class.has-error]="showError">
         <div class="ngxsmk-tel-input__wrapper">
           <input
             #telInput
@@ -56,7 +56,7 @@ type IntlTelInstance = any;
 
         @if (showClear && currentRaw()) {
           <button type="button"
-                  class="ngx-tel__clear"
+                  class="ngxsmk-tel__clear"
                   (click)="clearInput()"
                   [attr.aria-label]="'Clear phone number'">
             ×
@@ -66,11 +66,11 @@ type IntlTelInstance = any;
       </div>
 
       @if (hint && !showError) {
-        <div class="ngx-tel__hint">{{ hint }}</div>
+        <div class="ngxsmk-tel__hint">{{ hint }}</div>
       }
 
       @if (showError) {
-        <div class="ngx-tel__error">{{ errorText || 'Please enter a valid phone number.' }}</div>
+        <div class="ngxsmk-tel__error">{{ errorText || 'Please enter a valid phone number.' }}</div>
       }
 
     </div>
@@ -119,24 +119,24 @@ type IntlTelInstance = any;
     }
 
     /* ---------- Structure ---------- */
-    .ngx-tel {
+    .ngxsmk-tel {
       width: 100%;
       color: var(--tel-fg);
     }
 
-    .ngx-tel.disabled {
+    .ngxsmk-tel.disabled {
       opacity: .7;
       cursor: not-allowed;
     }
 
-    .ngx-tel__label {
+    .ngxsmk-tel__label {
       display: inline-block;
       margin-bottom: 6px;
       font-size: .875rem;
       font-weight: 500;
     }
 
-    .ngx-tel__wrap {
+    .ngxsmk-tel__wrap {
       position: relative;
     }
 
@@ -325,7 +325,7 @@ type IntlTelInstance = any;
     }
 
     /* Clear button */
-    .ngx-tel__clear {
+    .ngxsmk-tel__clear {
       position: absolute;
       right: 8px;
       top: 50%;
@@ -341,24 +341,24 @@ type IntlTelInstance = any;
       color: var(--tel-placeholder);
     }
 
-    .ngx-tel__clear:hover {
+    .ngxsmk-tel__clear:hover {
       background: rgba(148, 163, 184, .15);
     }
 
     /* Hint & Error */
-    .ngx-tel__hint {
+    .ngxsmk-tel__hint {
       margin-top: 6px;
       font-size: 12px;
       color: var(--tel-placeholder);
     }
 
-    .ngx-tel__error {
+    .ngxsmk-tel__error {
       margin-top: 6px;
       font-size: 12px;
       color: var(--tel-error);
     }
 
-    .ngx-tel__wrap.has-error .ngxsmk-tel-input__control {
+    .ngxsmk-tel__wrap.has-error .ngxsmk-tel-input__control {
       border-color: var(--tel-error);
       box-shadow: 0 0 0 3px rgba(239, 68, 68, .15);
     }

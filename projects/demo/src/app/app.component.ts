@@ -1,23 +1,35 @@
 import { Component } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { JsonPipe } from '@angular/common';
-import {NgxsmkTelInputComponent} from '../../../ngxsmk-tel-input/src/lib/ngxsmk-tel-input.component';
+import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { NgxsmkTelInputComponent } from '../../../ngxsmk-tel-input/src/lib/ngxsmk-tel-input.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [ReactiveFormsModule, JsonPipe, NgxsmkTelInputComponent],
+  imports: [ReactiveFormsModule, CommonModule, NgxsmkTelInputComponent],
   template: `
-    <form [formGroup]="fg">
-      <label for="phone">Phone Number</label>
-      <ngxsmk-tel-input id="phone" formControlName="phone"></ngxsmk-tel-input>
-      <pre style="margin-top:12px">{{ fg.value | json }}</pre>
+    <form [formGroup]="fg" style="max-width:420px;display:grid;gap:12px">
+      <ngxsmk-tel-input
+        formControlName="phone"
+        label="Phone"
+        hint="Include area code"
+        [initialCountry]="'US'"
+        [preferredCountries]="['US','GB','AU']"
+        (countryChange)="onCountry($event)">
+      </ngxsmk-tel-input>
+      <pre>Value: {{ fg.value | json }}</pre>
     </form>
   `
 })
 export class AppComponent {
-  fg: ReturnType<FormBuilder['group']>;
+  fg: FormGroup;
+
   constructor(private readonly fb: FormBuilder) {
-    this.fg = this.fb.group({ phone: ['', Validators.required] }); // init in ctor (no TS2729)
+    this.fg = this.fb.group({
+      phone: ['', Validators.required]
+    });
   }
+
+  onCountry(e: { iso2: any }) { console.log('Country changed:', e.iso2); }
+
 }

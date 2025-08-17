@@ -87,13 +87,14 @@ Restart the dev server after changes.
 ```ts
 // app.component.ts
 import { Component } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NgxsmkTelInputComponent } from 'ngxsmk-tel-input';
+import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { NgxsmkTelInputComponent } from '../../../ngxsmk-tel-input/src/lib/ngxsmk-tel-input.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [ReactiveFormsModule, NgxsmkTelInputComponent],
+  imports: [ReactiveFormsModule, CommonModule, NgxsmkTelInputComponent],
   template: `
     <form [formGroup]="fg" style="max-width:420px;display:grid;gap:12px">
       <ngxsmk-tel-input
@@ -104,20 +105,23 @@ import { NgxsmkTelInputComponent } from 'ngxsmk-tel-input';
         [preferredCountries]="['US','GB','AU']"
         (countryChange)="onCountry($event)">
       </ngxsmk-tel-input>
-
-      <p class="err" *ngIf="fg.get('phone')?.hasError('phoneInvalid') && fg.get('phone')?.touched">
-        Please enter a valid phone number.
-      </p>
-
       <pre>Value: {{ fg.value | json }}</pre>
     </form>
   `
 })
 export class AppComponent {
-  fg = this.fb.group({ phone: ['', Validators.required] });
-  constructor(private readonly fb: FormBuilder) {}
-  onCountry(e: { iso2: any }) { console.log('country:', e.iso2); }
+  fg: FormGroup;
+
+  constructor(private readonly fb: FormBuilder) {
+    this.fg = this.fb.group({
+      phone: ['', Validators.required]
+    });
+  }
+
+  onCountry(e: { iso2: any }) { console.log('Country changed:', e.iso2); }
+
 }
+
 ```
 
 **Value semantics:** the form control value is **E.164** (e.g., `+14155550123`) when valid, or `null` when empty/invalid.
