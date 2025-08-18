@@ -4,7 +4,7 @@ import {
   ElementRef,
   EventEmitter,
   forwardRef,
-  Inject,
+  inject,
   Input,
   NgZone,
   OnChanges,
@@ -25,17 +25,9 @@ import {
 } from '@angular/forms';
 import type {CountryCode} from 'libphonenumber-js';
 import {NgxsmkTelInputService} from './ngxsmk-tel-input.service';
+import {CountryMap, IntlTelI18n} from './types';
 
 type IntlTelInstance = any;
-export type CountryMap = Partial<Record<CountryCode, string>>;
-
-export interface IntlTelI18n {
-  selectedCountryAriaLabel?: string;
-  countryListAriaLabel?: string;
-  searchPlaceholder?: string;
-  zeroSearchResults?: string;
-  noCountrySelected?: string;
-}
 
 @Component({
   selector: 'ngxsmk-tel-input',
@@ -174,10 +166,11 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
 
   readonly resolvedId: string = this.inputId || ('tel-' + Math.random().toString(36).slice(2));
 
+  private readonly platformId = inject(PLATFORM_ID);
+
   constructor(
     private readonly zone: NgZone,
-    private readonly tel: NgxsmkTelInputService,
-    @Inject(PLATFORM_ID) private readonly platformId: Object
+    private readonly tel: NgxsmkTelInputService
   ) {
   }
 
@@ -282,8 +275,17 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
   private async initIntlTelInput() {
     const [{default: intlTelInput}] = await Promise.all([import('intl-tel-input')]);
 
-    const toLowerKeys = (m?: CountryMap) =>
-      m ? Object.fromEntries(Object.entries(m).map(([k, v]) => [k.toLowerCase(), v])) : undefined;
+    const toLowerKeys = (m?: CountryMap) => {
+      if (!m) return undefined;
+      const out: Record<string, string> = {};
+      for (const k in m) {
+        if (Object.prototype.hasOwnProperty.call(m, k)) {
+          const v = (m as Record<string, string | undefined>)[k];
+          if (v != null) out[k.toLowerCase()] = v;
+        }
+      }
+      return out;
+    };
 
     const config: any = {
       initialCountry: this.initialCountry === 'auto' ? 'auto' : (this.initialCountry?.toLowerCase() || 'us'),

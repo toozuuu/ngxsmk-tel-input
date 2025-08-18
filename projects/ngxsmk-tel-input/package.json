@@ -1,86 +1,39 @@
 {
   "name": "ngxsmk-tel-input",
-  "version": "1.1.2",
-  "description": "Angular international telephone input with country flag dropdown, formatting & validation (intl-tel-input + libphonenumber). ControlValueAccessor. Supports Angular 17–19.",
-  "keywords": [
-    "ngxsmk-tel-input",
-    "ngx",
-    "angular",
-    "angular17",
-    "angular18",
-    "angular19",
-    "angular-forms",
-    "reactive-forms",
-    "template-driven-forms",
-    "controlvalueaccessor",
-    "cva",
-    "phone-input",
-    "telephone-input",
-    "phone-number",
-    "international-phone",
-    "intl-tel-input",
-    "libphonenumber",
-    "libphonenumber-js",
-    "e164",
-    "phone-validation",
-    "phone-number-validation",
-    "country-code",
-    "dial-code",
-    "separate-dial-code",
-    "national-mode",
-    "country-flags",
-    "dropdown",
-    "i18n",
-    "localization",
-    "rtl",
-    "a11y",
-    "accessibility",
-    "ssr",
-    "angular-universal",
-    "typescript"
-  ],
-  "homepage": "https://github.com/toozuuu/ngxsmk-tel-input#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/toozuuu/ngxsmk-tel-input.git"
-  },
-  "bugs": {
-    "url": "https://github.com/toozuuu/ngxsmk-tel-input/issues"
-  },
-  "author": {
-    "name": "Sachin Dilshan",
-    "email": "sachindilshan040@gmail.com",
-    "url": "https://www.linkedin.com/in/sachindilshan"
-  },
+  "version": "1.3.5",
+  "description": "Angular international telephone input (intl-tel-input UI + libphonenumber-js validation). ControlValueAccessor. SSR-safe.",
   "license": "MIT",
-  "private": false,
   "sideEffects": false,
-  "publishConfig": {
-    "access": "public"
+  "publishConfig": { "access": "public" },
+
+  "peerDependencies": {
+    "@angular/common": ">=17 <21",
+    "@angular/core": ">=17 <21",
+    "@angular/forms": ">=17 <21",
+    "rxjs": ">=7.8.0",
+    "intl-tel-input": "^25.3.2",
+    "libphonenumber-js": "^1.12.10 || ^1.12.11"
   },
+  "dependencies": { "tslib": "^2.3.0" },
+
+  "exports": {
+    ".": {
+      "types": "./ngxsmk-tel-input.d.ts",
+      "esm2022": "./esm2022/ngxsmk-tel-input.mjs",
+      "default": "./fesm2022/ngxsmk-tel-input.mjs"
+    },
+    "./src/*": null
+  },
+  "types": "./ngxsmk-tel-input.d.ts",
+  "module": "./fesm2022/ngxsmk-tel-input.mjs",
+
   "files": [
     "bundles/",
-    "fesm*",
-    "esm*",
-    "schematics/",
-    "migrations/",
-    "src/",
+    "fesm2022/",
+    "esm2022/",
+    "ngxsmk-tel-input.d.ts",
+    "ngxsmk-tel-input.d.ts.map",
     "README.md",
-    "LICENSE",
-    "docs/"
-  ],
-  "peerDependencies": {
-    "@angular/common": ">=17",
-    "@angular/core": ">=17",
-    "@angular/forms": ">=17",
-    "rxjs": ">=7.8.0"
-  },
-  "dependencies": {
-    "intl-tel-input": "^25.3.2",
-    "libphonenumber-js": "^1.12.10",
-    "tslib": "^2.3.0"
-  },
-  "devDependencies": {
-    "@changesets/cli": "^2.29.5"
-  }
+    "LICENSE"
+  ]
 }

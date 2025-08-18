@@ -16,7 +16,7 @@
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/ngxsmk-tel-input/tsconfig.lib.prod.json"
+              "tsConfig": "projects/ngxsmk-tel-input/tsconfig.lib.json"
             },
             "development": {
               "tsConfig": "projects/ngxsmk-tel-input/tsconfig.lib.json"
