@@ -23,7 +23,7 @@ import {
   ValidationErrors,
   Validator
 } from '@angular/forms';
-import type {CountryCode} from 'libphonenumber-js';
+import {AsYouType, CountryCode} from 'libphonenumber-js';
 import {NgxsmkTelInputService} from './ngxsmk-tel-input.service';
 import {CountryMap, IntlTelI18n} from './types';
 
@@ -75,10 +75,6 @@ type IntlTelInstance = any;
       @if (hint && !showError) {
         <div class="ngxsmk-tel__hint">{{ hint }}</div>
       }
-
-      @if (showError) {
-        <div class="ngxsmk-tel__error">{{ errorText || 'Please enter a valid phone number.' }}</div>
-      }
     </div>
   `,
   styleUrls: ['./ngxsmk-tel-input.component.scss'],
@@ -98,6 +94,8 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
   @Input() nationalMode: boolean = false;
   @Input() separateDialCode: boolean = false;
   @Input() allowDropdown: boolean = true;
+
+  @Input() lockWhenValid: boolean = true;
 
   /* UX */
   @Input() placeholder?: string;
@@ -359,7 +357,22 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     this.zone.runOutsideAngular(() => {
       el.addEventListener('beforeinput', (ev: InputEvent) => {
         if (!this.digitsOnly) return;
+
         const data = (ev as any).data as string | null;
+
+        // If already valid, block extra digit insertions when no selection
+        if (this.lockWhenValid && this.isCurrentlyValid()) {
+          const selCollapsed = (el.selectionStart ?? 0) === (el.selectionEnd ?? 0);
+          const isDigit = !!data && ev.inputType === 'insertText' && data >= '0' && data <= '9';
+          const isPlusAtStart = this.allowLeadingPlus && data === '+' && (el.selectionStart ?? 0) === 0 && !el.value.includes('+');
+
+          if (selCollapsed && (isDigit || isPlusAtStart)) {
+            ev.preventDefault();
+            return;
+          }
+        }
+
+        // normal filtering when not valid (or replacing text)
         if (!data || ev.inputType !== 'insertText') return;
 
         const pos = el.selectionStart ?? 0;
@@ -371,8 +384,21 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
 
       el.addEventListener('paste', (e: ClipboardEvent) => {
         if (!this.digitsOnly) return;
+
+        const text = (e.clipboardData || (window as any).clipboardData).getData('text') || '';
+        const hasAnyDigit = /[0-9]/.test(text);
+
+        // block pasting extra digits if valid and there is no selection
+        if (this.lockWhenValid && this.isCurrentlyValid()) {
+          const selCollapsed = (el.selectionStart ?? 0) === (el.selectionEnd ?? 0);
+          if (selCollapsed && hasAnyDigit) {
+            e.preventDefault();
+            return;
+          }
+        }
+
+        // sanitize paste
         e.preventDefault();
-        const text = (e.clipboardData || (window as any).clipboardData).getData('text');
         const sanitized = this.sanitizeDigits(text);
         const start = el.selectionStart ?? el.value.length;
         const end = el.selectionEnd ?? el.value.length;
@@ -410,10 +436,15 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     this.touched = true;
     this.zone.run(() => this.onTouchedCb());
     if (!this.formatOnBlur) return;
+
     const raw = this.currentRaw();
     if (!raw) return;
-    const parsed = this.tel.parse(raw, this.currentIso2());
-    if (this.nationalMode && parsed.national) {
+
+    const iso2 = this.currentIso2();
+    const parsed = this.tel.parse(raw, iso2);
+
+    // only format on blur if valid
+    if (parsed.isValid && this.nationalMode && parsed.national) {
       this.setInputValue((parsed.national || '').replace(/\s{2,}/g, ' '));
     }
   }
@@ -426,14 +457,39 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
   }
 
   private handleInput() {
-    const raw = this.currentRaw();
+    let raw = this.currentRaw();
     const iso2 = this.currentIso2();
+
+    // Parse once
     const parsed = this.tel.parse(raw, iso2);
+
+    // live format only when valid
+    if (this.formatWhenValid === 'typing' && raw && parsed.isValid) {
+      const formatted = this.formatAsYouType(raw, iso2);
+      if (formatted !== raw) {
+        this.setInputValue(formatted);
+        raw = formatted;
+      }
+    }
+
+    // emit
     this.zone.run(() => this.onChange(parsed.e164)); // E.164 or null
-    this.zone.run(() => this.inputChange.emit({raw, e164: parsed.e164, iso2}));
-    if (raw && this.nationalMode && parsed.national) {
+    this.zone.run(() => this.inputChange.emit({ raw, e164: parsed.e164, iso2 }));
+
+    // national pretty-print normalization, only if valid
+    if (raw && this.nationalMode && parsed.isValid && parsed.national) {
       const normalized = parsed.national.replace(/\s{2,}/g, ' ');
       if (normalized !== raw) this.setInputValue(normalized);
+    }
+  }
+
+  private formatAsYouType(raw: string, iso2: CountryCode): string {
+    try {
+      // When a region is provided, AsYouType returns NATIONAL formatting
+      const fmt = new AsYouType(iso2);
+      return fmt.input(raw);
+    } catch {
+      return raw;
     }
   }
 
@@ -454,5 +510,9 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
   get showError(): boolean {
     const invalid = !!this.validate({} as AbstractControl);
     return this.showErrorWhenTouched ? (this.touched && invalid) : invalid;
+  }
+
+  private isCurrentlyValid(): boolean {
+    return this.tel.isValid(this.currentRaw(), this.currentIso2());
   }
 }

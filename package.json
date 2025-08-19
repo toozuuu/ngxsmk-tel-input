@@ -1,6 +1,6 @@
 {
   "name": "ngxsmk-tel-input",
-  "version": "1.4.0",
+  "version": "1.4.5",
   "description": "Angular telephone input with intl-tel-input + libphonenumber-js",
   "license": "MIT",
   "publishConfig": {
