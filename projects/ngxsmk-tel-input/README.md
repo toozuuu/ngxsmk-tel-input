@@ -26,6 +26,8 @@ Wraps [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input) for the UI 
 * SSR‑friendly (no `window` on the server)
 * Easy theming via CSS variables
 * Nice UX options: label/hint/error text, sizes, variants, clear button, autofocus, select-on-focus
+* New: Masking & caret-friendly as-you-type formatting (optional)
+* New: Format only when valid (formatWhenValid) and lock once valid (lockWhenValid) to prevent extra digits
 
 ---
 
@@ -97,7 +99,7 @@ import { NgxsmkTelInputComponent, IntlTelI18n, CountryMap } from 'ngxsmk-tel-inp
   imports: [ReactiveFormsModule, NgxsmkTelInputComponent, JsonPipe],
   template: `
     <form [formGroup]="fg" style="max-width:420px;display:grid;gap:12px">
-      <ngxsmk-tel-input
+        <ngxsmk-tel-input
         formControlName="phone"
         label="Phone"
         hint="Include area code"
@@ -106,9 +108,10 @@ import { NgxsmkTelInputComponent, IntlTelI18n, CountryMap } from 'ngxsmk-tel-inp
         [preferredCountries]="['US','GB','AU']"
         [i18n]="enLabels"
         [localizedCountries]="enCountries"
-        [autoPlaceholder]="'off'"
-        [clearAriaLabel]="'Clear phone number'">
-      </ngxsmk-tel-input>
+        [separateDialCode]="true"         <!-- dial code after the flag -->
+        [formatWhenValid]="'typing'"      <!-- live mask only when valid -->
+        [lockWhenValid]="true"            <!-- stop extra digits once valid -->
+      ></ngxsmk-tel-input>
 
       <pre>Value: {{ fg.value | json }}</pre>
     </form>
@@ -239,6 +242,7 @@ Arabic + RTL example
 | `utilsScript`          | `string`                                    | —                       | Path/URL to `utils.js` (needed for example placeholders).                     |
 | `customPlaceholder`    | `(example: string, country: any) => string` | —                       | Transform the example placeholder.                                            |
 | `clearAriaLabel`       | `string`                                    | `'Clear phone number'`  | ARIA label for the clear button.                                              |
+| `lockWhenValid`        | `boolean`                                   | `true`                  | Prevent appending extra digits once the number is valid (editing/replacing still allowed). |
 
 > `CountryCode` is the ISO‑2 uppercase code from `libphonenumber-js` (e.g. `US`, `GB`).
 
@@ -254,6 +258,18 @@ Arabic + RTL example
 
 * `focus(): void`
 * `selectCountry(iso2: CountryCode): void`
+
+---
+
+## 🧠 Formatting & validity behavior
+
+* No formatting while invalid. As-you-type masking only starts when the digits form a valid number for the selected country.
+
+* Sri Lanka / “trunk 0”: a national format may include a leading 0 (e.g., 071…). The emitted E.164 always excludes it (+94 71…)—this is expected.
+
+* Lock when valid: with lockWhenValid enabled, once the number is valid, appending more digits is blocked (you can still delete/replace).
+
+For rare patterns not covered by libphonenumber-js, the control falls back to raw digits (no forced mask) until it becomes valid.
 
 ---
 
@@ -351,3 +367,5 @@ Clear `.angular/cache`, rebuild the lib, and restart `ng serve`.
 
 * UI powered by [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input)
 * Parsing & validation by [`libphonenumber-js`](https://github.com/catamphetamine/libphonenumber-js)
+
+Last updated: 2025-08-19

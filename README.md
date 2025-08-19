@@ -26,6 +26,8 @@ Wraps [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input) for the UI 
 * SSR‑friendly (no `window` on the server)
 * Easy theming via CSS variables
 * Nice UX options: label/hint/error text, sizes, variants, clear button, autofocus, select-on-focus
+* New: Masking & caret-friendly as-you-type formatting (optional)
+* New: Format only when valid (formatWhenValid) and lock once valid (lockWhenValid) to prevent extra digits
 
 ---
 
@@ -97,7 +99,7 @@ import { NgxsmkTelInputComponent, IntlTelI18n, CountryMap } from 'ngxsmk-tel-inp
   imports: [ReactiveFormsModule, NgxsmkTelInputComponent, JsonPipe],
   template: `
     <form [formGroup]="fg" style="max-width:420px;display:grid;gap:12px">
-      <ngxsmk-tel-input
+        <ngxsmk-tel-input
         formControlName="phone"
         label="Phone"
         hint="Include area code"
@@ -106,9 +108,10 @@ import { NgxsmkTelInputComponent, IntlTelI18n, CountryMap } from 'ngxsmk-tel-inp
         [preferredCountries]="['US','GB','AU']"
         [i18n]="enLabels"
         [localizedCountries]="enCountries"
-        [autoPlaceholder]="'off'"
-        [clearAriaLabel]="'Clear phone number'">
-      </ngxsmk-tel-input>
+        [separateDialCode]="true"         <!-- dial code after the flag -->
+        [formatWhenValid]="'typing'"      <!-- live mask only when valid -->
+        [lockWhenValid]="true"            <!-- stop extra digits once valid -->
+      ></ngxsmk-tel-input>
 
       <pre>Value: {{ fg.value | json }}</pre>
     </form>
@@ -209,36 +212,37 @@ Arabic + RTL example
 
 ### Inputs
 
-| Name                   | Type                                        | Default                 | Description                                                                   |
-|------------------------|---------------------------------------------|-------------------------|-------------------------------------------------------------------------------|
-| `initialCountry`       | `CountryCode \| 'auto'`                     | `'US'`                  | Starting country. `'auto'` uses geoIp stub (`US` by default).                 |
-| `preferredCountries`   | `CountryCode[]`                             | `['US','GB']`           | Pin these at the top.                                                         |
-| `onlyCountries`        | `CountryCode[]`                             | —                       | Limit selectable countries.                                                   |
-| `nationalMode`         | `boolean`                                   | `false`                 | If `true`, **display** national format in the input. Value still emits E.164. |
-| `separateDialCode`     | `boolean`                                   | `false`                 | Show dial code outside the input.                                             |
-| `allowDropdown`        | `boolean`                                   | `true`                  | Enable/disable dropdown.                                                      |
-| `placeholder`          | `string`                                    | `'Enter phone number'`  | Input placeholder.                                                            |
-| `autocomplete`         | `string`                                    | `'tel'`                 | Native autocomplete.                                                          |
-| `disabled`             | `boolean`                                   | `false`                 | Disable the control.                                                          |
-| `label`                | `string`                                    | —                       | Optional floating label text.                                                 |
-| `hint`                 | `string`                                    | —                       | Helper text below the control.                                                |
-| `errorText`            | `string`                                    | —                       | Custom error text.                                                            |
-| `size`                 | `'sm' \| 'md' \| 'lg'`                      | `'md'`                  | Control height/typography.                                                    |
-| `variant`              | `'outline' \| 'filled' \| 'underline'`      | `'outline'`             | Visual variant.                                                               |
-| `showClear`            | `boolean`                                   | `true`                  | Show a clear (×) button when not empty.                                       |
-| `autoFocus`            | `boolean`                                   | `false`                 | Focus on init.                                                                |
-| `selectOnFocus`        | `boolean`                                   | `false`                 | Select all text on focus.                                                     |
-| `formatOnBlur`         | `boolean`                                   | `true`                  | Pretty‑print on blur (national if `nationalMode`).                            |
-| `showErrorWhenTouched` | `boolean`                                   | `true`                  | Show error styles only after blur.                                            |
-| `dropdownAttachToBody` | `boolean`                                   | `true`                  | Attach dropdown to `<body>` (avoids clipping/overflow).                       |
-| `dropdownZIndex`       | `number`                                    | `2000`                  | Z‑index for dropdown panel.                                                   |
-| `i18n`                 | `IntlTelI18n`                               | —                       | Localize dropdown/search/ARIA labels.                                         |
-| `localizedCountries`   | `Partial<Record<CountryCode, string>>`      | —                       | Override country display names (ISO-2 keys).                                  |
-| `dir`                  | `'ltr' \| 'rtl'`                            | `'ltr'`                 | Text direction for the control.                                               |
-| `autoPlaceholder`      | `'off' \| 'polite' \| 'aggressive'`         | `'polite'`              | Example placeholders. Requires `utilsScript` unless `off`.                    |
-| `utilsScript`          | `string`                                    | —                       | Path/URL to `utils.js` (needed for example placeholders).                     |
-| `customPlaceholder`    | `(example: string, country: any) => string` | —                       | Transform the example placeholder.                                            |
-| `clearAriaLabel`       | `string`                                    | `'Clear phone number'`  | ARIA label for the clear button.                                              |
+| Name                   | Type                                        | Default                 | Description                                                                                |
+|------------------------|---------------------------------------------|-------------------------|--------------------------------------------------------------------------------------------|
+| `initialCountry`       | `CountryCode \| 'auto'`                     | `'US'`                  | Starting country. `'auto'` uses geoIp stub (`US` by default).                              |
+| `preferredCountries`   | `CountryCode[]`                             | `['US','GB']`           | Pin these at the top.                                                                      |
+| `onlyCountries`        | `CountryCode[]`                             | —                       | Limit selectable countries.                                                                |
+| `nationalMode`         | `boolean`                                   | `false`                 | If `true`, **display** national format in the input. Value still emits E.164.              |
+| `separateDialCode`     | `boolean`                                   | `false`                 | Show dial code outside the input.                                                          |
+| `allowDropdown`        | `boolean`                                   | `true`                  | Enable/disable dropdown.                                                                   |
+| `placeholder`          | `string`                                    | `'Enter phone number'`  | Input placeholder.                                                                         |
+| `autocomplete`         | `string`                                    | `'tel'`                 | Native autocomplete.                                                                       |
+| `disabled`             | `boolean`                                   | `false`                 | Disable the control.                                                                       |
+| `label`                | `string`                                    | —                       | Optional floating label text.                                                              |
+| `hint`                 | `string`                                    | —                       | Helper text below the control.                                                             |
+| `errorText`            | `string`                                    | —                       | Custom error text.                                                                         |
+| `size`                 | `'sm' \| 'md' \| 'lg'`                      | `'md'`                  | Control height/typography.                                                                 |
+| `variant`              | `'outline' \| 'filled' \| 'underline'`      | `'outline'`             | Visual variant.                                                                            |
+| `showClear`            | `boolean`                                   | `true`                  | Show a clear (×) button when not empty.                                                    |
+| `autoFocus`            | `boolean`                                   | `false`                 | Focus on init.                                                                             |
+| `selectOnFocus`        | `boolean`                                   | `false`                 | Select all text on focus.                                                                  |
+| `formatOnBlur`         | `boolean`                                   | `true`                  | Pretty‑print on blur (national if `nationalMode`).                                         |
+| `showErrorWhenTouched` | `boolean`                                   | `true`                  | Show error styles only after blur.                                                         |
+| `dropdownAttachToBody` | `boolean`                                   | `true`                  | Attach dropdown to `<body>` (avoids clipping/overflow).                                    |
+| `dropdownZIndex`       | `number`                                    | `2000`                  | Z‑index for dropdown panel.                                                                |
+| `i18n`                 | `IntlTelI18n`                               | —                       | Localize dropdown/search/ARIA labels.                                                      |
+| `localizedCountries`   | `Partial<Record<CountryCode, string>>`      | —                       | Override country display names (ISO-2 keys).                                               |
+| `dir`                  | `'ltr' \| 'rtl'`                            | `'ltr'`                 | Text direction for the control.                                                            |
+| `autoPlaceholder`      | `'off' \| 'polite' \| 'aggressive'`         | `'polite'`              | Example placeholders. Requires `utilsScript` unless `off`.                                 |
+| `utilsScript`          | `string`                                    | —                       | Path/URL to `utils.js` (needed for example placeholders).                                  |
+| `customPlaceholder`    | `(example: string, country: any) => string` | —                       | Transform the example placeholder.                                                         |
+| `clearAriaLabel`       | `string`                                    | `'Clear phone number'`  | ARIA label for the clear button.                                                           |
+| `lockWhenValid`        | `boolean`                                   | `true`                  | Prevent appending extra digits once the number is valid (editing/replacing still allowed). |
 
 > `CountryCode` is the ISO‑2 uppercase code from `libphonenumber-js` (e.g. `US`, `GB`).
 
@@ -256,6 +260,19 @@ Arabic + RTL example
 * `selectCountry(iso2: CountryCode): void`
 
 ---
+
+## 🧠 Formatting & validity behavior
+
+* No formatting while invalid. As-you-type masking only starts when the digits form a valid number for the selected country.
+
+* Sri Lanka / “trunk 0”: a national format may include a leading 0 (e.g., 071…). The emitted E.164 always excludes it (+94 71…)—this is expected.
+
+* Lock when valid: with lockWhenValid enabled, once the number is valid, appending more digits is blocked (you can still delete/replace).
+
+For rare patterns not covered by libphonenumber-js, the control falls back to raw digits (no forced mask) until it becomes valid.
+
+---
+
 
 ## 🎨 Theming (CSS variables)
 
@@ -351,3 +368,5 @@ Clear `.angular/cache`, rebuild the lib, and restart `ng serve`.
 
 * UI powered by [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input)
 * Parsing & validation by [`libphonenumber-js`](https://github.com/catamphetamine/libphonenumber-js)
+
+Last updated: 2025-08-19
