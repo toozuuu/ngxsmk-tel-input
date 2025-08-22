@@ -35,7 +35,7 @@ type IntlTelInstance = any;
   imports: [],
   template: `
     <div class="ngxsmk-tel"
-         [class.disabled]="disabled"
+         [class.ngxsmk-tel-disabled]="disabled"
          [attr.data-size]="size"
          [attr.data-variant]="variant"
          [attr.dir]="dir">
@@ -55,14 +55,14 @@ type IntlTelInstance = any;
             [attr.autocomplete]="autocomplete"
             [attr.inputmode]="digitsOnly ? 'numeric' : 'tel'"
             [attr.pattern]="digitsOnly ? (allowLeadingPlus ? '\\\\+?[0-9]*' : '[0-9]*') : null"
-            [disabled]="disabled"
+            [class.ngxsmk-tel-disabled]="disabled"
             [attr.aria-invalid]="showError ? 'true' : 'false'"
             (blur)="onBlur()"
             (focus)="onFocus()"
           />
         </div>
 
-        @if (showClear && currentRaw()) {
+        @if (showClear && currentRaw() && !disabled) {
           <button type="button"
                   class="ngxsmk-tel__clear"
                   (click)="clearInput()"
@@ -166,6 +166,9 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
 
   private readonly platformId = inject(PLATFORM_ID);
 
+  private allowDropdownWasTrue = false;
+  private suppressEvents = false; // already used elsewhere if you added it
+
   constructor(
     private readonly zone: NgZone,
     private readonly tel: NgxsmkTelInputService
@@ -182,12 +185,15 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     this.bindDomListeners();
 
     if (this.pendingWrite !== null) {
-      this.setInputValue(this.pendingWrite);
-      this.handleInput();
+      // IMPORTANT: use writeValue so the plugin sets country, then we normalize input
+      const v = this.pendingWrite;
       this.pendingWrite = null;
+      this.writeValue(v);
     }
+
     if (this.autoFocus) setTimeout(() => this.focus(), 0);
   }
+
 
   ngOnChanges(changes: SimpleChanges): void {
     if (!isPlatformBrowser(this.platformId)) return;
@@ -211,11 +217,32 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
   // ----- CVA -----
   writeValue(val: string | null): void {
     if (!this.inputRef) return;
-    if (!this.iti) {
-      this.pendingWrite = val ?? '';
+
+    if (!this.iti) { this.pendingWrite = val ?? ''; return; }
+
+    // Let the plugin pick the country first
+    this.iti.setNumber(val || '');
+    const iso2 = this.currentIso2();
+
+    const normalized = this.stripTrunkZeroIfNeeded(val ?? '', iso2);
+    if (!normalized) {
+      this.setInputValue('');
+      this.zone.run(() => this.onChange(null));
       return;
     }
-    this.setInputValue(val ?? '');
+
+    const parsed = this.tel.parse(normalized, iso2);
+
+    // Visible input:
+    if (this.separateDialCode || this.nationalMode) {
+      this.setInputValue(parsed.national ?? normalized.replace(/^\+\d+/, ''));
+    } else {
+      this.setInputValue(parsed.e164 ?? normalized);
+    }
+
+    // Form value (always E.164/null)
+    this.zone.run(() => this.onChange(parsed.e164));
+    this.zone.run(() => this.inputChange.emit({ raw: this.currentRaw(), e164: parsed.e164, iso2 }));
   }
 
   registerOnChange(fn: any): void {
@@ -228,8 +255,43 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
 
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
+
+    // 1) native input
     if (this.inputRef) this.inputRef.nativeElement.disabled = isDisabled;
+
+    // 2) toggle dropdown by re-init with allowDropdown=false when disabled
+    if (this.iti) {
+      if (isDisabled && this.allowDropdown) {
+        this.allowDropdownWasTrue = true;
+        this.allowDropdown = false;
+        this.reinitPlugin(); // closes popup & removes handlers
+      } else if (!isDisabled && this.allowDropdownWasTrue) {
+        this.allowDropdown = true;
+        this.allowDropdownWasTrue = false;
+        this.reinitPlugin(); // restore dropdown
+      } else {
+        // even if we didn't reinit, harden UI
+        this.applyDisabledUi(isDisabled);
+      }
+    } else {
+      // Not initialized yet; just harden UI for first paint
+      this.applyDisabledUi(isDisabled);
+    }
   }
+
+  private applyDisabledUi(disabled: boolean) {
+    // wrapper already gets [class.disabled]="disabled" from template
+    const input = this.inputRef?.nativeElement;
+    if (!input) return;
+
+    // Make the flag button non-focusable/non-clickable
+    const flag = input.parentElement?.querySelector('.iti__selected-flag') as HTMLElement | null;
+    if (flag) {
+      flag.tabIndex = disabled ? -1 : 0;
+      flag.setAttribute('aria-disabled', String(disabled));
+    }
+  }
+
 
   // ----- Validator -----
   validate(_: AbstractControl): ValidationErrors | null {
@@ -314,15 +376,23 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     (this.inputRef.nativeElement as HTMLElement).style.setProperty('--tel-dd-z', String(this.dropdownZIndex));
   }
 
-  private reinitPlugin() {
-    const current = this.currentRaw();
+  private async reinitPlugin() {
+    const prevIso2 = (this.iti?.getSelectedCountryData?.().iso2 || this.initialCountry || 'US').toString().toLowerCase();
+    const prevValue = this.currentRaw();
+
     this.destroyPlugin();
-    this.initIntlTelInput().then(() => {
-      if (current) {
-        this.setInputValue(current);
-        this.handleInput();
-      }
-    });
+    await this.initIntlTelInput();
+    this.bindDomListeners();
+
+    // restore country & value
+    try { this.iti?.setCountry(prevIso2); } catch {}
+    if (prevValue) {
+      this.setInputValue(prevValue);
+      this.handleInput();
+    }
+
+    (this.inputRef.nativeElement as HTMLElement).style.setProperty('--tel-dd-z', String(this.dropdownZIndex));
+    this.applyDisabledUi(this.disabled);
   }
 
   private destroyPlugin() {
@@ -333,10 +403,18 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     if (this.inputRef?.nativeElement) {
       const el = this.inputRef.nativeElement;
       const clone = el.cloneNode(true) as HTMLInputElement;
+
+      // preserve important state across clone
+      clone.disabled = this.disabled;
+      clone.id = this.resolvedId;                 // keep the same id
+      clone.name = this.name ?? clone.name;
+      clone.value = el.value;
+
       el.parentNode?.replaceChild(clone, el);
       (this.inputRef as any).nativeElement = clone;
     }
   }
+
 
   // ----- Input filtering (digits-only) -----
   private sanitizeDigits(value: string): string {
@@ -350,6 +428,35 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     }
     return v;
   }
+
+
+  /** Remove a single trunk '0' when that makes the number valid.
+   *  Works for: "+<cc>0..." and "0..." (national), but only if the stripped form parses valid.
+   */
+  private stripTrunkZeroIfNeeded(raw: string, iso2: CountryCode): string {
+    if (!raw) return raw;
+
+    const dial = this.iti?.getSelectedCountryData?.().dialCode ?? '';
+    const parsed = this.tel.parse(raw, iso2);
+    if (parsed.isValid) return raw; // already fine; don't touch (e.g., Italy)
+
+    // Case 1: "+<dial>0..." → try removing that single '0'
+    if (dial && raw.startsWith(`+${dial}0`)) {
+      const attempt = `+${dial}${raw.slice(dial.length + 2)}`; // remove the '0'
+      const p2 = this.tel.parse(attempt, iso2);
+      if (p2.isValid) return attempt;
+    }
+
+    // Case 2: national "0..." → try removing the first '0'
+    if (!raw.startsWith('+') && raw.startsWith('0')) {
+      const attemptNat = raw.slice(1);
+      const p3 = this.tel.parse(attemptNat, iso2);
+      if (p3.isValid) return attemptNat;
+    }
+
+    return raw; // no improvement; keep original
+  }
+
 
   private bindDomListeners() {
     const el = this.inputRef.nativeElement;
@@ -437,15 +544,17 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     this.zone.run(() => this.onTouchedCb());
     if (!this.formatOnBlur) return;
 
-    const raw = this.currentRaw();
-    if (!raw) return;
-
+    let raw = this.currentRaw();
     const iso2 = this.currentIso2();
-    const parsed = this.tel.parse(raw, iso2);
+    raw = this.stripTrunkZeroIfNeeded(raw, iso2);
 
-    // only format on blur if valid
-    if (parsed.isValid && this.nationalMode && parsed.national) {
-      this.setInputValue((parsed.national || '').replace(/\s{2,}/g, ' '));
+    const parsed = this.tel.parse(raw, iso2);
+    if (!parsed.isValid) return;
+
+    if (this.separateDialCode || this.nationalMode) {
+      if (parsed.national) this.setInputValue(parsed.national.replace(/\s{2,}/g, ' '));
+    } else if (parsed.e164) {
+      this.setInputValue(parsed.e164);
     }
   }
 
@@ -460,26 +569,28 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     let raw = this.currentRaw();
     const iso2 = this.currentIso2();
 
-    // Parse once
-    const parsed = this.tel.parse(raw, iso2);
-
-    // live format only when valid
-    if (this.formatWhenValid === 'typing' && raw && parsed.isValid) {
-      const formatted = this.formatAsYouType(raw, iso2);
-      if (formatted !== raw) {
-        this.setInputValue(formatted);
-        raw = formatted;
-      }
+    // Normalize trunk zero if that makes it valid
+    const fixed = this.stripTrunkZeroIfNeeded(raw, iso2);
+    if (fixed !== raw) {
+      this.setInputValue(fixed);
+      raw = fixed;
     }
 
-    // emit
-    this.zone.run(() => this.onChange(parsed.e164)); // E.164 or null
+    const parsed = this.tel.parse(raw, iso2);
+
+    // Emit E.164 outward
+    this.zone.run(() => this.onChange(parsed.e164));
     this.zone.run(() => this.inputChange.emit({ raw, e164: parsed.e164, iso2 }));
 
-    // national pretty-print normalization, only if valid
-    if (raw && this.nationalMode && parsed.isValid && parsed.national) {
-      const normalized = parsed.national.replace(/\s{2,}/g, ' ');
-      if (normalized !== raw) this.setInputValue(normalized);
+    // Normalize what the user sees (once valid)
+    if (parsed.isValid) {
+      if (this.separateDialCode || this.nationalMode) {
+        if (parsed.national && raw !== parsed.national) {
+          this.setInputValue(parsed.national.replace(/\s{2,}/g, ' '));
+        }
+      } else if (parsed.e164 && raw !== parsed.e164) {
+        this.setInputValue(parsed.e164); // ensures +94710980246, not +9407…
+      }
     }
   }
 

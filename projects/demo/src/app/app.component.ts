@@ -16,6 +16,8 @@ import { NgxsmkTelInputComponent, IntlTelI18n, CountryMap } from 'ngxsmk-tel-inp
         dir="ltr"
         [initialCountry]="'US'"
         [preferredCountries]="['US','GB','AU']"
+        [disabled]="true"
+        [separateDialCode]="true"
         [i18n]="enLabels"
         [localizedCountries]="enCountries"
         [autoPlaceholder]="'off'"
@@ -28,7 +30,7 @@ import { NgxsmkTelInputComponent, IntlTelI18n, CountryMap } from 'ngxsmk-tel-inp
 })
 export class AppComponent {
   private readonly fb = inject(FormBuilder);
-  fg = this.fb.group({ phone: ['', Validators.required] });
+  fg = this.fb.group({phone: ['+12025458754', Validators.required]});
 
   // English UI labels (dropdown/search/ARIA)
   enLabels: IntlTelI18n = {
