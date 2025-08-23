@@ -219,8 +219,8 @@
   box-shadow: 0 0 0 3px rgba(239, 68, 68, .15);
 }
 
-/* Prevent clicks on the flag/dropdown when disabled */
-.ngxsmk-tel-disabled{
+.ngxsmk-tel.disabled .iti__flag-container,
+.ngxsmk-tel.disabled .iti__selected-flag {
   pointer-events: none;
-  opacity: 0.6; /* optional visual hint */
+  opacity: 0.6;
 }
