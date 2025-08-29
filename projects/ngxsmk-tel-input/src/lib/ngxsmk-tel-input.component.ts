@@ -23,7 +23,7 @@ import {
   ValidationErrors,
   Validator
 } from '@angular/forms';
-import { AsYouType, CountryCode } from 'libphonenumber-js';
+import { AsYouType, CountryCode, validatePhoneNumberLength } from 'libphonenumber-js'; // ⬅️ added validatePhoneNumberLength
 import { NgxsmkTelInputService } from './ngxsmk-tel-input.service';
 import { CountryMap, IntlTelI18n } from './types';
 
@@ -104,7 +104,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
   @Input() autocomplete = 'tel';
   @Input() name?: string;
   @Input() inputId?: string;
-  @Input() disabled = false;
+  @Input() disabled:boolean = false;
 
   @Input() label?: string;
   @Input() hint?: string;
@@ -135,7 +135,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
   @Input() customPlaceholder?: (example: string, country: any) => string;
 
   /* Input behavior */
-  @Input() digitsOnly = true;    // we still insert spaces when formatted
+  @Input() digitsOnly = true;    // Still insert spaces when formatted
   @Input() lockWhenValid = true; // optional UX guard
 
   /* Outputs */
@@ -310,7 +310,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
       initialCountry: this.initialCountry === 'auto' ? 'auto' : (this.initialCountry?.toLowerCase() || 'us'),
       preferredCountries: (this.preferredCountries ?? []).map(c => c.toLowerCase()),
       onlyCountries: (this.onlyCountries ?? []).map(c => c.toLowerCase()),
-      nationalMode: true, // we control the visible value; prevents '+' in the input
+      nationalMode: true, // Control the visible value; prevents '+' in the input
       allowDropdown: this.allowDropdown,
       separateDialCode: this.separateDialCode,
       geoIpLookup: (cb: (iso2: string) => void) => cb('us'),
@@ -386,13 +386,35 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
 
         if (!data || ev.inputType !== 'insertText') return;
         const isDigit = data >= '0' && data <= '9';
-        if (!isDigit) ev.preventDefault(); // digits only; we add spaces ourselves
+        if (!isDigit) { ev.preventDefault(); return; }
+
+        // NEW: block if this digit would make the NSN too long for the current country
+        const start = el.selectionStart ?? el.value.length;
+        const end = el.selectionEnd ?? el.value.length;
+        const prospective = el.value.slice(0, start) + data + el.value.slice(end);
+        const nsn = this.stripLeadingZero(this.toNSN(prospective));
+        const iso2 = this.currentIso2();
+
+        if (this.wouldExceedMax(nsn, iso2)) {
+          ev.preventDefault();
+          return;
+        }
       });
 
       el.addEventListener('paste', (e: ClipboardEvent) => {
         const text = (e.clipboardData || (window as any).clipboardData).getData('text') || '';
         e.preventDefault();
-        const digits = this.toNSN(text);
+
+        const iso2 = this.currentIso2();
+        // digits-only, strip any leading trunk '0'
+        let digits = this.stripLeadingZero(this.toNSN(text));
+
+        // NEW: trim pasted digits until not TOO_LONG for the selected country
+        while (this.wouldExceedMax(digits, iso2)) {
+          digits = digits.slice(0, -1);
+          if (!digits) break;
+        }
+
         const start = el.selectionStart ?? el.value.length;
         const end = el.selectionEnd ?? el.value.length;
         el.setRangeText(digits, start, end, 'end');
@@ -484,7 +506,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     return this.toNSN(e164);
   }
 
-  /** Format NSN for region (adds spaces but NEVER a trunk '0'). */
+  /** Format NSN for a region (adds spaces but NEVER a trunk '0'). */
   private formatNSN(nsn: string, iso2: CountryCode): string {
     try {
       const fmt = new AsYouType(iso2);
@@ -525,6 +547,16 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     if (flag) {
       flag.tabIndex = disabled ? -1 : 0;
       flag.setAttribute('aria-disabled', String(disabled));
+    }
+  }
+
+  /** Returns true if nsn would be TOO_LONG for the current country. */
+  private wouldExceedMax(nsn: string, iso2: CountryCode): boolean {
+    try {
+      const res = validatePhoneNumberLength(nsn, iso2);
+      return res === 'TOO_LONG';
+    } catch {
+      return false;
     }
   }
 }
