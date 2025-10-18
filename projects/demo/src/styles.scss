@@ -1,7 +1,251 @@
-form {
-  max-width: 420px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+/* Global Styles for Demo */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f8fafc;
+  color: #1e293b;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #5a67d8, #6b46c1);
+}
+
+/* Selection styles */
+::selection {
+  background: rgba(102, 126, 234, 0.2);
+  color: #1a202c;
+}
+
+/* Focus styles for accessibility */
+*:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* Smooth transitions for all interactive elements */
+button, input, select, textarea {
+  transition: all 0.2s ease;
+}
+
+/* Global dark mode dropdown fixes for intl-tel-input */
+.dark .iti__country-list,
+[data-theme="dark"] .iti__country-list,
+.dark-theme.iti__country-list {
+  background: #0f1521 !important;
+  border-color: #324056 !important;
+  color: #e5e7eb !important;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .4) !important;
+}
+
+.dark .iti__search-input,
+[data-theme="dark"] .iti__search-input,
+.dark-theme.iti__search-input {
+  background: #1e293b !important;
+  color: #f1f5f9 !important;
+  border: 1px solid #475569 !important;
+  outline: none !important;
+  padding: 10px 12px !important;
+  width: 100% !important;
+  font-size: 14px !important;
+  border-radius: 6px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark .iti__search-input::placeholder,
+[data-theme="dark"] .iti__search-input::placeholder,
+.dark-theme.iti__search-input::placeholder {
+  color: #94a3b8 !important;
+}
+
+.dark .iti__country,
+[data-theme="dark"] .iti__country,
+.dark-theme .iti__country {
+  color: #e5e7eb !important;
+}
+
+.dark .iti__country.iti__highlight,
+[data-theme="dark"] .iti__country.iti__highlight,
+.dark-theme .iti__country.iti__highlight {
+  background-color: rgba(37, 99, 235, .08) !important;
+}
+
+.dark .iti__country-name,
+[data-theme="dark"] .iti__country-name,
+.dark-theme .iti__country-name {
+  color: #e5e7eb !important;
+}
+
+.dark .iti__country-code,
+[data-theme="dark"] .iti__country-code,
+.dark-theme .iti__country-code {
+  color: #94a3b8 !important;
+}
+
+.dark .iti__dial-code,
+[data-theme="dark"] .iti__dial-code,
+.dark-theme .iti__dial-code {
+  color: #94a3b8 !important;
+}
+
+/* Force dark theme on dropdown when document is in dark mode */
+body.dark .iti__country-list,
+html.dark .iti__country-list,
+.dark .iti__country-list {
+  background: #0f1521 !important;
+  border: 1px solid #324056 !important;
+  color: #e5e7eb !important;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .4) !important;
+  border-radius: 8px !important;
+  max-height: 300px !important;
+  overflow-y: auto !important;
+  z-index: 9999 !important;
+}
+
+body.dark .iti__search-input,
+html.dark .iti__search-input,
+.dark .iti__search-input {
+  background: #1e293b !important;
+  color: #f1f5f9 !important;
+  border: 1px solid #475569 !important;
+  outline: none !important;
+  padding: 10px 12px !important;
+  width: 100% !important;
+  font-size: 14px !important;
+  border-radius: 6px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark .iti__search-input::placeholder,
+html.dark .iti__search-input::placeholder,
+.dark .iti__search-input::placeholder {
+  color: #94a3b8 !important;
+}
+
+body.dark .iti__country,
+html.dark .iti__country,
+.dark .iti__country {
+  color: #e5e7eb !important;
+  padding: 8px 12px !important;
+  cursor: pointer !important;
+  border-bottom: 1px solid rgba(50, 64, 86, 0.3) !important;
+}
+
+body.dark .iti__country:hover,
+html.dark .iti__country:hover,
+.dark .iti__country:hover {
+  background-color: rgba(37, 99, 235, .1) !important;
+}
+
+body.dark .iti__country.iti__highlight,
+html.dark .iti__country.iti__highlight,
+.dark .iti__country.iti__highlight {
+  background-color: rgba(37, 99, 235, .15) !important;
+  border-left: 3px solid #3b82f6 !important;
+}
+
+body.dark .iti__country-name,
+html.dark .iti__country-name,
+.dark .iti__country-name {
+  color: #e5e7eb !important;
+}
+
+body.dark .iti__country-code,
+html.dark .iti__country-code,
+.dark .iti__country-code {
+  color: #94a3b8 !important;
+}
+
+body.dark .iti__dial-code,
+html.dark .iti__dial-code,
+.dark .iti__dial-code {
+  color: #94a3b8 !important;
+}
+
+/* Ensure search input is functional in dark mode */
+.dark .iti__search-input,
+[data-theme="dark"] .iti__search-input,
+.dark-theme.iti__search-input,
+body.dark .iti__search-input,
+html.dark .iti__search-input {
+  pointer-events: auto !important;
+  opacity: 1 !important;
+  z-index: 1 !important;
+  position: relative !important;
+}
+
+/* Light mode search input styling */
+.iti__search-input {
+  background: #ffffff !important;
+  color: #1e293b !important;
+  border: 1px solid #d1d5db !important;
+  outline: none !important;
+  padding: 10px 12px !important;
+  width: 100% !important;
+  font-size: 14px !important;
+  border-radius: 6px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+.iti__search-input::placeholder {
+  color: #9ca3af !important;
+}
+
+/* Focus state for search input */
+.dark .iti__search-input:focus,
+[data-theme="dark"] .iti__search-input:focus,
+.dark-theme.iti__search-input:focus,
+body.dark .iti__search-input:focus,
+html.dark .iti__search-input:focus {
+  outline: 2px solid #3b82f6 !important;
+  outline-offset: -2px !important;
+  background: #334155 !important;
+  border-color: #3b82f6 !important;
+}
+
+/* Light mode focus state */
+.iti__search-input:focus {
+  outline: 2px solid #3b82f6 !important;
+  outline-offset: -2px !important;
+  background: #ffffff !important;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+/* Print styles */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .demo-header,
+  .demo-footer {
+    display: none;
+  }
 }

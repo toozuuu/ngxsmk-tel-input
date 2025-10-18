@@ -1,5 +1,6 @@
 /* ---------- Theme tokens ---------- */
 :host {
+  /* Light theme (default) */
   --tel-bg: #fff;
   --tel-fg: #0f172a;
   --tel-border: #c0c0c0;
@@ -7,6 +8,8 @@
   --tel-ring: #2563eb;
   --tel-placeholder: #9ca3af;
   --tel-error: #ef4444;
+  --tel-success: #10b981;
+  --tel-warning: #f59e0b;
   --tel-radius: 12px;
   --tel-focus-shadow: 0 0 0 3px rgba(37, 99, 235, .25);
 
@@ -19,19 +22,87 @@
   --tel-dd-search-bg: rgba(148, 163, 184, .08);
 
   display: block;
+  contain: layout style;
 }
 
-:host-context(.dark) {
+/* Dark theme */
+:host-context(.dark),
+:host([data-theme="dark"]) {
   --tel-bg: #0b0f17;
   --tel-fg: #e5e7eb;
   --tel-border: #334155;
   --tel-border-hover: #475569;
   --tel-ring: #60a5fa;
   --tel-placeholder: #94a3b8;
+  --tel-error: #f87171;
+  --tel-success: #34d399;
+  --tel-warning: #fbbf24;
+  --tel-focus-shadow: 0 0 0 3px rgba(96, 165, 250, .25);
 
   --tel-dd-bg: #0f1521;
   --tel-dd-border: #324056;
+  --tel-dd-shadow: 0 24px 60px rgba(0, 0, 0, .4);
   --tel-dd-search-bg: rgba(148, 163, 184, .12);
+}
+
+/* Light theme override */
+:host([data-theme="light"]) {
+  --tel-bg: #fff;
+  --tel-fg: #0f172a;
+  --tel-border: #c0c0c0;
+  --tel-border-hover: #9aa0a6;
+  --tel-ring: #2563eb;
+  --tel-placeholder: #9ca3af;
+  --tel-error: #ef4444;
+  --tel-success: #10b981;
+  --tel-warning: #f59e0b;
+  --tel-focus-shadow: 0 0 0 3px rgba(37, 99, 235, .25);
+
+  --tel-dd-bg: var(--tel-bg);
+  --tel-dd-border: var(--tel-border);
+  --tel-dd-shadow: 0 24px 60px rgba(0, 0, 0, .18);
+  --tel-dd-search-bg: rgba(148, 163, 184, .08);
+}
+
+/* Dark mode dropdown fixes */
+:host-context(.dark) ::ng-deep .iti__country-list,
+:host([data-theme="dark"]) ::ng-deep .iti__country-list {
+  background: var(--tel-dd-bg) !important;
+  border-color: var(--tel-dd-border) !important;
+  color: var(--tel-fg) !important;
+}
+
+:host-context(.dark) ::ng-deep .iti__search-input,
+:host([data-theme="dark"]) ::ng-deep .iti__search-input {
+  background: var(--tel-dd-search-bg) !important;
+  color: var(--tel-fg) !important;
+  border-bottom-color: var(--tel-dd-border) !important;
+}
+
+:host-context(.dark) ::ng-deep .iti__country,
+:host([data-theme="dark"]) ::ng-deep .iti__country {
+  color: var(--tel-fg) !important;
+}
+
+
+:host-context(.dark) ::ng-deep .iti__country.iti__highlight,
+:host([data-theme="dark"]) ::ng-deep .iti__country.iti__highlight {
+  background-color: var(--tel-dd-item-hover) !important;
+}
+
+:host-context(.dark) ::ng-deep .iti__country-name,
+:host([data-theme="dark"]) ::ng-deep .iti__country-name {
+  color: var(--tel-fg) !important;
+}
+
+:host-context(.dark) ::ng-deep .iti__country-code,
+:host([data-theme="dark"]) ::ng-deep .iti__country-code {
+  color: var(--tel-placeholder) !important;
+}
+
+:host-context(.dark) ::ng-deep .iti__dial-code,
+:host([data-theme="dark"]) ::ng-deep .iti__dial-code {
+  color: var(--tel-placeholder) !important;
 }
 
 /* ---------- Structure ---------- */
@@ -71,20 +142,23 @@
   border-radius: var(--tel-radius);
   padding: 10px 40px 10px 12px;
   outline: none;
-  transition: border-color .15s, box-shadow .15s, background .15s;
+  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+  will-change: border-color, box-shadow, background;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  font-size: 16px;
+  line-height: 1.5;
 }
 
 .ngxsmk-tel-input__control::placeholder {
   color: var(--tel-placeholder);
 }
 
-.ngxsmk-tel-input__control:hover {
-  border-color: var(--tel-border-hover);
-}
 
 .ngxsmk-tel-input__control:focus {
   border-color: var(--tel-ring);
   box-shadow: var(--tel-focus-shadow);
+  background: var(--tel-bg);
+  color: var(--tel-fg);
 }
 
 /* Size presets */
@@ -146,6 +220,9 @@
   padding: 6px 0;
   width: max(280px, 100%);
   z-index: var(--tel-dd-z);
+  contain: layout style;
+  will-change: transform;
+  color: var(--tel-fg);
 }
 
 :host ::ng-deep .iti--container .iti__country-list {
@@ -165,6 +242,10 @@
   color: var(--tel-fg);
 }
 
+:host ::ng-deep .iti__search-input::placeholder {
+  color: var(--tel-placeholder);
+}
+
 :host ::ng-deep .iti__country {
   display: grid;
   grid-template-columns: 28px 1fr auto;
@@ -172,12 +253,27 @@
   column-gap: .5rem;
   padding: 10px 12px;
   cursor: pointer;
+  color: var(--tel-fg);
+}
+
+
+:host ::ng-deep .iti__country.iti__highlight {
+  background-color: var(--tel-dd-item-hover);
 }
 
 :host ::ng-deep .iti__dial-code {
   color: var(--tel-placeholder);
   font-weight: 600;
   margin-left: 10px;
+}
+
+:host ::ng-deep .iti__country-name {
+  color: var(--tel-fg);
+}
+
+:host ::ng-deep .iti__country-code {
+  color: var(--tel-placeholder);
+  font-weight: 500;
 }
 
 /* Clear button */
@@ -197,9 +293,6 @@
   color: var(--tel-placeholder);
 }
 
-.ngxsmk-tel__clear:hover {
-  background: rgba(148, 163, 184, .15);
-}
 
 /* Hint & Error */
 .ngxsmk-tel__hint {
@@ -223,4 +316,26 @@
 .ngxsmk-tel.disabled .iti__selected-flag {
   pointer-events: none;
   opacity: 0.6;
+}
+
+/* Dark mode input control improvements */
+:host-context(.dark) .ngxsmk-tel-input__control,
+:host([data-theme="dark"]) .ngxsmk-tel-input__control {
+  background: #1e293b !important;
+  color: #f1f5f9 !important;
+  border-color: #475569 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+
+:host-context(.dark) .ngxsmk-tel-input__control:focus,
+:host([data-theme="dark"]) .ngxsmk-tel-input__control:focus {
+  background: #1e293b !important;
+  color: #f1f5f9 !important;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+}
+
+:host-context(.dark) .ngxsmk-tel-input__control::placeholder,
+:host([data-theme="dark"]) .ngxsmk-tel-input__control::placeholder {
+  color: #94a3b8 !important;
 }

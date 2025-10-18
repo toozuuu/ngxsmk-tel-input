@@ -22,7 +22,7 @@ When submitting a new bug report, please include:
 * **Steps to reproduce** the issue.
 * The **expected behavior** and the **actual behavior**.
 * Your **Angular version** and the **browser** you are using.
-* A minimal reproduction link (e.g., StackBlitz) if possible.
+* A minimal reproduction link (e.g., CodePen, JSFiddle) if possible.
 
 ## ✨ Suggesting Enhancements
 

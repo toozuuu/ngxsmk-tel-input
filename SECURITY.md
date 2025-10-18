@@ -34,7 +34,7 @@ Use one of the private channels below:
 ### What to include
 
 - A clear description of the issue and potential impact.
-- Steps to reproduce and a minimal PoC (StackBlitz, repo, or code snippet).
+- Steps to reproduce and a minimal PoC (CodePen, JSFiddle, repo, or code snippet).
 - Affected versions (library + Angular + Node).
 - Any logs, stack traces, or screenshots that help triage.
 - Your preferred contact for follow-up and whether you’d like **credit**.
