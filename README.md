@@ -5,15 +5,9 @@ Wraps [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input) for the UI 
 
 > Emits **E.164** by default (e.g. `+14155550123`). SSR‑safe via lazy browser‑only import.
 
----
+## 🚀 Try it live on StackBlitz
 
-## Screenshots
-
-<p align="left">
-  <img src="https://unpkg.com/ngxsmk-tel-input@latest/docs/valid.png" alt="Angular international phone input - valid" width="420" />
-  &nbsp;&nbsp;
-  <img src="https://unpkg.com/ngxsmk-tel-input@latest/docs/invalid.png" alt="Angular international phone input - Invalid" width="420" />
-</p>
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/toozuuu/ngxsmk-tel-input)
 
 ---
 
@@ -159,8 +153,6 @@ export class AppComponent {
 ## 🈺 Localization & RTL
 
 You can localize the dropdown/search labels and override country names.
-
-<img src="https://unpkg.com/ngxsmk-tel-input@latest/docs/kr.png" alt="Angular international phone input - Korean Localization & RTL" width="420" />
 
 Korean example
 
