@@ -187,6 +187,40 @@ import { Subscription } from 'rxjs';
           </div>
         </div>
 
+        <!-- Invalid Country Code Test -->
+        <div class="demo-section">
+          <h2>Invalid Country Code Detection Test</h2>
+          <div class="demo-card">
+            <p class="test-description">
+              This test demonstrates the fix for country codes starting with "11" and other invalid country codes.
+              Try entering numbers like "1123456789" or "99123456789" to see the validation in action.
+            </p>
+            <form [formGroup]="testForm" class="demo-form">
+              <ngxsmk-tel-input
+                formControlName="invalidCountryCode"
+                label="Test Invalid Country Code"
+                hint="Try entering '1123456789' or '99123456789'"
+                [initialCountry]="'US'"
+                [separateDialCode]="true"
+                [showClear]="true"
+                [size]="'md'"
+                [variant]="'outline'"
+                [i18n]="enLabels"
+                [localizedCountries]="enCountries"
+                (inputChange)="onTestPhoneChange($event)"
+                (countryChange)="onTestCountryChange($event)">
+              </ngxsmk-tel-input>
+              
+              <div class="form-output">
+                <h3>Form Validation:</h3>
+                <pre>{{ testForm.get('invalidCountryCode')?.errors | json }}</pre>
+                <p><strong>Form Valid:</strong> {{ testForm.valid ? 'Yes' : 'No' }}</p>
+                <p><strong>Control Valid:</strong> {{ testForm.get('invalidCountryCode')?.valid ? 'Yes' : 'No' }}</p>
+              </div>
+            </form>
+          </div>
+        </div>
+
         <!-- Live Stats -->
         <div class="demo-section">
           <h2>Live Statistics</h2>
@@ -226,6 +260,11 @@ export class AppComponent implements OnInit, OnDestroy {
   // Form instance
   basicForm = this.fb.group({
     phone: ['+12025458754', Validators.required]
+  });
+
+  // Test form for invalid country code detection
+  testForm = this.fb.group({
+    invalidCountryCode: ['', Validators.required]
   });
 
   // Demo statistics
@@ -274,6 +313,14 @@ export class AppComponent implements OnInit, OnDestroy {
   onCountryChange(event: { iso2: string }) {
     this.countryChangeCount++;
     console.log('Country changed to:', event.iso2);
+  }
+
+  onTestPhoneChange(event: { raw: string; e164: string | null; iso2: string }) {
+    console.log('Test phone change:', event);
+  }
+
+  onTestCountryChange(event: { iso2: string }) {
+    console.log('Test country changed to:', event.iso2);
   }
 
   ngOnInit(): void {

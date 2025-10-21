@@ -292,12 +292,24 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     
     const raw = this.currentRaw();
     if (!raw) return null;
-    const valid = this.tel.isValid(raw, this.currentIso2());
+    
+    // Use enhanced parsing to detect invalid international numbers
+    const parsed = this.tel.parseWithInvalidDetection(raw, this.currentIso2());
+    const valid = parsed.isValid && !parsed.isInvalidInternational;
+    
     if (valid !== this.lastEmittedValid) {
       this.lastEmittedValid = valid;
       this.validityChange.emit(valid);
     }
-    return valid ? null : { phoneInvalid: true };
+    
+    if (!valid) {
+      if (parsed.isInvalidInternational) {
+        return { phoneInvalidCountryCode: true };
+      }
+      return { phoneInvalid: true };
+    }
+    
+    return null;
   }
 
   registerOnValidatorChange(fn: () => void): void { this.validatorChange = fn; }
@@ -522,7 +534,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     const iso2 = this.currentIso2();
     const digits = this.stripLeadingZero(this.toNSN(this.currentRaw()));
 
-    const parsed = this.tel.parse(digits, iso2);
+    const parsed = this.tel.parseWithInvalidDetection(digits, iso2);
     if (!parsed.e164 && !parsed.isValid) return;
 
     const nsn = parsed.e164 ? this.nsnFromE164(parsed.e164, iso2) : digits;
@@ -548,7 +560,8 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     // Users type national digits; remove any separators and a single trunk '0'
     let digits = this.stripLeadingZero(this.toNSN(this.currentRaw()));
 
-    const parsed = this.tel.parse(digits, iso2);
+    // Use enhanced parsing to detect invalid international numbers
+    const parsed = this.tel.parseWithInvalidDetection(digits, iso2);
 
     // Emit E.164 to the form (or null if incomplete) - batch zone runs
     this.zone.run(() => {

@@ -5,6 +5,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.7] - 2025-10-21
+
+### Added
+- **Enhanced Validation**: New invalid country code detection for numbers starting with invalid codes like "11", "99"
+- **phoneInvalidCountryCode Error**: New validation error type for invalid country codes
+- **parseWithInvalidDetection Method**: Enhanced service method that detects invalid international numbers
+- **Invalid Country Code Detection**: Automatic detection when users enter numbers with non-existent country codes
+- **Enhanced Error Handling**: Better error states and user feedback for invalid phone number scenarios
+
+### Enhanced
+- **Validation Logic**: Improved validation to distinguish between invalid country codes and invalid number formats
+- **User Experience**: Better visual feedback for different types of validation errors
+- **Error Messages**: More specific error messages for different validation scenarios
+- **Demo Application**: Added test section for invalid country code detection
+
+### Fixed
+- **Country Code "11" Issue**: Fixed issue where country codes starting with "11" didn't show invalid/valid status
+- **Invalid Country Code Handling**: Proper handling of non-existent country codes
+- **Validation States**: Improved validation state management for edge cases
+
+### Technical Improvements
+- **Service Enhancement**: Added `isInvalidInternationalNumber()` method for better detection
+- **Component Updates**: Enhanced component validation logic with new error types
+- **Type Safety**: Improved TypeScript types for enhanced validation features
+- **Performance**: Optimized validation caching for better performance
+
+### Breaking Changes
+- None
+
+### Migration Guide
+- No migration required - all changes are backward compatible
+- New validation features work automatically with existing implementations
+- Enhanced error handling provides better user experience without breaking changes
+
 ## [1.6.6] - 2025-10-18
 
 ### Added

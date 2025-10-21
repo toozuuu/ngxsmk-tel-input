@@ -452,6 +452,18 @@
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
+/* Test Description Styles */
+.test-description {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 5px;
+  border-left: 4px solid #007bff;
+  margin-bottom: 20px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #495057;
+}
+
 /* Stagger animation for sections */
 .demo-section:nth-child(1) { animation-delay: 0.1s; }
 .demo-section:nth-child(2) { animation-delay: 0.2s; }

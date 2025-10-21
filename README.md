@@ -17,6 +17,7 @@ Wraps [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input) for the UI 
 * E.164 output (display can be national with `nationalMode`)
 * Reactive & template‑driven Forms support (CVA)
 * Built‑in validation using libphonenumber‑js
+* **Enhanced validation**: Detects invalid country codes (like "11", "99") and shows appropriate error states
 * SSR‑friendly (no `window` on the server)
 * Easy theming via CSS variables
 * Nice UX options: label/hint/error text, sizes, variants, clear button, autofocus, select-on-focus
@@ -296,10 +297,30 @@ Dark mode: wrap in a `.dark` parent — tokens adapt automatically.
 
 <div class="error" *ngIf="fg.get('phone')?.hasError('required')">Phone is required</div>
 <div class="error" *ngIf="fg.get('phone')?.hasError('phoneInvalid')">Please enter a valid phone number</div>
+<div class="error" *ngIf="fg.get('phone')?.hasError('phoneInvalidCountryCode')">Invalid country code</div>
 ```
 
+### Enhanced Validation Features
+
+The component now includes enhanced validation that detects and handles various invalid phone number scenarios:
+
+#### **Invalid Country Code Detection**
+- **Input**: `"1123456789"` or `"99123456789"`
+- **Error**: `phoneInvalidCountryCode`
+- **Reason**: "11" and "99" are not valid country codes
+
+#### **Valid Country Code, Invalid Number**
+- **Input**: `"+9111023533"` (India country code, Delhi area code, but incomplete subscriber number)
+- **Error**: `phoneInvalid`
+- **Reason**: Valid country/area codes but invalid number format
+
+#### **Valid Numbers**
+- **Input**: `"+12025551234"` (US), `"+442071234567"` (UK), `"+91112345678"` (India)
+- **Status**: Valid
+- **Output**: E.164 format string
+
 * When **valid** → control value = **E.164** string
-* When **invalid/empty** → value = **null**, and validator sets `{ phoneInvalid: true }`
+* When **invalid/empty** → value = **null**, and validator sets appropriate error type
 
 > Need national string instead of E.164? Use `(inputChange)` and store `raw`/`national` yourself, or adapt the emitter to output national.
 
