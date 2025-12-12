@@ -18,20 +18,35 @@ Wraps [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input) for the UI 
 * Reactive & template‑driven Forms support (CVA)
 * Built‑in validation using libphonenumber‑js
 * **Enhanced validation**: Detects invalid country codes (like "11", "99") and shows appropriate error states
+* **Mobile responsive**: Optimized for touch devices with proper tap targets, prevents iOS zoom, and responsive dropdown
+* **Dark & Light themes**: Comprehensive theme system with automatic system preference detection
+* **Accessibility**: Full ARIA support, screen reader compatibility, keyboard navigation
 * SSR‑friendly (no `window` on the server)
 * Easy theming via CSS variables
 * Nice UX options: label/hint/error text, sizes, variants, clear button, autofocus, select-on-focus
-* New: Masking & caret-friendly as-you-type formatting (optional)
-* New: Format only when valid (formatWhenValid) and lock once valid (lockWhenValid) to prevent extra digits
+* Masking & caret-friendly as-you-type formatting (optional)
+* Format only when valid (formatWhenValid) and lock once valid (lockWhenValid) to prevent extra digits
 
 ---
 
 ## ✅ Requirements
 
-* Angular **17 – 19**
+* Angular **17+** (17, 18, 19, 20, 21+)
 * Node **18** or **20**
 
-> Library `peerDependencies` target Angular `>=17 <20`. Your app can be 17, 18, or 19.
+> Library `peerDependencies` target Angular `>=17`. Fully compatible with Angular 17, 18, 19, 20, 21, and future versions.
+
+### 🔄 Zone.js Compatibility
+
+This component works seamlessly with **both Zone.js and zoneless Angular**:
+
+* ✅ **With Zone.js** (traditional Angular): Full compatibility
+* ✅ **Without Zone.js** (Angular 18+ zoneless): Full compatibility
+* ✅ **All data binding types**: Property bindings, event bindings, two-way bindings
+* ✅ **Reactive Forms & Template-driven Forms**: Full support
+* ✅ **Signals**: Compatible with Angular signals (Angular 16+)
+
+The component automatically detects whether Zone.js is available and adapts its change detection strategy accordingly.
 
 ---
 
@@ -76,6 +91,22 @@ Optional override to ensure flags resolve (e.g., Vite/Angular 17+): add to your 
 ```
 
 Restart the dev server after changes.
+
+### Mobile Responsiveness
+
+The component is fully responsive and optimized for mobile devices:
+
+* **Touch-friendly targets**: All interactive elements meet the 44x44px minimum touch target size
+* **Prevents iOS zoom**: Input font size is set to 16px to prevent automatic zoom on focus
+* **Responsive dropdown**: Country list adapts to screen size and viewport height
+* **Safe area support**: Respects safe area insets on notched devices (iPhone X+)
+* **Touch optimizations**: Better tap feedback and scrolling on touch devices
+
+Ensure your app includes a proper viewport meta tag:
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+```
 
 ---
 
@@ -236,6 +267,7 @@ Arabic + RTL example
 | `customPlaceholder`    | `(example: string, country: any) => string` | —                       | Transform the example placeholder.                                                         |
 | `clearAriaLabel`       | `string`                                    | `'Clear phone number'`  | ARIA label for the clear button.                                                           |
 | `lockWhenValid`        | `boolean`                                   | `true`                  | Prevent appending extra digits once the number is valid (editing/replacing still allowed). |
+| `theme`                | `'light' \| 'dark' \| 'auto'`               | `'auto'`                | Theme preference for the component.                                                         |
 
 > `CountryCode` is the ISO‑2 uppercase code from `libphonenumber-js` (e.g. `US`, `GB`).
 
@@ -267,7 +299,9 @@ For rare patterns not covered by libphonenumber-js, the control falls back to ra
 ---
 
 
-## 🎨 Theming (CSS variables)
+## 🎨 Theming
+
+### CSS Variables
 
 Override on the element or a parent container:
 
@@ -286,7 +320,36 @@ Available tokens:
 * Input: `--tel-bg`, `--tel-fg`, `--tel-border`, `--tel-border-hover`, `--tel-ring`, `--tel-placeholder`, `--tel-error`, `--tel-radius`, `--tel-focus-shadow`
 * Dropdown: `--tel-dd-bg`, `--tel-dd-border`, `--tel-dd-shadow`, `--tel-dd-radius`, `--tel-dd-item-hover`, `--tel-dd-search-bg`, `--tel-dd-z`
 
-Dark mode: wrap in a `.dark` parent — tokens adapt automatically.
+### Theme Support
+
+The component supports light, dark, and auto themes:
+
+```ts
+import { NgxsmkTelInputComponent, ThemeService } from 'ngxsmk-tel-input';
+
+// Component-level theme
+<ngxsmk-tel-input [theme]="'dark'"></ngxsmk-tel-input>
+
+// Global theme management
+@Component({})
+export class MyComponent {
+  private themeService = inject(ThemeService);
+  
+  setDarkTheme() {
+    this.themeService.setTheme('dark');
+  }
+  
+  // Subscribe to theme changes
+  theme$ = this.themeService.currentTheme$;
+}
+```
+
+Themes:
+- `'light'`: Light theme
+- `'dark'`: Dark theme  
+- `'auto'`: Automatically follows system preference (default)
+
+Dark mode: wrap in a `.dark` parent or use `[theme]="'dark'"` — tokens adapt automatically.
 
 ---
 
@@ -366,7 +429,7 @@ Ensure the assets copy exists under `/assets/intl-tel-input/img` and add the CSS
 Build the library first so `dist/ngxsmk-tel-input` exists. If using workspace aliasing, add a `paths` entry to the root `tsconfig.base.json`.
 
 **Peer dependency conflict when installing**
-The lib peers are `@angular/* >=17 <20`. Upgrade your app or install a compatible version.
+The lib peers are `@angular/* >=17`. Ensure your app uses Angular 17 or higher.
 
 **Vite/Angular “Failed to resolve import …”**
 Clear `.angular/cache`, rebuild the lib, and restart `ng serve`.
@@ -382,4 +445,4 @@ Clear `.angular/cache`, rebuild the lib, and restart `ng serve`.
 * UI powered by [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input)
 * Parsing & validation by [`libphonenumber-js`](https://github.com/catamphetamine/libphonenumber-js)
 
-Last updated: 2025-08-29
+Last updated: 2025-01-21

@@ -117,16 +117,16 @@ export class ThemeService {
     const root = document.documentElement;
     
     if (theme === 'dark') {
-      root.style.setProperty('--tel-bg', '#0b0f17');
-      root.style.setProperty('--tel-fg', '#e5e7eb');
+      root.style.setProperty('--tel-bg', '#212121');
+      root.style.setProperty('--tel-fg', '#ffffff');
       root.style.setProperty('--tel-border', '#334155');
       root.style.setProperty('--tel-border-hover', '#475569');
       root.style.setProperty('--tel-ring', '#60a5fa');
-      root.style.setProperty('--tel-placeholder', '#94a3b8');
+      root.style.setProperty('--tel-placeholder', '#ffffff');
       root.style.setProperty('--tel-error', '#f87171');
       root.style.setProperty('--tel-success', '#34d399');
       root.style.setProperty('--tel-warning', '#fbbf24');
-      root.style.setProperty('--tel-dd-bg', '#0f1521');
+      root.style.setProperty('--tel-dd-bg', '#212121');
       root.style.setProperty('--tel-dd-border', '#324056');
       root.style.setProperty('--tel-dd-shadow', '0 24px 60px rgba(0, 0, 0, .4)');
       root.style.setProperty('--tel-dd-search-bg', 'rgba(148, 163, 184, .12)');

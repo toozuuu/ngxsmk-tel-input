@@ -1,0 +1,202 @@
+/**
+ * PrimeNG theme variant for ngxsmk-tel-input
+ * 
+ * Usage:
+ * @import 'ngxsmk-tel-input/themes/primeng';
+ * 
+ * Or in your component:
+ * <ngxsmk-tel-input class="ngxsmk-tel-input-primeng" />
+ */
+
+.ngxsmk-tel-input-primeng {
+  --tel-bg: #ffffff;
+  --tel-fg: #495057;
+  --tel-border: #ced4da;
+  --tel-border-hover: #adb5bd;
+  --tel-ring: #007bff;
+  --tel-placeholder: #6c757d;
+  --tel-error: #dc3545;
+  --tel-radius: 6px;
+  --tel-focus-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+
+  --tel-dd-bg: #ffffff;
+  --tel-dd-border: #dee2e6;
+  --tel-dd-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  --tel-dd-radius: 6px;
+  --tel-dd-item-hover: #e9ecef;
+  --tel-dd-search-bg: #f8f9fa;
+  --tel-dd-z: 2000;
+
+  .ngxsmk-tel-input__control {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--tel-border);
+    border-radius: var(--tel-radius);
+    background: var(--tel-bg);
+    color: var(--tel-fg);
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+    &:hover {
+      border-color: var(--tel-border-hover);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--tel-ring);
+      box-shadow: var(--tel-focus-shadow);
+    }
+
+    &::placeholder {
+      color: var(--tel-placeholder);
+    }
+
+    &:disabled {
+      background: #e9ecef;
+      color: #6c757d;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  }
+
+  .ngxsmk-tel__label {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  .ngxsmk-tel__hint {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+  }
+
+  .ngxsmk-tel__error {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 0.875rem;
+    color: var(--tel-error);
+    margin-top: 0.25rem;
+  }
+
+  &.has-error {
+    .ngxsmk-tel-input__control {
+      border-color: var(--tel-error);
+
+      &:focus {
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+      }
+    }
+  }
+
+  // PrimeNG size variants
+  &[data-size="sm"] {
+    .ngxsmk-tel-input__control {
+      padding: 0.375rem 0.5rem;
+      font-size: 0.875rem;
+    }
+  }
+
+  &[data-size="lg"] {
+    .ngxsmk-tel-input__control {
+      padding: 0.75rem 1rem;
+      font-size: 1.125rem;
+    }
+  }
+
+  // PrimeNG variant styles
+  &[data-variant="filled"] {
+    .ngxsmk-tel-input__control {
+      background: #f8f9fa;
+      border-color: #ced4da;
+    }
+  }
+
+
+  &[data-variant="underline"] {
+    .ngxsmk-tel-input__control {
+      border: none;
+      border-bottom: 1px solid var(--tel-border);
+      border-radius: 0;
+      background: transparent;
+
+      &:focus {
+        border-bottom: 2px solid var(--tel-ring);
+        box-shadow: none;
+      }
+    }
+  }
+}
+
+// PrimeNG dark theme
+.ngxsmk-tel-input-primeng.dark,
+.ngxsmk-tel-input-primeng[data-theme="dark"],
+.p-dark .ngxsmk-tel-input-primeng,
+:host-context(.p-dark) .ngxsmk-tel-input-primeng:not([data-theme="light"]):not(.light),
+:host-context(.dark) .ngxsmk-tel-input-primeng:not([data-theme="light"]):not(.light),
+.dark .ngxsmk-tel-input-primeng:not([data-theme="light"]):not(.light) {
+  --tel-bg: #2b2b2b;
+  --tel-fg: #ffffff;
+  --tel-border: #3e3e3e;
+  --tel-border-hover: #4e4e4e;
+  --tel-placeholder: #a0a0a0;
+  --tel-dd-bg: #2b2b2b;
+  --tel-dd-border: #3e3e3e;
+  --tel-dd-search-bg: #1e1e1e;
+  --tel-dd-item-hover: #3e3e3e;
+
+  .ngxsmk-tel-input__control:disabled {
+    background: #1e1e1e;
+    color: #808080;
+    opacity: 0.6;
+  }
+}
+
+// Explicit light theme
+.ngxsmk-tel-input-primeng[data-theme="light"],
+.ngxsmk-tel-input-primeng.light {
+  --tel-bg: #ffffff !important;
+  --tel-fg: #495057 !important;
+  --tel-border: #ced4da !important;
+  --tel-border-hover: #adb5bd !important;
+  --tel-placeholder: #6c757d !important;
+  --tel-dd-bg: #ffffff !important;
+  --tel-dd-border: #dee2e6 !important;
+  --tel-dd-search-bg: #f8f9fa !important;
+  --tel-dd-item-hover: #e9ecef !important;
+
+  .ngxsmk-tel-input__control:disabled {
+    background: #e9ecef !important;
+    color: #6c757d !important;
+    opacity: 0.6 !important;
+  }
+}
+
+// PrimeNG theme colors
+.ngxsmk-tel-input-primeng.p-primary {
+  --tel-ring: #007bff;
+}
+
+.ngxsmk-tel-input-primeng.p-secondary {
+  --tel-ring: #6c757d;
+}
+
+.ngxsmk-tel-input-primeng.p-success {
+  --tel-ring: #28a745;
+}
+
+.ngxsmk-tel-input-primeng.p-info {
+  --tel-ring: #17a2b8;
+}
+
+.ngxsmk-tel-input-primeng.p-warning {
+  --tel-ring: #ffc107;
+}
+
+.ngxsmk-tel-input-primeng.p-danger {
+  --tel-ring: #dc3545;
+}

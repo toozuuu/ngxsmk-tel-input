@@ -1,0 +1,99 @@
+<div class="checkout-container">
+  <h2>Checkout</h2><br>
+
+  <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
+    <div class="form-section">
+      <h3>Shipping Information</h3><br>
+
+      <div class="form-group">
+        <label>Full Name</label>
+        <input formControlName="fullName" type="text" />
+        @if (checkoutForm.get('fullName')?.hasError('required') && checkoutForm.get('fullName')?.touched) {
+        <div class="error">
+          Name is required
+        </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input formControlName="email" type="email" />
+        @if (checkoutForm.get('email')?.hasError('required') && checkoutForm.get('email')?.touched) {
+        <div class="error">
+          Email is required
+        </div>
+        }
+        @if (checkoutForm.get('email')?.hasError('email') && checkoutForm.get('email')?.touched) {
+        <div class="error">
+          Invalid email format
+        </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <ngxsmk-tel-input formControlName="phone" label="Phone Number"
+          hint="We'll use this to contact you about your order" [initialCountry]="'US'"
+          [preferredCountries]="['US', 'GB', 'CA']" [separateDialCode]="true" [showClear]="true" [size]="'md'"
+          [variant]="'outline'" [theme]="theme()" (inputChange)="onPhoneChange($event)"
+          [customColors]="{ dark: { background: '#0f172a', border: '#334155' } }" />
+        @if (checkoutForm.get('phone')?.hasError('required') && checkoutForm.get('phone')?.touched) {
+        <div class="error">
+          Phone number is required
+        </div>
+        }
+        @if (checkoutForm.get('phone')?.hasError('phoneInvalid') && checkoutForm.get('phone')?.touched) {
+        <div class="error">
+          Please enter a valid phone number
+        </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label>Address</label>
+        <input formControlName="address" type="text" />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>City</label>
+          <input formControlName="city" type="text" />
+        </div>
+
+        <div class="form-group">
+          <label>State</label>
+          <input formControlName="state" type="text" />
+        </div>
+
+        <div class="form-group">
+          <label>ZIP Code</label>
+          <input formControlName="zipCode" type="text" />
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3>Order Summary</h3>
+      <div class="order-summary">
+        <div class="summary-item">
+          <span>Subtotal:</span>
+          <span>${{ getFormattedPrice(subtotal) }}</span>
+        </div>
+        <div class="summary-item">
+          <span>Shipping:</span>
+          <span>${{ getFormattedPrice(shipping) }}</span>
+        </div>
+        <div class="summary-item total">
+          <span>Total:</span>
+          <span>${{ getFormattedPrice(total) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" (click)="goBack()">Back to Cart</button>
+      <button type="submit" [disabled]="checkoutForm.invalid || processing">
+        {{ processing ? 'Processing...' : 'Place Order' }}
+      </button>
+    </div>
+  </form>
+</div>

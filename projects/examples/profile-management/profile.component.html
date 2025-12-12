@@ -1,0 +1,105 @@
+<div class="profile-container">
+  <h2>Profile Settings</h2><br>
+
+  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+    <div class="form-section">
+      <h3>Personal Information</h3><br>
+
+      <div class="form-group">
+        <label>Full Name</label>
+        <input formControlName="fullName" type="text" />
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input formControlName="email" type="email" />
+        @if (profileForm.get('email')?.hasError('email') && profileForm.get('email')?.touched) {
+        <div class="error">
+          Invalid email format
+        </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <ngxsmk-tel-input formControlName="phone" label="Phone Number" hint="Update your phone number"
+          [initialCountry]="initialCountry" [preferredCountries]="['US', 'GB', 'CA', 'AU']" [separateDialCode]="true"
+          [showClear]="true" [enableIntelligence]="true" [theme]="theme()" (inputChange)="onPhoneChange($event)"
+          (countryChange)="onCountryChange($event)" (intelligenceChange)="onIntelligenceChange($event)"
+          [customColors]="{ dark: { background: '#0f172a', border: '#334155' } }" />
+        @if (profileForm.get('phone')?.hasError('phoneInvalid') && profileForm.get('phone')?.touched) {
+        <div class="error">
+          Please enter a valid phone number
+        </div>
+        }
+        @if (carrierInfo) {
+        <div class="carrier-info">
+          <p>Number Type: {{ getTypeDescription(carrierInfo.type || 'UNKNOWN') }}</p>
+          @if (carrierInfo.isMobile) {
+          <p>Mobile number</p>
+          }
+          @if (carrierInfo.isLandline) {
+          <p>Landline number</p>
+          }
+        </div>
+        }
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3>Preferences</h3><br>
+
+      <div class="form-group">
+        <label>Language</label>
+        <select formControlName="language">
+          <option value="en">English</option>
+          <option value="es">Spanish</option>
+          <option value="fr">French</option>
+          <option value="de">German</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Timezone</label>
+        <select formControlName="timezone">
+          <option value="America/New_York">Eastern Time</option>
+          <option value="America/Chicago">Central Time</option>
+          <option value="America/Denver">Mountain Time</option>
+          <option value="America/Los_Angeles">Pacific Time</option>
+          <option value="Europe/London">London</option>
+          <option value="Europe/Paris">Paris</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3>Notifications</h3><br>
+
+      <div class="form-group">
+        <label>
+          <input type="checkbox" formControlName="emailNotifications" />
+          Email notifications
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>
+          <input type="checkbox" formControlName="smsNotifications" />
+          SMS notifications
+        </label>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" (click)="resetForm()">Reset</button>
+      <button type="submit" [disabled]="profileForm.invalid || !profileForm.dirty || saving">
+        {{ saving ? 'Saving...' : 'Save Changes' }}
+      </button>
+    </div>
+  </form>
+
+  @if (saved) {
+  <div class="success-message">
+    Profile updated successfully!
+  </div>
+  }
+</div>

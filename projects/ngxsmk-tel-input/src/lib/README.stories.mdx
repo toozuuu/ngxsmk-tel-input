@@ -1,0 +1,75 @@
+import { Meta } from '@storybook/blocks';
+import * as Stories from './ngxsmk-tel-input.stories';
+
+<Meta of={Stories} />
+
+# Ngxsmk Tel Input
+
+A comprehensive Angular telephone input component with country dropdown, flags, and robust validation/formatting.
+
+## Features
+
+- 🌍 **International Support**: All countries with automatic detection
+- ✅ **Built-in Validation**: Using libphonenumber-js
+- 🎨 **Customizable**: Multiple sizes, variants, and themes
+- ♿ **Accessible**: Full ARIA support and keyboard navigation
+- ⚡ **Performance**: OnPush change detection and caching
+- 📱 **Mobile Responsive**: Optimized for touch devices
+- 🔌 **Framework Integrations**: Material and PrimeNG themes
+- 🧪 **Testing Utilities**: Mock services and test helpers
+- 🔧 **Developer Tools**: Chrome DevTools extension
+- 📡 **Signal API**: Modern reactive signals support
+
+## Quick Start
+
+```typescript
+import { NgxsmkTelInputComponent } from 'ngxsmk-tel-input';
+import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
+
+@Component({
+  imports: [ReactiveFormsModule, NgxsmkTelInputComponent],
+  template: `
+    <ngxsmk-tel-input
+      formControlName="phone"
+      label="Phone Number"
+      [initialCountry]="'US'"
+      [preferredCountries]="['US', 'GB']"
+    />
+  `
+})
+export class MyComponent {
+  form = this.fb.group({
+    phone: ['', Validators.required]
+  });
+}
+```
+
+## Installation
+
+```bash
+npm install ngxsmk-tel-input intl-tel-input libphonenumber-js
+```
+
+Or use the Angular CLI schematic:
+
+```bash
+ng add ngxsmk-tel-input
+```
+
+## Documentation
+
+- [Signal-Based API](./SIGNALS_API.md)
+- [Theme Variants](./THEMES.md)
+- [Testing Utilities](./TESTING.md)
+- [Phone Intelligence](./INTELLIGENCE.md)
+- [TypeScript Support](./TYPESCRIPT.md)
+- [Third-Party Integrations](./INTEGRATIONS.md)
+
+## Examples
+
+Check out the [Examples](./live-examples.stories.ts) section for complete, production-ready examples.
+
+## API Explorer
+
+Use the [Interactive API Explorer](./api-explorer.stories.ts) to test all component properties and events in real-time.
+

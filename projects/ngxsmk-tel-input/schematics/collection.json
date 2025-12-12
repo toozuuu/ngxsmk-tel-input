@@ -1,0 +1,16 @@
+{
+  "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "ng-add": {
+      "description": "Add ngxsmk-tel-input to the project",
+      "factory": "./ng-add/index#default",
+      "schema": "./ng-add/schema.json"
+    },
+    "component": {
+      "description": "Generate a phone input component",
+      "factory": "./component/index#default",
+      "schema": "./component/schema.json"
+    }
+  }
+}
+

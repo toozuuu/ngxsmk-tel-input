@@ -1,11 +1,12 @@
 {
   "name": "ngxsmk-tel-input",
-  "version": "1.6.8",
+  "version": "1.6.9",
   "description": "Angular telephone input with intl-tel-input + libphonenumber-js",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
+  "schematics": "./projects/ngxsmk-tel-input/schematics/collection.json",
   "author": {
     "email": "sachindilshan040@gmail.com",
     "name": "Sachin Dilshan",
@@ -18,6 +19,8 @@
     "angular17",
     "angular18",
     "angular19",
+    "angular20",
+    "angular21",
     "angular-forms",
     "reactive-forms",
     "template-driven-forms",
@@ -50,10 +53,17 @@
   ],
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve demo",
     "build": "ng build",
+    "build:lib": "ng build ngxsmk-tel-input",
+    "build:demo": "ng build demo",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "watch:lib": "ng build ngxsmk-tel-input --watch --configuration development",
+    "test": "ng test",
+    "test:lib": "ng test ngxsmk-tel-input",
+    "test:demo": "ng test demo",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@angular/common": "^19.2.0",
@@ -76,6 +86,7 @@
     "@changesets/cli": "^2.29.5",
     "@types/intl-tel-input": "^18.1.4",
     "@types/jasmine": "~5.1.0",
+    "autoprefixer": "^10.4.22",
     "jasmine-core": "~5.6.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
@@ -83,6 +94,8 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "ng-packagr": "^19.2.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.19",
     "typescript": "~5.7.2"
   }
 }

@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "Ngxsmk Tel Input DevTools",
+  "version": "1.0.0",
+  "description": "Developer tools for debugging ngxsmk-tel-input components",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "devtools_page": "devtools.html",
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["panel.html", "panel.js", "styles.css"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
+
