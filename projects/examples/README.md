@@ -15,6 +15,7 @@ Complete checkout form with phone input for shipping information.
 - Form validation
 - Order summary
 - Error handling
+- **Dark mode by default** (theme can be customized via input)
 
 **Usage:**
 ```typescript
@@ -32,6 +33,7 @@ User registration form with phone verification capabilities.
 - Format suggestions
 - Password matching validation
 - Terms acceptance
+- **Dark mode by default** (theme can be customized via input)
 
 **Usage:**
 ```typescript
@@ -49,6 +51,7 @@ User profile settings with phone number update.
 - Carrier information display
 - Form dirty state tracking
 - Success notifications
+- **Dark mode by default** (theme can be customized via input)
 
 **Usage:**
 ```typescript
@@ -88,6 +91,7 @@ All examples are fully customizable:
 - Customize styling
 - Integrate with your API
 - Add additional features
+- **Theme customization**: All examples accept a `theme` input (`'light' | 'dark'`) that defaults to `'dark'`
 
 ## Best Practices
 

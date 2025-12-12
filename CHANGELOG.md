@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Example Components**: All example components (E-commerce Checkout, User Registration, Profile Management) now default to dark mode theme
+- **Demo App**: Default theme changed to dark mode for better visibility and consistency
+- **Navigation UI**: Fixed icon and text colors in dark mode navigation menu for better contrast and readability
+
 ## [1.6.9] - 2025-01-21
 
 ### Added
