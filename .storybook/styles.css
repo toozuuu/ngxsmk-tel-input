@@ -1,0 +1,84 @@
+/**
+ * Global Storybook styles
+ */
+
+/* Import component styles */
+@import '../projects/ngxsmk-tel-input/src/lib/ngxsmk-tel-input.component.scss';
+
+/* Storybook-specific overrides */
+.sb-show-main {
+  background: #f5f5f5;
+}
+
+/* Code block styling */
+.sbdocs pre {
+  background: #1e1e1e;
+  color: #d4d4d4;
+  border-radius: 4px;
+  padding: 1rem;
+}
+
+/* Interactive explorer styling */
+.api-explorer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.config-panel {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.config-panel h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.config-group {
+  margin-bottom: 1rem;
+}
+
+.config-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #555;
+}
+
+.config-group input,
+.config-group select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.config-group input[type="checkbox"] {
+  width: auto;
+  margin-right: 0.5rem;
+}
+
+.events-panel {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f9f9f9;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.events-panel pre {
+  background: #fff;
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin: 0.5rem 0;
+  overflow-x: auto;
+}
+

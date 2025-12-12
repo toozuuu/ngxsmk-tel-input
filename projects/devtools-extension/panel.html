@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Ngxsmk Tel Input Debugger</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>📱 Ngxsmk Tel Input Debugger</h1>
+      <button id="refresh-btn" class="btn btn-primary">Refresh</button>
+    </header>
+
+    <div class="content">
+      <div class="section">
+        <h2>Detected Components</h2>
+        <div id="components-list" class="components-list">
+          <div class="empty-state">No ngxsmk-tel-input components found</div>
+        </div>
+      </div>
+
+      <div class="section" id="component-details" style="display: none;">
+        <h2>Component Details</h2>
+        <div class="details-panel">
+          <div class="detail-group">
+            <label>Component ID:</label>
+            <span id="component-id">-</span>
+          </div>
+          <div class="detail-group">
+            <label>Raw Value:</label>
+            <span id="raw-value">-</span>
+          </div>
+          <div class="detail-group">
+            <label>E.164 Value:</label>
+            <span id="e164-value">-</span>
+          </div>
+          <div class="detail-group">
+            <label>Country (ISO2):</label>
+            <span id="country-iso2">-</span>
+          </div>
+          <div class="detail-group">
+            <label>Is Valid:</label>
+            <span id="is-valid" class="status-badge">-</span>
+          </div>
+          <div class="detail-group">
+            <label>Validation Errors:</label>
+            <div id="validation-errors" class="errors-list">-</div>
+          </div>
+          <div class="detail-group">
+            <label>Formatted Value:</label>
+            <span id="formatted-value">-</span>
+          </div>
+          <div class="detail-group">
+            <label>Metadata:</label>
+            <pre id="metadata" class="metadata-display">-</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Visual Validation Feedback</h2>
+        <div class="validation-panel">
+          <div class="validation-indicator" id="validation-indicator">
+            <div class="indicator-icon">⏳</div>
+            <div class="indicator-text">Waiting for input...</div>
+          </div>
+          <div class="validation-timeline" id="validation-timeline">
+            <!-- Validation history will be shown here -->
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Format Preview</h2>
+        <div class="format-preview">
+          <div class="preview-item">
+            <label>E.164 Format:</label>
+            <code id="preview-e164">-</code>
+          </div>
+          <div class="preview-item">
+            <label>National Format:</label>
+            <code id="preview-national">-</code>
+          </div>
+          <div class="preview-item">
+            <label>International Format:</label>
+            <code id="preview-international">-</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Country Detection</h2>
+        <div class="country-detection">
+          <div class="detection-item">
+            <label>Detected Country:</label>
+            <span id="detected-country">-</span>
+          </div>
+          <div class="detection-item">
+            <label>Detection Method:</label>
+            <span id="detection-method">-</span>
+          </div>
+          <div class="detection-item">
+            <label>Confidence:</label>
+            <span id="detection-confidence">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="panel.js"></script>
+</body>
+</html>
+

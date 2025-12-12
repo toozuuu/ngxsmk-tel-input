@@ -1,9 +1,17 @@
+/* Tailwind CSS */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Global Styles for Demo */
 * {
   box-sizing: border-box;
 }
 
 html {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
   scroll-behavior: smooth;
 }
 
@@ -16,6 +24,975 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+}
+
+/* Dark mode body styles - using Tailwind dark mode */
+.dark body,
+html.dark body,
+html[data-theme="dark"] body {
+  background: #212121 !important;
+  color: #ffffff !important;
+}
+
+/* Ensure base text colors work with Tailwind */
+@layer base {
+  body {
+    @apply text-tf-text-primary;
+  }
+
+  .dark body,
+  html.dark body,
+  html[data-theme="dark"] body {
+    @apply text-tf-dark-text-primary;
+  }
+
+  /* Material Icons default colors */
+  .material-icons {
+    @apply text-tf-text-primary;
+  }
+
+  .dark .material-icons,
+  html.dark .material-icons,
+  html[data-theme="dark"] .material-icons {
+    @apply text-tf-dark-text-primary;
+  }
+}
+
+/* Ensure all text elements are visible in dark mode - using Tailwind dark mode */
+.dark p,
+html.dark p,
+html[data-theme="dark"] p {
+  color: #cbd5e1 !important;
+}
+
+.dark h1,
+html.dark h1,
+html[data-theme="dark"] h1,
+.dark h2,
+html.dark h2,
+html[data-theme="dark"] h2,
+.dark h3,
+html.dark h3,
+html[data-theme="dark"] h3,
+.dark h4,
+html.dark h4,
+html[data-theme="dark"] h4,
+.dark h5,
+html.dark h5,
+html[data-theme="dark"] h5,
+.dark h6,
+html.dark h6,
+html[data-theme="dark"] h6 {
+  color: #ffffff !important;
+}
+
+.dark label,
+html.dark label,
+html[data-theme="dark"] label {
+  color: #cbd5e1 !important;
+}
+
+.dark span:not(.feature-icon):not(.logo-icon):not(.brand-icon),
+html.dark span:not(.feature-icon):not(.logo-icon):not(.brand-icon),
+html[data-theme="dark"] span:not(.feature-icon):not(.logo-icon):not(.brand-icon) {
+  color: inherit !important;
+}
+
+.dark strong,
+html.dark strong,
+html[data-theme="dark"] strong {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+/* Dark mode dashboard styles - using Tailwind dark mode */
+.dark .dashboard-container,
+html.dark .dashboard-container,
+html[data-theme="dark"] .dashboard-container {
+  background: #212121;
+  color: #ffffff;
+}
+
+.dark .main-content,
+html.dark .main-content,
+html[data-theme="dark"] .main-content {
+  background: #212121;
+  color: #ffffff;
+}
+
+html.dark .section-header h2,
+html[data-theme="dark"] .section-header h2,
+:root.dark .section-header h2 {
+  color: #ffffff;
+}
+
+html.dark .section-description,
+html[data-theme="dark"] .section-description,
+:root.dark .section-description {
+  color: #cbd5e1 !important;
+}
+
+html.dark .feature-card,
+html.dark .demo-card,
+html.dark .info-card,
+html.dark .theme-showcase-item,
+html.dark .feature-item,
+html[data-theme="dark"] .feature-card,
+html[data-theme="dark"] .demo-card,
+html[data-theme="dark"] .info-card,
+html[data-theme="dark"] .theme-showcase-item,
+html[data-theme="dark"] .feature-item,
+:root.dark .feature-card,
+:root.dark .demo-card,
+:root.dark .info-card,
+:root.dark .theme-showcase-item,
+:root.dark .feature-item {
+  background: #212121;
+  border-color: #334155;
+}
+
+html.dark .feature-card h3,
+html.dark .demo-card h3,
+html.dark .info-card h3,
+html.dark .api-section h3,
+html.dark .example-group h3,
+html.dark .feature-item h3,
+html[data-theme="dark"] .feature-card h3,
+html[data-theme="dark"] .demo-card h3,
+html[data-theme="dark"] .info-card h3,
+html[data-theme="dark"] .api-section h3,
+html[data-theme="dark"] .example-group h3,
+html[data-theme="dark"] .feature-item h3,
+:root.dark .feature-card h3,
+:root.dark .demo-card h3,
+:root.dark .info-card h3,
+:root.dark .api-section h3,
+:root.dark .example-group h3,
+:root.dark .feature-item h3 {
+  color: #ffffff;
+}
+
+html.dark .feature-card p,
+html.dark .info-card li,
+html.dark .method-item p,
+html.dark .feature-item p,
+html[data-theme="dark"] .feature-card p,
+html[data-theme="dark"] .info-card li,
+html[data-theme="dark"] .method-item p,
+html[data-theme="dark"] .feature-item p,
+:root.dark .feature-card p,
+:root.dark .info-card li,
+:root.dark .method-item p,
+:root.dark .feature-item p {
+  color: #ffffff;
+}
+
+html.dark .example-item label,
+html.dark .theme-showcase-item label,
+html[data-theme="dark"] .example-item label,
+html[data-theme="dark"] .theme-showcase-item label,
+:root.dark .example-item label,
+:root.dark .theme-showcase-item label {
+  color: #ffffff;
+}
+
+html.dark .api-table,
+html[data-theme="dark"] .api-table,
+:root.dark .api-table {
+  background: #212121;
+  border-color: #334155;
+}
+
+html.dark .api-table thead,
+html[data-theme="dark"] .api-table thead,
+:root.dark .api-table thead {
+  background: #212121;
+}
+
+html.dark .api-table th,
+html[data-theme="dark"] .api-table th,
+:root.dark .api-table th {
+  color: #ffffff !important;
+  background: #212121 !important;
+  border-bottom-color: #334155 !important;
+}
+
+html.dark .api-table td,
+html[data-theme="dark"] .api-table td,
+:root.dark .api-table td {
+  color: #cbd5e1;
+  border-bottom-color: #334155;
+}
+
+html.dark .api-table code,
+html.dark .info-card code,
+html[data-theme="dark"] .api-table code,
+html[data-theme="dark"] .info-card code,
+:root.dark .api-table code,
+:root.dark .info-card code {
+  background: #212121;
+  color: #ffffff;
+}
+
+html.dark .content-footer,
+html[data-theme="dark"] .content-footer,
+:root.dark .content-footer {
+  background: #212121;
+  border-top-color: #334155;
+  color: #cbd5e1;
+}
+
+html.dark .content-footer a,
+html[data-theme="dark"] .content-footer a,
+:root.dark .content-footer a {
+  color: #ffffff;
+}
+
+html.dark .content-footer a:hover,
+html[data-theme="dark"] .content-footer a:hover,
+:root.dark .content-footer a:hover {
+  color: #ffffff;
+}
+
+html.dark .form-output pre,
+html[data-theme="dark"] .form-output pre,
+:root.dark .form-output pre {
+  background: #212121;
+  color: #cbd5e1;
+  border-color: #334155;
+}
+
+html.dark .test-description,
+html[data-theme="dark"] .test-description,
+:root.dark .test-description {
+  background: #1e3a5f !important;
+  color: #bfdbfe !important;
+  border-left-color: #60a5fa !important;
+}
+
+/* Sidebar dark mode */
+html.dark .sidebar,
+html[data-theme="dark"] .sidebar,
+:root.dark .sidebar {
+  background: #212121 !important;
+  color: #ffffff !important;
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+html.dark .sidebar-header,
+html[data-theme="dark"] .sidebar-header,
+:root.dark .sidebar-header {
+  border-bottom-color: #334155 !important;
+}
+
+html.dark .logo,
+html[data-theme="dark"] .logo,
+:root.dark .logo {
+  color: #ffffff !important;
+}
+
+html.dark .logo-icon,
+html[data-theme="dark"] .logo-icon,
+:root.dark .logo-icon {
+  color: #ffffff !important;
+}
+
+html.dark .logo-text,
+html[data-theme="dark"] .logo-text,
+:root.dark .logo-text {
+  color: #ffffff !important;
+}
+
+html.dark .version,
+html[data-theme="dark"] .version,
+:root.dark .version {
+  color: #94a3b8 !important;
+}
+
+html.dark .nav-item,
+html[data-theme="dark"] .nav-item,
+:root.dark .nav-item {
+  color: #cbd5e1 !important;
+}
+
+html.dark .nav-item:hover,
+html.dark .nav-item:active,
+html[data-theme="dark"] .nav-item:hover,
+html[data-theme="dark"] .nav-item:active,
+:root.dark .nav-item:hover,
+:root.dark .nav-item:active {
+  background: #334155 !important;
+  color: #ffffff !important;
+}
+
+html.dark .nav-item.active,
+html[data-theme="dark"] .nav-item.active,
+:root.dark .nav-item.active {
+  background: #1e3a5f !important;
+  color: #60a5fa !important;
+  border-left-color: #60a5fa !important;
+}
+
+/* Ensure navbar text is visible in dark mode */
+html.dark .sidebar-nav,
+html[data-theme="dark"] .sidebar-nav,
+:root.dark .sidebar-nav {
+  color: #e2e8f0 !important;
+}
+
+html.dark .sidebar-nav a,
+html[data-theme="dark"] .sidebar-nav a,
+:root.dark .sidebar-nav a {
+  color: #cbd5e1 !important;
+}
+
+html.dark .sidebar-nav a:hover,
+html.dark .sidebar-nav a:active,
+html[data-theme="dark"] .sidebar-nav a:hover,
+html[data-theme="dark"] .sidebar-nav a:active,
+:root.dark .sidebar-nav a:hover,
+:root.dark .sidebar-nav a:active {
+  color: #ffffff !important;
+}
+
+html.dark .sidebar-nav a.active,
+html[data-theme="dark"] .sidebar-nav a.active,
+:root.dark .sidebar-nav a.active {
+  color: #60a5fa !important;
+}
+
+html.dark .sidebar-footer,
+html[data-theme="dark"] .sidebar-footer,
+:root.dark .sidebar-footer {
+  border-top-color: #334155 !important;
+  background: #1a1a1a !important;
+}
+
+html.dark .theme-toggle label,
+html[data-theme="dark"] .theme-toggle label,
+:root.dark .theme-toggle label {
+  color: #cbd5e1 !important;
+}
+
+html.dark .theme-buttons,
+html[data-theme="dark"] .theme-buttons,
+:root.dark .theme-buttons {
+  background: #1a1a1a !important;
+  border-color: #334155 !important;
+}
+
+html.dark .theme-btn,
+html[data-theme="dark"] .theme-btn,
+:root.dark .theme-btn {
+  background: transparent !important;
+  border: none !important;
+  color: #94a3b8 !important;
+}
+
+html.dark .theme-btn:hover,
+html.dark .theme-btn:active,
+html[data-theme="dark"] .theme-btn:hover,
+html[data-theme="dark"] .theme-btn:active,
+:root.dark .theme-btn:hover,
+:root.dark .theme-btn:active {
+  background: #334155 !important;
+  color: #ffffff !important;
+}
+
+html.dark .theme-btn.active,
+html[data-theme="dark"] .theme-btn.active,
+:root.dark .theme-btn.active {
+  background: #3b82f6 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3) !important;
+}
+
+html.dark .theme-btn.active:hover,
+html[data-theme="dark"] .theme-btn.active:hover,
+:root.dark .theme-btn.active:hover {
+  background: #2563eb !important;
+}
+
+html.dark .sidebar-close,
+html[data-theme="dark"] .sidebar-close,
+:root.dark .sidebar-close {
+  background: #334155 !important;
+  color: #ffffff !important;
+}
+
+html.dark .sidebar-close:hover,
+html.dark .sidebar-close:active,
+html[data-theme="dark"] .sidebar-close:hover,
+html[data-theme="dark"] .sidebar-close:active,
+:root.dark .sidebar-close:hover,
+:root.dark .sidebar-close:active {
+  background: #475569 !important;
+}
+
+html.dark .mobile-menu-toggle,
+html[data-theme="dark"] .mobile-menu-toggle,
+:root.dark .mobile-menu-toggle {
+  background: #212121 !important;
+  color: #ffffff !important;
+  border-color: #334155 !important;
+}
+
+html.dark .mobile-menu-toggle:hover,
+html.dark .mobile-menu-toggle:active,
+html[data-theme="dark"] .mobile-menu-toggle:hover,
+html[data-theme="dark"] .mobile-menu-toggle:active,
+:root.dark .mobile-menu-toggle:hover,
+:root.dark .mobile-menu-toggle:active {
+  background: #334155 !important;
+}
+
+/* Sidebar scrollbar dark mode */
+html.dark .sidebar::-webkit-scrollbar,
+html[data-theme="dark"] .sidebar::-webkit-scrollbar,
+:root.dark .sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+html.dark .sidebar::-webkit-scrollbar-track,
+html[data-theme="dark"] .sidebar::-webkit-scrollbar-track,
+:root.dark .sidebar::-webkit-scrollbar-track {
+  background: #1a1a1a !important;
+}
+
+html.dark .sidebar::-webkit-scrollbar-thumb,
+html[data-theme="dark"] .sidebar::-webkit-scrollbar-thumb,
+:root.dark .sidebar::-webkit-scrollbar-thumb {
+  background: #475569 !important;
+  border-radius: 4px;
+}
+
+html.dark .sidebar::-webkit-scrollbar-thumb:hover,
+html[data-theme="dark"] .sidebar::-webkit-scrollbar-thumb:hover,
+:root.dark .sidebar::-webkit-scrollbar-thumb:hover {
+  background: #64748b !important;
+}
+
+/* Ensure all sidebar text elements are visible in dark mode */
+html.dark .sidebar *,
+html[data-theme="dark"] .sidebar *,
+:root.dark .sidebar * {
+  color: inherit;
+}
+
+html.dark .sidebar h1,
+html.dark .sidebar h2,
+html.dark .sidebar h3,
+html.dark .sidebar h4,
+html.dark .sidebar h5,
+html.dark .sidebar h6,
+html[data-theme="dark"] .sidebar h1,
+html[data-theme="dark"] .sidebar h2,
+html[data-theme="dark"] .sidebar h3,
+html[data-theme="dark"] .sidebar h4,
+html[data-theme="dark"] .sidebar h5,
+html[data-theme="dark"] .sidebar h6,
+:root.dark .sidebar h1,
+:root.dark .sidebar h2,
+:root.dark .sidebar h3,
+:root.dark .sidebar h4,
+:root.dark .sidebar h5,
+:root.dark .sidebar h6 {
+  color: #ffffff !important;
+}
+
+html.dark .sidebar p,
+html[data-theme="dark"] .sidebar p,
+:root.dark .sidebar p {
+  color: #cbd5e1 !important;
+}
+
+html.dark .sidebar span,
+html[data-theme="dark"] .sidebar span,
+:root.dark .sidebar span {
+  color: inherit !important;
+}
+
+/* Code blocks dark mode */
+html.dark .code-block,
+html[data-theme="dark"] .code-block,
+:root.dark .code-block {
+  background: #212121 !important;
+  border: 1px solid #334155 !important;
+}
+
+html.dark .code-header,
+html[data-theme="dark"] .code-header,
+:root.dark .code-header {
+  background: #212121 !important;
+  border-bottom-color: #334155 !important;
+}
+
+html.dark .code-header span,
+html[data-theme="dark"] .code-header span,
+:root.dark .code-header span {
+  color: #cbd5e1 !important;
+}
+
+html.dark .code-block pre,
+html[data-theme="dark"] .code-block pre,
+:root.dark .code-block pre {
+  background: #212121 !important;
+  color: #e2e8f0 !important;
+}
+
+html.dark .code-block code,
+html[data-theme="dark"] .code-block code,
+:root.dark .code-block code {
+  color: #e2e8f0 !important;
+  background: transparent !important;
+}
+
+html.dark .copy-btn,
+html[data-theme="dark"] .copy-btn,
+:root.dark .copy-btn {
+  background: #334155 !important;
+  border-color: #475569 !important;
+  color: #cbd5e1 !important;
+}
+
+html.dark .copy-btn:hover,
+html.dark .copy-btn:active,
+html[data-theme="dark"] .copy-btn:hover,
+html[data-theme="dark"] .copy-btn:active,
+:root.dark .copy-btn:hover,
+:root.dark .copy-btn:active {
+  background: #475569 !important;
+  color: #ffffff !important;
+}
+
+/* Form output dark mode */
+html.dark .form-output,
+html[data-theme="dark"] .form-output,
+:root.dark .form-output {
+  background: #212121 !important;
+  border-color: #334155 !important;
+}
+
+html.dark .form-output h4,
+html[data-theme="dark"] .form-output h4,
+:root.dark .form-output h4 {
+  color: #10b981 !important;
+}
+
+html.dark .form-output pre,
+html[data-theme="dark"] .form-output pre,
+:root.dark .form-output pre {
+  color: #cbd5e1 !important;
+  background: transparent !important;
+}
+
+html.dark .form-output p,
+html[data-theme="dark"] .form-output p,
+:root.dark .form-output p {
+  color: #cbd5e1 !important;
+}
+
+html.dark .form-output strong,
+html[data-theme="dark"] .form-output strong,
+:root.dark .form-output strong {
+  color: #e2e8f0 !important;
+}
+
+html.dark .form-output code,
+html[data-theme="dark"] .form-output code,
+:root.dark .form-output code {
+  color: #60a5fa !important;
+  background: #334155 !important;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+}
+
+/* Ensure JSON and other content in pre is visible */
+html.dark .form-output pre *,
+html[data-theme="dark"] .form-output pre *,
+:root.dark .form-output pre * {
+  color: #cbd5e1 !important;
+}
+
+/* Footer dark mode */
+html.dark .content-footer,
+html[data-theme="dark"] .content-footer,
+:root.dark .content-footer {
+  background: #212121 !important;
+  border-top-color: #334155 !important;
+}
+
+html.dark .content-footer p,
+html[data-theme="dark"] .content-footer p,
+:root.dark .content-footer p {
+  color: #94a3b8 !important;
+}
+
+html.dark .footer-powered-by,
+html[data-theme="dark"] .footer-powered-by,
+:root.dark .footer-powered-by {
+  border-top-color: #334155 !important;
+}
+
+html.dark .footer-powered-by p,
+html[data-theme="dark"] .footer-powered-by p,
+:root.dark .footer-powered-by p {
+  color: #94a3b8 !important;
+}
+
+html.dark .tokiforge-link,
+html[data-theme="dark"] .tokiforge-link,
+:root.dark .tokiforge-link {
+  color: #60a5fa !important;
+}
+
+html.dark .tokiforge-link:hover,
+html[data-theme="dark"] .tokiforge-link:hover,
+:root.dark .tokiforge-link:hover {
+  color: #93c5fd !important;
+}
+
+html.dark .tokiforge-link:active,
+html[data-theme="dark"] .tokiforge-link:active,
+:root.dark .tokiforge-link:active {
+  color: #3b82f6 !important;
+}
+
+/* Additional dark mode text fixes */
+html.dark .section-header h2,
+html[data-theme="dark"] .section-header h2,
+:root.dark .section-header h2 {
+  color: #ffffff !important;
+}
+
+html.dark .example-group h3,
+html[data-theme="dark"] .example-group h3,
+:root.dark .example-group h3 {
+  color: #ffffff !important;
+  border-bottom-color: #334155 !important;
+}
+
+html.dark .api-section h3,
+html[data-theme="dark"] .api-section h3,
+:root.dark .api-section h3 {
+  color: #ffffff !important;
+}
+
+html.dark .api-table th,
+html[data-theme="dark"] .api-table th,
+:root.dark .api-table th {
+  color: #ffffff !important;
+  background: #212121 !important;
+  border-bottom-color: #334155 !important;
+}
+
+html.dark .api-table td,
+html[data-theme="dark"] .api-table td,
+:root.dark .api-table td {
+  color: #cbd5e1 !important;
+}
+
+html.dark .info-card code,
+html[data-theme="dark"] .info-card code,
+:root.dark .info-card code {
+  background: #334155 !important;
+  color: #60a5fa !important;
+}
+
+html.dark .method-item code,
+html[data-theme="dark"] .method-item code,
+:root.dark .method-item code {
+  color: #60a5fa !important;
+}
+
+/* Feature item dark mode */
+html.dark .feature-item p,
+html[data-theme="dark"] .feature-item p,
+:root.dark .feature-item p {
+  color: #cbd5e1 !important;
+}
+
+/* Info card text dark mode */
+html.dark .info-card h3,
+html[data-theme="dark"] .info-card h3,
+:root.dark .info-card h3 {
+  color: #ffffff !important;
+}
+
+html.dark .info-card p,
+html.dark .info-card li,
+html[data-theme="dark"] .info-card p,
+html[data-theme="dark"] .info-card li,
+:root.dark .info-card p,
+:root.dark .info-card li {
+  color: #cbd5e1 !important;
+}
+
+/* Demo card text dark mode */
+html.dark .demo-card h3,
+html[data-theme="dark"] .demo-card h3,
+:root.dark .demo-card h3 {
+  color: #ffffff !important;
+}
+
+html.dark .demo-card p,
+html[data-theme="dark"] .demo-card p,
+:root.dark .demo-card p {
+  color: #cbd5e1 !important;
+}
+
+/* Example group dark mode */
+html.dark .example-item label,
+html[data-theme="dark"] .example-item label,
+:root.dark .example-item label {
+  color: #cbd5e1 !important;
+}
+
+/* Theme showcase dark mode */
+html.dark .theme-showcase-item label,
+html[data-theme="dark"] .theme-showcase-item label,
+:root.dark .theme-showcase-item label {
+  color: #cbd5e1 !important;
+}
+
+/* Method item dark mode */
+html.dark .method-item p,
+html[data-theme="dark"] .method-item p,
+:root.dark .method-item p {
+  color: #cbd5e1 !important;
+}
+
+/* Ensure all text in main content is visible */
+html.dark .main-content,
+html[data-theme="dark"] .main-content,
+:root.dark .main-content {
+  color: #e2e8f0 !important;
+}
+
+html.dark .main-content p,
+html[data-theme="dark"] .main-content p,
+:root.dark .main-content p {
+  color: #cbd5e1 !important;
+}
+
+html.dark .main-content li,
+html[data-theme="dark"] .main-content li,
+:root.dark .main-content li {
+  color: #cbd5e1 !important;
+}
+
+html.dark .main-content span,
+html[data-theme="dark"] .main-content span,
+:root.dark .main-content span {
+  color: inherit !important;
+}
+
+/* Ensure form output h4 is visible */
+html.dark .form-output h4,
+html[data-theme="dark"] .form-output h4,
+:root.dark .form-output h4 {
+  color: #10b981 !important;
+}
+
+/* Ensure all code elements are visible */
+html.dark code,
+html[data-theme="dark"] code,
+:root.dark code {
+  color: #60a5fa !important;
+}
+
+html.dark .api-table code,
+html[data-theme="dark"] .api-table code,
+:root.dark .api-table code {
+  background: #334155 !important;
+  color: #60a5fa !important;
+}
+
+/* Code block pre and code elements dark mode */
+html.dark .code-block pre code,
+html[data-theme="dark"] .code-block pre code,
+:root.dark .code-block pre code {
+  color: #e2e8f0 !important;
+  background: transparent !important;
+}
+
+html.dark .code-block pre,
+html[data-theme="dark"] .code-block pre,
+:root.dark .code-block pre {
+  background: #212121 !important;
+  color: #e2e8f0 !important;
+}
+
+/* Comprehensive dark mode for all demo elements */
+html.dark .content-section,
+html[data-theme="dark"] .content-section,
+:root.dark .content-section {
+  background: transparent !important;
+  color: #e2e8f0 !important;
+}
+
+html.dark .content-section h1,
+html.dark .content-section h2,
+html.dark .content-section h3,
+html.dark .content-section h4,
+html.dark .content-section h5,
+html.dark .content-section h6,
+html[data-theme="dark"] .content-section h1,
+html[data-theme="dark"] .content-section h2,
+html[data-theme="dark"] .content-section h3,
+html[data-theme="dark"] .content-section h4,
+html[data-theme="dark"] .content-section h5,
+html[data-theme="dark"] .content-section h6,
+:root.dark .content-section h1,
+:root.dark .content-section h2,
+:root.dark .content-section h3,
+:root.dark .content-section h4,
+:root.dark .content-section h5,
+:root.dark .content-section h6 {
+  color: #ffffff !important;
+}
+
+html.dark .feature-grid,
+html.dark .example-grid,
+html.dark .theme-showcase-grid,
+html.dark .features-list,
+html.dark .method-list,
+html[data-theme="dark"] .feature-grid,
+html[data-theme="dark"] .example-grid,
+html[data-theme="dark"] .theme-showcase-grid,
+html[data-theme="dark"] .features-list,
+html[data-theme="dark"] .method-list,
+:root.dark .feature-grid,
+:root.dark .example-grid,
+:root.dark .theme-showcase-grid,
+:root.dark .features-list,
+:root.dark .method-list {
+  background: transparent !important;
+}
+
+html.dark .feature-icon,
+html[data-theme="dark"] .feature-icon,
+:root.dark .feature-icon {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+html.dark .demo-form,
+html[data-theme="dark"] .demo-form,
+:root.dark .demo-form {
+  background: transparent !important;
+}
+
+/* Ensure all links are visible in dark mode */
+html.dark a:not(.nav-item):not(.footer-links a):not(.tokiforge-link),
+html[data-theme="dark"] a:not(.nav-item):not(.footer-links a):not(.tokiforge-link),
+:root.dark a:not(.nav-item):not(.footer-links a):not(.tokiforge-link) {
+  color: #60a5fa !important;
+}
+
+html.dark a:not(.nav-item):not(.footer-links a):not(.tokiforge-link):hover,
+html[data-theme="dark"] a:not(.nav-item):not(.footer-links a):not(.tokiforge-link):hover,
+:root.dark a:not(.nav-item):not(.footer-links a):not(.tokiforge-link):hover {
+  color: #93c5fd !important;
+}
+
+html.dark a:not(.nav-item):not(.footer-links a):not(.tokiforge-link):visited,
+html[data-theme="dark"] a:not(.nav-item):not(.footer-links a):not(.tokiforge-link):visited,
+:root.dark a:not(.nav-item):not(.footer-links a):not(.tokiforge-link):visited {
+  color: #818cf8 !important;
+}
+
+/* Ensure all list items are visible */
+html.dark ul,
+html.dark ol,
+html[data-theme="dark"] ul,
+html[data-theme="dark"] ol,
+:root.dark ul,
+:root.dark ol {
+  color: #cbd5e1 !important;
+}
+
+html.dark ul li,
+html.dark ol li,
+html[data-theme="dark"] ul li,
+html[data-theme="dark"] ol li,
+:root.dark ul li,
+:root.dark ol li {
+  color: #cbd5e1 !important;
+}
+
+/* Ensure all strong and em elements are visible */
+html.dark strong,
+html.dark b,
+html[data-theme="dark"] strong,
+html[data-theme="dark"] b,
+:root.dark strong,
+:root.dark b {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+html.dark em,
+html.dark i,
+html[data-theme="dark"] em,
+html[data-theme="dark"] i,
+:root.dark em,
+:root.dark i {
+  color: #cbd5e1 !important;
+}
+
+/* Global scrollbar dark mode */
+html.dark ::-webkit-scrollbar,
+html[data-theme="dark"] ::-webkit-scrollbar,
+:root.dark ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+html.dark ::-webkit-scrollbar-track,
+html[data-theme="dark"] ::-webkit-scrollbar-track,
+:root.dark ::-webkit-scrollbar-track {
+  background: #1a1a1a !important;
+}
+
+html.dark ::-webkit-scrollbar-thumb,
+html[data-theme="dark"] ::-webkit-scrollbar-thumb,
+:root.dark ::-webkit-scrollbar-thumb {
+  background: #475569 !important;
+  border-radius: 4px;
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover,
+html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover,
+:root.dark ::-webkit-scrollbar-thumb:hover {
+  background: #64748b !important;
+}
+
+/* Selection styles for dark mode */
+html.dark ::selection,
+html[data-theme="dark"] ::selection,
+:root.dark ::selection {
+  background: rgba(96, 165, 250, 0.3) !important;
+  color: #ffffff !important;
+}
+
+html.dark ::-moz-selection,
+html[data-theme="dark"] ::-moz-selection,
+:root.dark ::-moz-selection {
+  background: rgba(96, 165, 250, 0.3) !important;
+  color: #ffffff !important;
+}
+
+/* Focus styles for dark mode */
+html.dark *:focus,
+html[data-theme="dark"] *:focus,
+:root.dark *:focus {
+  outline-color: #60a5fa !important;
 }
 
 /* Custom scrollbar */
@@ -49,7 +1026,10 @@ body {
 }
 
 /* Smooth transitions for all interactive elements */
-button, input, select, textarea {
+button,
+input,
+select,
+textarea {
   transition: all 0.2s ease;
 }
 
@@ -57,23 +1037,24 @@ button, input, select, textarea {
 .dark .iti__country-list,
 [data-theme="dark"] .iti__country-list,
 .dark-theme.iti__country-list {
-  background: #0f1521 !important;
+  background: #212121 !important;
   border-color: #324056 !important;
-  color: #e5e7eb !important;
+  color: #ffffff !important;
   box-shadow: 0 24px 60px rgba(0, 0, 0, .4) !important;
 }
 
 .dark .iti__search-input,
 [data-theme="dark"] .iti__search-input,
 .dark-theme.iti__search-input {
-  background: #1e293b !important;
-  color: #f1f5f9 !important;
+  height: 40px !important;
+  background: #212121 !important;
+  color: #ffffff !important;
   border: 1px solid #475569 !important;
   outline: none !important;
   padding: 10px 12px !important;
   width: 100% !important;
   font-size: 14px !important;
-  border-radius: 6px !important;
+  border-radius: 0 !important;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
 }
 
@@ -86,7 +1067,7 @@ button, input, select, textarea {
 .dark .iti__country,
 [data-theme="dark"] .iti__country,
 .dark-theme .iti__country {
-  color: #e5e7eb !important;
+  color: #ffffff !important;
 }
 
 .dark .iti__country.iti__highlight,
@@ -98,7 +1079,7 @@ button, input, select, textarea {
 .dark .iti__country-name,
 [data-theme="dark"] .iti__country-name,
 .dark-theme .iti__country-name {
-  color: #e5e7eb !important;
+  color: #ffffff !important;
 }
 
 .dark .iti__country-code,
@@ -117,11 +1098,11 @@ button, input, select, textarea {
 body.dark .iti__country-list,
 html.dark .iti__country-list,
 .dark .iti__country-list {
-  background: #0f1521 !important;
+  background: #212121 !important;
   border: 1px solid #324056 !important;
-  color: #e5e7eb !important;
+  color: #ffffff !important;
   box-shadow: 0 24px 60px rgba(0, 0, 0, .4) !important;
-  border-radius: 8px !important;
+  border-radius: 0px !important;
   max-height: 300px !important;
   overflow-y: auto !important;
   z-index: 9999 !important;
@@ -130,14 +1111,15 @@ html.dark .iti__country-list,
 body.dark .iti__search-input,
 html.dark .iti__search-input,
 .dark .iti__search-input {
-  background: #1e293b !important;
-  color: #f1f5f9 !important;
+  height: 40px !important;
+  background: #212121 !important;
+  color: #ffffff !important;
   border: 1px solid #475569 !important;
   outline: none !important;
   padding: 10px 12px !important;
   width: 100% !important;
   font-size: 14px !important;
-  border-radius: 6px !important;
+  border-radius: 0 !important;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
 }
 
@@ -150,7 +1132,7 @@ html.dark .iti__search-input::placeholder,
 body.dark .iti__country,
 html.dark .iti__country,
 .dark .iti__country {
-  color: #e5e7eb !important;
+  color: #ffffff !important;
   padding: 8px 12px !important;
   cursor: pointer !important;
   border-bottom: 1px solid rgba(50, 64, 86, 0.3) !important;
@@ -172,7 +1154,7 @@ html.dark .iti__country.iti__highlight,
 body.dark .iti__country-name,
 html.dark .iti__country-name,
 .dark .iti__country-name {
-  color: #e5e7eb !important;
+  color: #ffffff !important;
 }
 
 body.dark .iti__country-code,
@@ -185,6 +1167,23 @@ body.dark .iti__dial-code,
 html.dark .iti__dial-code,
 .dark .iti__dial-code {
   color: #94a3b8 !important;
+}
+
+/* Dark mode dropdown arrow icon */
+body.dark .iti__arrow,
+html.dark .iti__arrow,
+.dark .iti__arrow,
+body.dark .iti--allow-dropdown .iti__arrow,
+html.dark .iti--allow-dropdown .iti__arrow,
+.dark .iti--allow-dropdown .iti__arrow {
+  border-top-color: #ffffff !important;
+  opacity: 0.9;
+}
+
+body.dark .iti__arrow:hover,
+html.dark .iti__arrow:hover,
+.dark .iti__arrow:hover {
+  opacity: 1;
 }
 
 /* Ensure search input is functional in dark mode */
@@ -201,6 +1200,7 @@ html.dark .iti__search-input {
 
 /* Light mode search input styling */
 .iti__search-input {
+  height: 40px !important;
   background: #ffffff !important;
   color: #1e293b !important;
   border: 1px solid #d1d5db !important;
@@ -208,7 +1208,7 @@ html.dark .iti__search-input {
   padding: 10px 12px !important;
   width: 100% !important;
   font-size: 14px !important;
-  border-radius: 6px !important;
+  border-radius: 0 !important;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
 
@@ -243,7 +1243,7 @@ html.dark .iti__search-input:focus {
     background: white !important;
     color: black !important;
   }
-  
+
   .demo-header,
   .demo-footer {
     display: none;

@@ -1,0 +1,184 @@
+/**
+ * Angular Material theme variant for ngxsmk-tel-input
+ * 
+ * Usage:
+ * @import 'ngxsmk-tel-input/themes/material';
+ * 
+ * Or in your component:
+ * <ngxsmk-tel-input class="ngxsmk-tel-input-material" />
+ */
+
+.ngxsmk-tel-input-material {
+  --tel-bg: #fff;
+  --tel-fg: rgba(0, 0, 0, 0.87);
+  --tel-border: rgba(0, 0, 0, 0.42);
+  --tel-border-hover: rgba(0, 0, 0, 0.87);
+  --tel-ring: #3f51b5;
+  --tel-placeholder: rgba(0, 0, 0, 0.6);
+  --tel-error: #f44336;
+  --tel-radius: 4px;
+  --tel-focus-shadow: 0 0 0 2px rgba(63, 81, 181, 0.2);
+
+  --tel-dd-bg: #fff;
+  --tel-dd-border: rgba(0, 0, 0, 0.12);
+  --tel-dd-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
+  --tel-dd-radius: 4px;
+  --tel-dd-item-hover: rgba(0, 0, 0, 0.04);
+  --tel-dd-search-bg: #f5f5f5;
+  --tel-dd-z: 2000;
+
+  // Material Design elevation
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.24);
+  transition: box-shadow 0.2s ease-in-out;
+
+  &:hover {
+    box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.16), 0 2px 4px 0 rgba(0, 0, 0, 0.12);
+  }
+
+  &:focus-within {
+    box-shadow: var(--tel-focus-shadow);
+  }
+
+  .ngxsmk-tel-input__control {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    padding: 8px 12px;
+    border: 1px solid var(--tel-border);
+    border-radius: var(--tel-radius);
+    background: var(--tel-bg);
+    color: var(--tel-fg);
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+
+    &:hover {
+      border-color: var(--tel-border-hover);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--tel-ring);
+      box-shadow: var(--tel-focus-shadow);
+    }
+
+    &::placeholder {
+      color: var(--tel-placeholder);
+    }
+
+    &:disabled {
+      background: rgba(0, 0, 0, 0.04);
+      color: rgba(0, 0, 0, 0.38);
+      cursor: not-allowed;
+    }
+  }
+
+  .ngxsmk-tel__label {
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: rgba(0, 0, 0, 0.6);
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .ngxsmk-tel__hint {
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.6);
+    margin-top: 4px;
+  }
+
+  .ngxsmk-tel__error {
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    color: var(--tel-error);
+    margin-top: 4px;
+  }
+
+  &.has-error {
+    .ngxsmk-tel-input__control {
+      border-color: var(--tel-error);
+    }
+  }
+
+  // Dark theme support - only if not explicitly light
+  &:not([data-theme="light"]):not(.light) {
+    @media (prefers-color-scheme: dark) {
+      --tel-bg: #424242;
+      --tel-fg: rgba(255, 255, 255, 0.87);
+      --tel-border: rgba(255, 255, 255, 0.42);
+      --tel-border-hover: rgba(255, 255, 255, 0.87);
+      --tel-placeholder: rgba(255, 255, 255, 0.6);
+      --tel-dd-bg: #424242;
+      --tel-dd-border: rgba(255, 255, 255, 0.12);
+      --tel-dd-search-bg: #616161;
+    }
+  }
+}
+
+// Explicit dark theme support via class and data-theme attribute
+.ngxsmk-tel-input-material.dark,
+.ngxsmk-tel-input-material[data-theme="dark"],
+:host-context(.dark) .ngxsmk-tel-input-material:not([data-theme="light"]):not(.light),
+.dark .ngxsmk-tel-input-material:not([data-theme="light"]):not(.light) {
+  --tel-bg: #424242;
+  --tel-fg: rgba(255, 255, 255, 0.87);
+  --tel-border: rgba(255, 255, 255, 0.42);
+  --tel-border-hover: rgba(255, 255, 255, 0.87);
+  --tel-placeholder: rgba(255, 255, 255, 0.6);
+  --tel-dd-bg: #424242;
+  --tel-dd-border: rgba(255, 255, 255, 0.12);
+  --tel-dd-search-bg: #616161;
+
+  .ngxsmk-tel-input__control:disabled {
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.38);
+  }
+}
+
+// Explicit light theme support
+.ngxsmk-tel-input-material[data-theme="light"],
+.ngxsmk-tel-input-material.light {
+  --tel-bg: #fff !important;
+  --tel-fg: rgba(0, 0, 0, 0.87) !important;
+  --tel-border: rgba(0, 0, 0, 0.42) !important;
+  --tel-border-hover: rgba(0, 0, 0, 0.87) !important;
+  --tel-placeholder: rgba(0, 0, 0, 0.6) !important;
+  --tel-dd-bg: #fff !important;
+  --tel-dd-border: rgba(0, 0, 0, 0.12) !important;
+  --tel-dd-search-bg: #f5f5f5 !important;
+
+  .ngxsmk-tel-input__control:disabled {
+    background: rgba(0, 0, 0, 0.04) !important;
+    color: rgba(0, 0, 0, 0.38) !important;
+  }
+}
+
+// Material Design density variants
+.ngxsmk-tel-input-material[data-size="sm"] {
+  .ngxsmk-tel-input__control {
+    padding: 4px 8px;
+    font-size: 14px;
+  }
+}
+
+.ngxsmk-tel-input-material[data-size="lg"] {
+  .ngxsmk-tel-input__control {
+    padding: 12px 16px;
+    font-size: 18px;
+  }
+}
+
+// Material Design filled variant
+.ngxsmk-tel-input-material[data-variant="filled"] {
+  .ngxsmk-tel-input__control {
+    background: rgba(0, 0, 0, 0.04);
+    border: none;
+    border-bottom: 1px solid var(--tel-border);
+    border-radius: 4px 4px 0 0;
+
+    &:focus {
+      border-bottom: 2px solid var(--tel-ring);
+      box-shadow: none;
+    }
+  }
+}

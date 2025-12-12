@@ -1,6 +1,6 @@
 {
   "name": "ngxsmk-tel-input",
-  "version": "1.6.8",
+  "version": "1.6.9",
   "description": "Angular international telephone input (intl-tel-input UI + libphonenumber-js validation). ControlValueAccessor. SSR-safe.",
   "license": "MIT",
   "sideEffects": false,
@@ -46,9 +46,9 @@
   ],
 
   "peerDependencies": {
-    "@angular/common": ">=17 <21",
-    "@angular/core": ">=17 <21",
-    "@angular/forms": ">=17 <21",
+    "@angular/common": ">=17",
+    "@angular/core": ">=17",
+    "@angular/forms": ">=17",
     "rxjs": ">=7.8.0",
     "intl-tel-input": "^25.3.2",
     "libphonenumber-js": "^1.12.10 || ^1.12.11"

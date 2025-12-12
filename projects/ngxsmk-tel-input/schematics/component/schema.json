@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "id": "ngxsmk-tel-input-component",
+  "title": "ngxsmk-tel-input component schematic",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The name of the component.",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What name would you like to use for the component?"
+    },
+    "path": {
+      "type": "string",
+      "format": "path",
+      "description": "The path to create the component.",
+      "default": "app"
+    },
+    "project": {
+      "type": "string",
+      "description": "The name of the project.",
+      "$default": {
+        "$source": "projectName"
+      }
+    },
+    "theme": {
+      "type": "string",
+      "enum": ["default", "material", "primeng"],
+      "default": "default",
+      "description": "The theme to use."
+    },
+    "useReactiveForms": {
+      "type": "boolean",
+      "default": true,
+      "description": "Use reactive forms."
+    }
+  },
+  "required": ["name"]
+}
+

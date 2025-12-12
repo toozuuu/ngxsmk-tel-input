@@ -1,0 +1,155 @@
+.checkout-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.form-section {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  font-size: .875rem;
+}
+
+.form-group input {
+  width: 100%;
+  text-indent: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  height: 40px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.error {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.order-summary {
+  background: white;
+  padding: 1rem;
+  border-radius: 4px;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.summary-item.total {
+  font-weight: 600;
+  font-size: 1.25rem;
+  border-bottom: none;
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+  border-top: 2px solid #333;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+}
+
+.form-actions button {
+  border: none;
+  padding-inline: 10px;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  height: 40px;
+}
+
+.form-actions button[type="submit"] {
+  background: #007bff;
+  color: white;
+}
+
+.form-actions button[type="submit"]:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.form-actions button[type="button"] {
+  background: #6c757d;
+  color: white;
+}
+
+/* Dark Mode Support */
+:host-context(.dark) .form-section {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
+:host-context(.dark) .form-group label {
+  color: #e2e8f0;
+}
+
+:host-context(.dark) .form-group input {
+  background: #0f172a;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+
+:host-context(.dark) .form-group input:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 0.2rem rgba(96, 165, 250, 0.25);
+}
+
+:host-context(.dark) .order-summary {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
+:host-context(.dark) .summary-item {
+  border-bottom-color: #334155;
+}
+
+:host-context(.dark) .summary-item.total {
+  border-top-color: #475569;
+}
+
+:host-context(.dark) .form-actions button[type="submit"] {
+  background: #3b82f6;
+  color: white;
+}
+
+:host-context(.dark) .form-actions button[type="submit"]:disabled {
+  background: #334155;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+:host-context(.dark) .form-actions button[type="button"] {
+  background: #475569;
+  color: #f8fafc;
+}
+
+:host-context(.dark) .form-actions button[type="button"]:hover {
+  background: #64748b;
+}
+
+:host-context(.dark) h2,
+:host-context(.dark) h3 {
+  color: #f8fafc;
+}
