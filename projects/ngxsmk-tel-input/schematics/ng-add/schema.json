@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "id": "ngxsmk-tel-input-ng-add",
+  "title": "ngxsmk-tel-input ng-add schematic",
+  "type": "object",
+  "properties": {
+    "project": {
+      "type": "string",
+      "description": "The name of the project.",
+      "$default": {
+        "$source": "projectName"
+      }
+    },
+    "skipPackageJson": {
+      "type": "boolean",
+      "default": false,
+      "description": "Do not add dependencies to package.json."
+    },
+    "theme": {
+      "type": "string",
+      "enum": ["default", "material", "primeng"],
+      "default": "default",
+      "description": "The theme to use."
+    },
+    "addStyles": {
+      "type": "boolean",
+      "default": true,
+      "description": "Add required styles to angular.json."
+    },
+    "addAssets": {
+      "type": "boolean",
+      "default": true,
+      "description": "Add required assets (flags) to angular.json."
+    }
+  },
+  "required": []
+}
+

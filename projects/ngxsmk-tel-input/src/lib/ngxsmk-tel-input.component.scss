@@ -1,6 +1,5 @@
-/* ---------- Theme tokens ---------- */
 :host {
-  /* Light theme (default) */
+  /* Default to light theme */
   --tel-bg: #fff;
   --tel-fg: #0f172a;
   --tel-border: #c0c0c0;
@@ -10,26 +9,29 @@
   --tel-error: #ef4444;
   --tel-success: #10b981;
   --tel-warning: #f59e0b;
-  --tel-radius: 12px;
-  --tel-focus-shadow: 0 0 0 3px rgba(37, 99, 235, .25);
+  --tel-radius: 8px;
+  --tel-focus-shadow: 0 0 0 2px rgba(37, 99, 235, .2);
 
-  --tel-dd-bg: var(--tel-bg);
+  --tel-dd-bg: #fff;
   --tel-dd-border: var(--tel-border);
   --tel-dd-shadow: 0 24px 60px rgba(0, 0, 0, .18);
-  --tel-dd-radius: 12px;
+  --tel-dd-radius: 8px;
   --tel-dd-item-hover: rgba(37, 99, 235, .08);
   --tel-dd-z: 2000;
   --tel-dd-search-bg: rgba(148, 163, 184, .08);
 
   display: block;
+  /* contain property with fallback for older browsers */
   contain: layout style;
+  /* Fallback for browsers without contain support */
+  isolation: isolate;
 }
 
-/* Dark theme */
-:host-context(.dark),
-:host([data-theme="dark"]) {
-  --tel-bg: #0b0f17;
-  --tel-fg: #e5e7eb;
+:host-context(.dark):not([data-theme="light"]):not(.light),
+:host([data-theme="dark"]),
+:host(.dark) {
+  --tel-bg: #0f172a;
+  --tel-fg: #e2e8f0;
   --tel-border: #334155;
   --tel-border-hover: #475569;
   --tel-ring: #60a5fa;
@@ -37,75 +39,94 @@
   --tel-error: #f87171;
   --tel-success: #34d399;
   --tel-warning: #fbbf24;
-  --tel-focus-shadow: 0 0 0 3px rgba(96, 165, 250, .25);
+  --tel-focus-shadow: 0 0 0 0.2rem rgba(96, 165, 250, 0.25);
 
-  --tel-dd-bg: #0f1521;
-  --tel-dd-border: #324056;
+  --tel-dd-bg: #1e293b;
+  --tel-dd-border: #334155;
   --tel-dd-shadow: 0 24px 60px rgba(0, 0, 0, .4);
   --tel-dd-search-bg: rgba(148, 163, 184, .12);
 }
 
-/* Light theme override */
-:host([data-theme="light"]) {
-  --tel-bg: #fff;
-  --tel-fg: #0f172a;
-  --tel-border: #c0c0c0;
-  --tel-border-hover: #9aa0a6;
-  --tel-ring: #2563eb;
-  --tel-placeholder: #9ca3af;
-  --tel-error: #ef4444;
-  --tel-success: #10b981;
-  --tel-warning: #f59e0b;
-  --tel-focus-shadow: 0 0 0 3px rgba(37, 99, 235, .25);
+:host([data-theme="light"]),
+:host(.light) {
+  --tel-bg: #fff !important;
+  --tel-fg: #0f172a !important;
+  --tel-border: #c0c0c0 !important;
+  --tel-border-hover: #9aa0a6 !important;
+  --tel-ring: #2563eb !important;
+  --tel-placeholder: #9ca3af !important;
+  --tel-error: #ef4444 !important;
+  --tel-success: #10b981 !important;
+  --tel-warning: #f59e0b !important;
+  --tel-focus-shadow: 0 0 0 2px rgba(37, 99, 235, .2) !important;
 
-  --tel-dd-bg: var(--tel-bg);
-  --tel-dd-border: var(--tel-border);
-  --tel-dd-shadow: 0 24px 60px rgba(0, 0, 0, .18);
-  --tel-dd-search-bg: rgba(148, 163, 184, .08);
+  --tel-dd-bg: #fff !important;
+  --tel-dd-border: #c0c0c0 !important;
+  --tel-dd-shadow: 0 24px 60px rgba(0, 0, 0, .18) !important;
+  --tel-dd-search-bg: rgba(148, 163, 184, .08) !important;
 }
 
-/* Dark mode dropdown fixes */
-:host-context(.dark) ::ng-deep .iti__country-list,
-:host([data-theme="dark"]) ::ng-deep .iti__country-list {
+:host-context(.dark):not([data-theme="light"]):not(.light) ::ng-deep .iti__country-list,
+:host([data-theme="dark"]) ::ng-deep .iti__country-list,
+:host(.dark) ::ng-deep .iti__country-list {
   background: var(--tel-dd-bg) !important;
   border-color: var(--tel-dd-border) !important;
-  color: var(--tel-fg) !important;
+  color: #e2e8f0 !important;
 }
 
-:host-context(.dark) ::ng-deep .iti__search-input,
-:host([data-theme="dark"]) ::ng-deep .iti__search-input {
+:host-context(.dark):not([data-theme="light"]):not(.light) ::ng-deep .iti__search-input,
+:host([data-theme="dark"]) ::ng-deep .iti__search-input,
+:host(.dark) ::ng-deep .iti__search-input {
   background: var(--tel-dd-search-bg) !important;
-  color: var(--tel-fg) !important;
+  color: #ffffff !important;
   border-bottom-color: var(--tel-dd-border) !important;
 }
 
-:host-context(.dark) ::ng-deep .iti__country,
-:host([data-theme="dark"]) ::ng-deep .iti__country {
-  color: var(--tel-fg) !important;
+:host-context(.dark):not([data-theme="light"]):not(.light) ::ng-deep .iti__country,
+:host([data-theme="dark"]) ::ng-deep .iti__country,
+:host(.dark) ::ng-deep .iti__country {
+  color: #e2e8f0 !important;
 }
 
 
-:host-context(.dark) ::ng-deep .iti__country.iti__highlight,
-:host([data-theme="dark"]) ::ng-deep .iti__country.iti__highlight {
+:host-context(.dark):not([data-theme="light"]):not(.light) ::ng-deep .iti__country.iti__highlight,
+:host([data-theme="dark"]) ::ng-deep .iti__country.iti__highlight,
+:host(.dark) ::ng-deep .iti__country.iti__highlight {
   background-color: var(--tel-dd-item-hover) !important;
 }
 
-:host-context(.dark) ::ng-deep .iti__country-name,
-:host([data-theme="dark"]) ::ng-deep .iti__country-name {
-  color: var(--tel-fg) !important;
+:host-context(.dark):not([data-theme="light"]):not(.light) ::ng-deep .iti__country-name,
+:host([data-theme="dark"]) ::ng-deep .iti__country-name,
+:host(.dark) ::ng-deep .iti__country-name {
+  color: #e2e8f0 !important;
 }
 
-:host-context(.dark) ::ng-deep .iti__country-code,
-:host([data-theme="dark"]) ::ng-deep .iti__country-code {
-  color: var(--tel-placeholder) !important;
+:host-context(.dark):not([data-theme="light"]):not(.light) ::ng-deep .iti__country-code,
+:host([data-theme="dark"]) ::ng-deep .iti__country-code,
+:host(.dark) ::ng-deep .iti__country-code {
+  color: #94a3b8 !important;
 }
 
-:host-context(.dark) ::ng-deep .iti__dial-code,
-:host([data-theme="dark"]) ::ng-deep .iti__dial-code {
-  color: var(--tel-placeholder) !important;
+:host-context(.dark):not([data-theme="light"]) ::ng-deep .iti__dial-code,
+:host([data-theme="dark"]) ::ng-deep .iti__dial-code,
+:host(.dark) ::ng-deep .iti__dial-code {
+  color: #94a3b8 !important;
 }
 
-/* ---------- Structure ---------- */
+:host-context(.dark):not([data-theme="light"]):not(.light) ::ng-deep .iti__arrow,
+:host([data-theme="dark"]) ::ng-deep .iti__arrow,
+:host(.dark) ::ng-deep .iti__arrow {
+  border-top-color: #e2e8f0 !important;
+  opacity: 1;
+}
+
+:host-context(.dark):not([data-theme="light"]):not(.light) ::ng-deep .iti__arrow.iti__arrow--up,
+:host([data-theme="dark"]) ::ng-deep .iti__arrow.iti__arrow--up,
+:host(.dark) ::ng-deep .iti__arrow.iti__arrow--up {
+  border-top-color: transparent !important;
+  border-bottom-color: #e2e8f0 !important;
+}
+
 .ngxsmk-tel {
   width: 100%;
   color: var(--tel-fg);
@@ -118,9 +139,10 @@
 
 .ngxsmk-tel__label {
   display: inline-block;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   font-size: .875rem;
   font-weight: 500;
+  color: var(--tel-fg);
 }
 
 .ngxsmk-tel__wrap {
@@ -139,44 +161,89 @@
   color: var(--tel-fg);
   background: var(--tel-bg);
   border: 1px solid var(--tel-border);
+  -webkit-border-radius: var(--tel-radius);
+  -moz-border-radius: var(--tel-radius);
   border-radius: var(--tel-radius);
   padding: 10px 40px 10px 12px;
   outline: none;
-  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
-  will-change: border-color, box-shadow, background;
+  /* Vendor prefixes for transitions */
+  -webkit-transition: border-color .2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow .2s cubic-bezier(0.4, 0, 0.2, 1), background .2s cubic-bezier(0.4, 0, 0.2, 1), transform .2s cubic-bezier(0.4, 0, 0.2, 1);
+  -moz-transition: border-color .2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow .2s cubic-bezier(0.4, 0, 0.2, 1), background .2s cubic-bezier(0.4, 0, 0.2, 1), transform .2s cubic-bezier(0.4, 0, 0.2, 1);
+  -o-transition: border-color .2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow .2s cubic-bezier(0.4, 0, 0.2, 1), background .2s cubic-bezier(0.4, 0, 0.2, 1), transform .2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: border-color .2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow .2s cubic-bezier(0.4, 0, 0.2, 1), background .2s cubic-bezier(0.4, 0, 0.2, 1), transform .2s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: border-color, box-shadow, background, transform;
+  /* Vendor prefixes for better browser support */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   font-size: 16px;
   line-height: 1.5;
+  /* Ensure proper box-sizing */
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .ngxsmk-tel-input__control::placeholder {
   color: var(--tel-placeholder);
 }
 
+.ngxsmk-tel-input__control:hover:not(:disabled):not(:focus) {
+  border-color: var(--tel-border-hover);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  transform: translateY(-1px);
+}
 
 .ngxsmk-tel-input__control:focus {
   border-color: var(--tel-ring);
-  box-shadow: var(--tel-focus-shadow);
+  box-shadow: var(--tel-focus-shadow), 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   background: var(--tel-bg);
   color: var(--tel-fg);
+  transform: translateY(0);
 }
 
-/* Size presets */
 [data-size="sm"] .ngxsmk-tel-input__control {
   height: 34px;
   font-size: 13px;
   padding: 6px 36px 6px 10px;
-  border-radius: 10px;
+  border-radius: 6px;
+}
+
+[data-size="sm"] :host ::ng-deep .iti__country-list,
+[data-size="sm"] :host ::ng-deep .iti__search-input,
+[data-size="sm"] :host ::ng-deep .iti__country,
+[data-size="sm"] :host ::ng-deep .iti__country-name,
+[data-size="sm"] :host ::ng-deep .iti__country-code,
+[data-size="sm"] :host ::ng-deep .iti__dial-code {
+  font-size: 13px;
 }
 
 [data-size="lg"] .ngxsmk-tel-input__control {
   height: 46px;
   font-size: 16px;
   padding: 12px 44px 12px 14px;
-  border-radius: 14px;
+  border-radius: 10px;
 }
 
-/* Variants */
+[data-size="lg"] :host ::ng-deep .iti__country-list,
+[data-size="lg"] :host ::ng-deep .iti__search-input,
+[data-size="lg"] :host ::ng-deep .iti__country,
+[data-size="lg"] :host ::ng-deep .iti__country-name,
+[data-size="lg"] :host ::ng-deep .iti__country-code,
+[data-size="lg"] :host ::ng-deep .iti__dial-code {
+  font-size: 16px;
+}
+
+/* Medium size (default) - dropdown font size */
+:host ::ng-deep .iti__country-list,
+:host ::ng-deep .iti__search-input,
+:host ::ng-deep .iti__country,
+:host ::ng-deep .iti__country-name,
+:host ::ng-deep .iti__country-code,
+:host ::ng-deep .iti__dial-code {
+  font-size: 15px;
+}
+
 [data-variant="filled"] .ngxsmk-tel-input__control {
   background: rgba(148, 163, 184, .08);
 }
@@ -194,7 +261,6 @@
   box-shadow: none;
 }
 
-/* ---------- intl-tel-input dropdown (deep selectors) ---------- */
 :host ::ng-deep .iti__flag-container {
   border-top-left-radius: var(--tel-radius);
   border-bottom-left-radius: var(--tel-radius);
@@ -206,59 +272,193 @@
 :host ::ng-deep .iti__selected-flag {
   height: 100%;
   padding: 0 10px;
+  /* Flexbox with vendor prefixes */
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
   display: inline-flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
   align-items: center;
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+:host ::ng-deep .iti__selected-flag:focus,
+:host ::ng-deep .iti__selected-flag:active,
+:host ::ng-deep .iti__selected-flag:focus-visible {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+:host ::ng-deep .iti__selected-country {
+  z-index: 1;
+  position: relative;
+  /* Flexbox with vendor prefixes */
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  height: 100%;
+  background: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  border-radius: 0;
+  font-weight: inherit;
+  line-height: inherit;
+  text-decoration: none;
+  outline: none !important;
+}
+
+:host ::ng-deep .iti__selected-country:focus,
+:host ::ng-deep .iti__selected-country:active,
+:host ::ng-deep .iti__selected-country:focus-visible {
+  outline: none !important;
 }
 
 :host ::ng-deep .iti__country-list {
   background: var(--tel-dd-bg);
   border: 1px solid var(--tel-dd-border);
+  -webkit-border-radius: var(--tel-dd-radius);
+  -moz-border-radius: var(--tel-dd-radius);
   border-radius: var(--tel-dd-radius);
   box-shadow: var(--tel-dd-shadow);
+  /* max-height with fallback for browsers without min() support */
+  max-height: 360px;
   max-height: min(50vh, 360px);
   overflow: auto;
   padding: 6px 0;
-  width: max(280px, 100%);
+  /* Match the width of ngxsmk-tel div exactly */
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   z-index: var(--tel-dd-z);
+  /* contain property with fallback */
   contain: layout style;
+  isolation: isolate;
   will-change: transform;
   color: var(--tel-fg);
+  /* Fallback for browsers without CSS Grid */
+  display: block;
+  /* Slide-in animation */
+  animation: slideDown 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dropdown slide-in animation */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 :host ::ng-deep .iti--container .iti__country-list {
   z-index: var(--tel-dd-z);
+  /* Ensure dropdown matches the width of the input wrapper */
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 :host ::ng-deep .iti__search-input {
+  position: -webkit-sticky;
   position: sticky;
   top: 0;
   margin: 0;
-  padding: 10px 12px;
+  padding: 10px 36px 10px 12px;
   width: 100%;
   border: 0;
   border-bottom: 1px solid var(--tel-dd-border);
   outline: none;
   background: var(--tel-dd-search-bg);
   color: var(--tel-fg);
+  /* Ensure proper box-sizing */
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/* Search input container for clear button positioning */
+:host ::ng-deep .iti__search-box,
+:host ::ng-deep .iti__country-list>div:first-child {
+  position: relative;
+}
+
+/* Clear button for search input */
+:host ::ng-deep .iti__search-clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--tel-placeholder);
+  padding: 0;
+  z-index: 10;
+  transition: color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:host ::ng-deep .iti__search-clear:hover {
+  color: var(--tel-fg);
+}
+
+:host ::ng-deep .iti__search-clear:active {
+  opacity: 0.7;
 }
 
 :host ::ng-deep .iti__search-input::placeholder {
   color: var(--tel-placeholder);
 }
 
+/* CSS Grid with flexbox fallback for older browsers */
 :host ::ng-deep .iti__country {
-  display: grid;
-  grid-template-columns: 28px 1fr auto;
+  /* Flexbox fallback for browsers without Grid support */
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
   align-items: center;
-  column-gap: .5rem;
   padding: 10px 12px;
   cursor: pointer;
   color: var(--tel-fg);
+  transition: background-color 0.15s cubic-bezier(0.4, 0, 0.2, 1), transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Use Grid when supported */
+@supports (display: grid) {
+  :host ::ng-deep .iti__country {
+    display: grid;
+    grid-template-columns: 28px 1fr auto;
+    align-items: center;
+    column-gap: .5rem;
+  }
+}
 
 :host ::ng-deep .iti__country.iti__highlight {
   background-color: var(--tel-dd-item-hover);
+  transform: scale(0.99);
 }
 
 :host ::ng-deep .iti__dial-code {
@@ -291,18 +491,21 @@
   border-radius: 50%;
   cursor: pointer;
   color: var(--tel-placeholder);
+  transition: color 0.2s ease;
 }
 
+.ngxsmk-tel__clear:hover {
+  color: var(--tel-fg);
+}
 
-/* Hint & Error */
 .ngxsmk-tel__hint {
-  margin-top: 6px;
+  margin-top: 8px;
   font-size: 12px;
   color: var(--tel-placeholder);
 }
 
 .ngxsmk-tel__error {
-  margin-top: 6px;
+  margin-top: 8px;
   font-size: 12px;
   color: var(--tel-error);
 }
@@ -318,24 +521,658 @@
   opacity: 0.6;
 }
 
-/* Dark mode input control improvements */
-:host-context(.dark) .ngxsmk-tel-input__control,
+:host-context(.dark):not([data-theme="light"]) .ngxsmk-tel-input__control,
 :host([data-theme="dark"]) .ngxsmk-tel-input__control {
-  background: #1e293b !important;
-  color: #f1f5f9 !important;
-  border-color: #475569 !important;
+  background: #0f172a !important;
+  color: #e2e8f0 !important;
+  border-color: #334155 !important;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
 }
 
-:host-context(.dark) .ngxsmk-tel-input__control:focus,
+:host-context(.dark):not([data-theme="light"]) .ngxsmk-tel-input__control:focus,
 :host([data-theme="dark"]) .ngxsmk-tel-input__control:focus {
-  background: #1e293b !important;
-  color: #f1f5f9 !important;
-  border-color: #3b82f6 !important;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+  background: #0f172a !important;
+  color: #e2e8f0 !important;
+  border-color: #60a5fa !important;
+  box-shadow: 0 0 0 0.2rem rgba(96, 165, 250, 0.25) !important;
 }
 
-:host-context(.dark) .ngxsmk-tel-input__control::placeholder,
+:host-context(.dark):not([data-theme="light"]) .ngxsmk-tel-input__control::placeholder,
 :host([data-theme="dark"]) .ngxsmk-tel-input__control::placeholder {
   color: #94a3b8 !important;
+  opacity: 1;
+}
+
+/* Dark mode text visibility fixes */
+:host-context(.dark):not([data-theme="light"]) .ngxsmk-tel__label,
+:host([data-theme="dark"]) .ngxsmk-tel__label {
+  color: #e2e8f0 !important;
+}
+
+:host-context(.dark):not([data-theme="light"]) .ngxsmk-tel__hint,
+:host([data-theme="dark"]) .ngxsmk-tel__hint {
+  color: #94a3b8 !important;
+  opacity: 1;
+}
+
+:host-context(.dark):not([data-theme="light"]) .ngxsmk-tel__error,
+:host([data-theme="dark"]) .ngxsmk-tel__error {
+  color: #f87171 !important;
+}
+
+:host-context(.dark):not([data-theme="light"]) .ngxsmk-tel__clear,
+:host([data-theme="dark"]) .ngxsmk-tel__clear {
+  color: #94a3b8 !important;
+  opacity: 1;
+}
+
+:host-context(.dark):not([data-theme="light"]) .ngxsmk-tel__clear:hover,
+:host([data-theme="dark"]) .ngxsmk-tel__clear:hover {
+  color: #e2e8f0 !important;
+  opacity: 1;
+}
+
+:host-context(.dark):not([data-theme="light"]) ::ng-deep .iti__search-input::placeholder,
+:host([data-theme="dark"]) ::ng-deep .iti__search-input::placeholder {
+  color: #94a3b8 !important;
+  opacity: 1;
+}
+
+/* Dark mode search clear button */
+:host-context(.dark):not([data-theme="light"]) ::ng-deep .iti__search-clear,
+:host([data-theme="dark"]) ::ng-deep .iti__search-clear {
+  color: #94a3b8 !important;
+  opacity: 1;
+}
+
+:host-context(.dark):not([data-theme="light"]) ::ng-deep .iti__search-clear:hover,
+:host([data-theme="dark"]) ::ng-deep .iti__search-clear:hover {
+  color: #e2e8f0 !important;
+  opacity: 1;
+}
+
+/* Dark mode selected dial code visibility */
+:host-context(.dark):not([data-theme="light"]) ::ng-deep .iti__selected-dial-code,
+:host([data-theme="dark"]) ::ng-deep .iti__selected-dial-code {
+  color: #e2e8f0 !important;
+}
+
+/* Dark mode flag container text */
+:host-context(.dark):not([data-theme="light"]) ::ng-deep .iti__selected-flag,
+:host([data-theme="dark"]) ::ng-deep .iti__selected-flag {
+  color: #e2e8f0 !important;
+}
+
+/* Dark mode dropdown arrow icon - duplicate removed, using the one above */
+
+/* Light mode explicit styles to override dark defaults - highest specificity */
+:host([data-theme="light"]) .ngxsmk-tel-input__control {
+  background: #fff !important;
+  background-color: #fff !important;
+  color: #0f172a !important;
+  border-color: #c0c0c0 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+:host([data-theme="light"]) .ngxsmk-tel-input__control:focus {
+  background: #fff !important;
+  color: #0f172a !important;
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25) !important;
+}
+
+:host([data-theme="light"]) .ngxsmk-tel-input__control::placeholder {
+  color: #9ca3af !important;
+  opacity: 1;
+}
+
+:host([data-theme="light"]) .ngxsmk-tel__label {
+  color: #0f172a !important;
+}
+
+:host([data-theme="light"]) .ngxsmk-tel__hint {
+  color: #6b7280 !important;
+  opacity: 1;
+}
+
+:host([data-theme="light"]) .ngxsmk-tel__error {
+  color: #ef4444 !important;
+}
+
+:host([data-theme="light"]) .ngxsmk-tel__clear {
+  color: #6b7280 !important;
+  opacity: 1;
+}
+
+:host([data-theme="light"]) .ngxsmk-tel__clear:hover {
+  color: #0f172a !important;
+  opacity: 1;
+}
+
+:host([data-theme="light"]) ::ng-deep .iti__search-input {
+  background: rgba(148, 163, 184, 0.08) !important;
+  color: #0f172a !important;
+  border-bottom-color: #c0c0c0 !important;
+}
+
+:host([data-theme="light"]) ::ng-deep .iti__search-input::placeholder {
+  color: #9ca3af !important;
+  opacity: 1;
+}
+
+:host([data-theme="light"]) ::ng-deep .iti__search-clear {
+  color: #6b7280 !important;
+  opacity: 1;
+}
+
+:host([data-theme="light"]) ::ng-deep .iti__search-clear:hover {
+  color: #0f172a !important;
+  opacity: 1;
+}
+
+:host([data-theme="light"]) ::ng-deep .iti__selected-dial-code {
+  color: #6b7280 !important;
+}
+
+:host([data-theme="light"]) ::ng-deep .iti__selected-flag {
+  color: #0f172a !important;
+}
+
+:host([data-theme="light"]) ::ng-deep .iti__arrow {
+  border-top-color: #0f172a !important;
+  opacity: 1;
+}
+
+:host([data-theme="light"]) ::ng-deep .iti__arrow:hover {
+  opacity: 1;
+}
+
+:host([data-theme="light"]) ::ng-deep .iti--allow-dropdown .iti__arrow {
+  border-top-color: #0f172a !important;
+}
+
+:host([data-theme="light"]) ::ng-deep .iti__country-list {
+  background: #fff !important;
+  border-color: #c0c0c0 !important;
+  color: #0f172a !important;
+}
+
+:host([data-theme="light"]) ::ng-deep .iti__country {
+  color: #0f172a !important;
+}
+
+:host([data-theme="light"]) ::ng-deep .iti__country-name {
+  color: #0f172a !important;
+}
+
+:host([data-theme="light"]) ::ng-deep .iti__country-code {
+  color: #6b7280 !important;
+}
+
+:host([data-theme="light"]) ::ng-deep .iti__dial-code {
+  color: #6b7280 !important;
+}
+
+:host([data-theme="light"]) ::ng-deep .iti__flag-container {
+  background: #fff !important;
+  border-color: #c0c0c0 !important;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+@media (max-width: 768px) {
+
+  /* Ensure wrapper provides positioning context for inline dropdown */
+  .ngxsmk-tel__wrap {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    overflow: visible;
+  }
+
+  /* Fix plugin width on mobile */
+  :host {
+    width: 100%;
+    max-width: 100%;
+    display: block;
+  }
+
+  .ngxsmk-tel {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .ngxsmk-tel-input__wrapper,
+  :host ::ng-deep .iti {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  .ngxsmk-tel-input__control {
+    font-size: 16px !important;
+    padding: 12px 44px 12px 12px;
+    min-height: 44px;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  .ngxsmk-tel__clear {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    right: 4px;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  :host ::ng-deep .iti__selected-flag {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 12px;
+    touch-action: manipulation;
+    font-size: 14px;
+  }
+
+  :host ::ng-deep .iti__flag-box {
+    width: 20px;
+    height: 15px;
+  }
+
+  :host ::ng-deep .iti__country-list {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    /* max-height with fallback */
+    max-height: 400px;
+    max-height: min(70vh, 400px);
+    -webkit-overflow-scrolling: touch;
+    overflow-x: hidden;
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    transform: none !important;
+    margin-top: 4px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    box-sizing: border-box;
+  }
+
+  /* Ensure dropdown appears inline on mobile, not as modal */
+  :host ::ng-deep .iti--container {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  :host ::ng-deep .iti__dropdown {
+    position: relative !important;
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  /* Ensure dropdown matches input width on mobile */
+  :host ::ng-deep .iti__country-list {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  :host ::ng-deep .iti__search-input {
+    padding-right: 36px !important;
+  }
+
+  :host ::ng-deep .iti__search-clear {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 20px !important;
+    right: 6px !important;
+  }
+
+  :host ::ng-deep .iti__country {
+    min-height: 48px;
+    padding: 12px 14px;
+    font-size: 15px;
+    box-sizing: border-box;
+    /* Flexbox fallback */
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+  }
+
+  @supports (display: grid) {
+    :host ::ng-deep .iti__country {
+      display: grid;
+      grid-template-columns: 28px 1fr auto;
+      column-gap: 0.625rem;
+    }
+  }
+
+  :host ::ng-deep .iti__country-name {
+    font-size: 15px !important;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  :host ::ng-deep .iti__country-code {
+    font-size: 13px !important;
+    line-height: 1.4;
+  }
+
+  :host ::ng-deep .iti__dial-code {
+    font-size: 14px !important;
+    line-height: 1.4;
+    margin-left: 8px;
+    white-space: nowrap;
+  }
+
+  :host ::ng-deep .iti__search-input {
+    font-size: 16px !important;
+    padding: 12px 14px;
+    min-height: 44px;
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  .ngxsmk-tel__label {
+    font-size: 0.9375rem;
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+
+  .ngxsmk-tel__hint,
+  .ngxsmk-tel__error {
+    font-size: 0.8125rem;
+    margin-top: 8px;
+    line-height: 1.4;
+  }
+
+  [data-size="sm"] .ngxsmk-tel-input__control {
+    min-height: 40px;
+    font-size: 16px !important;
+    padding: 10px 40px 10px 10px;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  [data-size="lg"] .ngxsmk-tel-input__control {
+    min-height: 48px;
+    font-size: 16px !important;
+    padding: 14px 48px 14px 14px;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  [data-variant="underline"] .ngxsmk-tel-input__control {
+    padding-right: 40px;
+    min-height: 44px;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  /* Prevent horizontal overflow */
+  :host ::ng-deep .iti__flag-container {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  :host ::ng-deep .iti__selected-dial-code {
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 480px) {
+
+  /* Fix plugin width on small mobile */
+  :host {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .ngxsmk-tel {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .ngxsmk-tel__wrap {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .ngxsmk-tel-input__wrapper,
+  :host ::ng-deep .iti {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .ngxsmk-tel-input__control {
+    padding: 10px 40px 10px 10px;
+    font-size: 16px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  :host ::ng-deep .iti__selected-flag {
+    padding: 0 8px;
+    min-width: 40px;
+    font-size: 13px;
+  }
+
+  :host ::ng-deep .iti__flag-box {
+    width: 18px;
+    height: 14px;
+  }
+
+  :host ::ng-deep .iti__country-list {
+    /* max-height with fallback */
+    max-height: 350px;
+    max-height: min(60vh, 350px);
+    border-radius: 8px;
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    transform: none !important;
+    margin-top: 4px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  :host ::ng-deep .iti__search-input {
+    padding-right: 36px !important;
+  }
+
+  :host ::ng-deep .iti__search-clear {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 18px !important;
+    right: 6px !important;
+  }
+
+  :host ::ng-deep .iti__country {
+    padding: 10px 12px;
+    min-height: 44px;
+    font-size: 14px;
+    /* Flexbox fallback */
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+  }
+
+  @supports (display: grid) {
+    :host ::ng-deep .iti__country {
+      display: grid;
+      grid-template-columns: 26px 1fr auto;
+      column-gap: 0.5rem;
+    }
+  }
+
+  :host ::ng-deep .iti__country-name {
+    font-size: 14px !important;
+  }
+
+  :host ::ng-deep .iti__country-code {
+    font-size: 12px !important;
+  }
+
+  :host ::ng-deep .iti__dial-code {
+    font-size: 13px !important;
+    margin-left: 6px;
+  }
+
+  :host ::ng-deep .iti__search-input {
+    font-size: 16px !important;
+    padding: 10px 12px;
+    min-height: 44px;
+  }
+
+  .ngxsmk-tel__clear {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    font-size: 16px;
+    right: 2px;
+  }
+
+  .ngxsmk-tel__label {
+    font-size: 0.875rem;
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+
+  .ngxsmk-tel__hint,
+  .ngxsmk-tel__error {
+    font-size: 0.75rem;
+    line-height: 1.4;
+  }
+
+  /* Prevent horizontal overflow on small screens */
+  :host ::ng-deep .iti__flag-container {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  :host ::ng-deep .iti__selected-dial-code {
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 60px;
+  }
+
+  [data-size="sm"] :host ::ng-deep .iti__country-name,
+  [data-size="sm"] :host ::ng-deep .iti__country-code,
+  [data-size="sm"] :host ::ng-deep .iti__dial-code {
+    font-size: 13px !important;
+  }
+
+  [data-size="lg"] :host ::ng-deep .iti__country-name,
+  [data-size="lg"] :host ::ng-deep .iti__country-code,
+  [data-size="lg"] :host ::ng-deep .iti__dial-code {
+    font-size: 15px !important;
+  }
+}
+
+@media (max-width: 768px) and (orientation: landscape) {
+  :host ::ng-deep .iti__country-list {
+    /* max-height with fallback */
+    max-height: 300px;
+    max-height: min(50vh, 300px);
+  }
+}
+
+@media (min-width: 481px) and (max-width: 1024px) {
+  .ngxsmk-tel-input__control {
+    padding: 11px 42px 11px 12px;
+  }
+
+  :host ::ng-deep .iti__country-list {
+    /* max-height with fallback */
+    max-height: 400px;
+    max-height: min(60vh, 400px);
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .ngxsmk-tel__clear {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  :host ::ng-deep .iti__selected-flag {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  :host ::ng-deep .iti__country {
+    min-height: 48px;
+
+    &:active {
+      background-color: var(--tel-dd-item-hover);
+    }
+  }
+
+  .ngxsmk-tel__clear:active {
+    background-color: rgba(0, 0, 0, 0.1);
+    transform: translateY(-50%) scale(0.95);
+  }
+}
+
+@media (-webkit-min-device-pixel-ratio: 2),
+(min-resolution: 192dpi) {
+  .ngxsmk-tel-input__control {
+    border-width: 0.5px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .ngxsmk-tel-input__control {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+}
+
+@supports (padding: max(0px)) {
+  @media (max-width: 768px) {
+    :host ::ng-deep .iti__country-list {
+      padding-left: max(6px, env(safe-area-inset-left));
+      padding-right: max(6px, env(safe-area-inset-right));
+    }
+  }
 }

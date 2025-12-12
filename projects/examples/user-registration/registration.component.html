@@ -1,0 +1,131 @@
+<div class="registration-container">
+  <h2>Create Account</h2><br>
+
+  <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+    <div class="form-section">
+      <h3>Personal Information</h3><br>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name</label>
+          <input formControlName="firstName" type="text" />
+          @if (registrationForm.get('firstName')?.hasError('required') && registrationForm.get('firstName')?.touched) {
+          <div class="error">
+            First name is required
+          </div>
+          }
+        </div>
+
+        <div class="form-group">
+          <label>Last Name</label>
+          <input formControlName="lastName" type="text" />
+          @if (registrationForm.get('lastName')?.hasError('required') && registrationForm.get('lastName')?.touched) {
+          <div class="error">
+            Last name is required
+          </div>
+          }
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input formControlName="email" type="email" />
+        @if (registrationForm.get('email')?.hasError('required') && registrationForm.get('email')?.touched) {
+        <div class="error">
+          Email is required
+        </div>
+        }
+        @if (registrationForm.get('email')?.hasError('email') && registrationForm.get('email')?.touched) {
+        <div class="error">
+          Invalid email format
+        </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <ngxsmk-tel-input formControlName="phone" label="Phone Number" hint="We'll send you a verification code"
+          [initialCountry]="'US'" [preferredCountries]="['US', 'GB', 'CA', 'AU']" [separateDialCode]="true"
+          [showClear]="true" [enableIntelligence]="true" [enableFormatSuggestions]="true" [theme]="theme()"
+          (intelligenceChange)="onIntelligenceChange($event)" (formatSuggestion)="onFormatSuggestion($event)"
+          [customColors]="{ dark: { background: '#0f172a', border: '#334155' } }" />
+        @if (registrationForm.get('phone')?.hasError('required') && registrationForm.get('phone')?.touched) {
+        <div class="error">
+          Phone number is required
+        </div>
+        }
+        @if (registrationForm.get('phone')?.hasError('phoneInvalid') && registrationForm.get('phone')?.touched) {
+        <div class="error">
+          Please enter a valid phone number
+        </div>
+        }
+        @if (suggestion) {
+        <div class="suggestion">
+          <p>Did you mean: <strong>{{ suggestion.suggested }}</strong>?</p>
+          <button type="button" (click)="applySuggestion()">Apply</button>
+        </div>
+        }
+        @if (carrierInfo) {
+        <div class="carrier-info">
+          <p>Type: {{ getTypeDescription(carrierInfo.type) }}</p>
+        </div>
+        }
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3>Account Security</h3><br>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input formControlName="password" type="password" />
+        @if (registrationForm.get('password')?.hasError('required') && registrationForm.get('password')?.touched) {
+        <div class="error">
+          Password is required
+        </div>
+        }
+        @if (registrationForm.get('password')?.hasError('minlength') && registrationForm.get('password')?.touched) {
+        <div class="error">
+          Password must be at least 8 characters
+        </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label>Confirm Password</label>
+        <input formControlName="confirmPassword" type="password" />
+        @if (registrationForm.get('confirmPassword')?.hasError('required') &&
+        registrationForm.get('confirmPassword')?.touched) {
+        <div class="error">
+          Please confirm your password
+        </div>
+        }
+        @if (registrationForm.hasError('passwordMismatch') && registrationForm.get('confirmPassword')?.touched) {
+        <div class="error">
+          Passwords do not match
+        </div>
+        }
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-group">
+        <label>
+          <input type="checkbox" formControlName="terms" />
+          I agree to the Terms and Conditions
+        </label>
+        @if (registrationForm.get('terms')?.hasError('required') && registrationForm.get('terms')?.touched) {
+        <div class="error">
+          You must agree to the terms
+        </div>
+        }
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" (click)="goBack()">Cancel</button>
+      <button type="submit" [disabled]="registrationForm.invalid || processing">
+        {{ processing ? 'Creating Account...' : 'Create Account' }}
+      </button>
+    </div>
+  </form>
+</div>

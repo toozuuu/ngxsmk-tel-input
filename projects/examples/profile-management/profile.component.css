@@ -1,0 +1,141 @@
+.profile-container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.form-section {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  font-size: .875rem;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group select {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  text-indent: 10px;
+  height: 40px;
+}
+
+.error {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.carrier-info {
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  background: #e7f3ff;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+}
+
+.form-actions button {
+  border: none;
+  padding-inline: 10px;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  height: 40px;
+}
+
+.form-actions button[type="submit"] {
+  background: #007bff;
+  color: white;
+}
+
+.form-actions button[type="submit"]:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.form-actions button[type="button"] {
+  background: #6c757d;
+  color: white;
+}
+
+.success-message {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #d4edda;
+  border: 1px solid #c3e6cb;
+  border-radius: 4px;
+  color: #155724;
+}
+
+/* Dark Mode Support */
+:host-context(.dark) .form-section {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
+:host-context(.dark) .form-group label {
+  color: #e2e8f0;
+}
+
+:host-context(.dark) .form-group input[type="text"],
+:host-context(.dark) .form-group input[type="email"],
+:host-context(.dark) .form-group select {
+  background: #0f172a;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+
+:host-context(.dark) h2,
+:host-context(.dark) h3 {
+  color: #f8fafc;
+}
+
+:host-context(.dark) .carrier-info {
+  background: #172554;
+  color: #dbeafe;
+}
+
+:host-context(.dark) .form-actions button[type="submit"] {
+  background: #3b82f6;
+  color: white;
+}
+
+:host-context(.dark) .form-actions button[type="submit"]:disabled {
+  background: #334155;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+:host-context(.dark) .form-actions button[type="button"] {
+  background: #475569;
+  color: #f8fafc;
+}
+
+:host-context(.dark) .form-actions button[type="button"]:hover {
+  background: #64748b;
+}
+
+:host-context(.dark) .success-message {
+  background: #064e3b;
+  border-color: #065f46;
+  color: #d1fae5;
+}
