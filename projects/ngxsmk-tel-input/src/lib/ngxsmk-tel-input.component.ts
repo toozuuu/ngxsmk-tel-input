@@ -68,7 +68,7 @@ type IntlTelInstance = {
  */
 interface IntlTelInputConfig {
   initialCountry: string;
-  preferredCountries: string[];
+  countryOrder: string[];
   onlyCountries?: string[];
   nationalMode: boolean;
   allowDropdown: boolean;
@@ -799,7 +799,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
 
     const config: IntlTelInputConfig = {
       initialCountry: initialCountry === 'auto' ? 'auto' : (initialCountry?.toLowerCase() || 'us'),
-      preferredCountries: (preferredCountries ?? []).map(c => c.toLowerCase()),
+      countryOrder: (preferredCountries ?? []).map(c => c.toLowerCase()),
       onlyCountries: (onlyCountries ?? []).map(c => c.toLowerCase()),
       nationalMode: true,
       allowDropdown,
@@ -818,7 +818,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
 
     this.runOutsideZone(() => {
       if (!this.isDestroyed) {
-        this.iti = intlTelInput(this.inputRef.nativeElement, config);
+        this.iti = intlTelInput(this.inputRef.nativeElement, config as any);
       }
     });
 
