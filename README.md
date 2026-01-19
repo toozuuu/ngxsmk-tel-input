@@ -5,13 +5,13 @@ Wraps [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input) for the UI 
 
 > Emits **E.164** by default (e.g. `+14155550123`). SSR‑safe via lazy browser‑only import.
 
-## 🚀 Try it live on StackBlitz
+##  Try it live on StackBlitz
 
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/toozuuu/ngxsmk-tel-input)
 
 ---
 
-## ✨ Features
+##  Features
 
 * Country dropdown with flags
 * E.164 output (display can be national with `nationalMode`)
@@ -29,28 +29,28 @@ Wraps [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input) for the UI 
 
 ---
 
-## ✅ Requirements
+##  Requirements
 
 * Angular **17+** (17, 18, 19, 20, 21+)
 * Node **18** or **20**
 
 > Library `peerDependencies` target Angular `>=17`. Fully compatible with Angular 17, 18, 19, 20, 21, and future versions.
 
-### 🔄 Zone.js Compatibility
+###  Zone.js Compatibility
 
 This component works seamlessly with **both Zone.js and zoneless Angular**:
 
-* ✅ **With Zone.js** (traditional Angular): Full compatibility
-* ✅ **Without Zone.js** (Angular 18+ zoneless): Full compatibility
-* ✅ **All data binding types**: Property bindings, event bindings, two-way bindings
-* ✅ **Reactive Forms & Template-driven Forms**: Full support
-* ✅ **Signals**: Compatible with Angular signals (Angular 16+)
+*  **With Zone.js** (traditional Angular): Full compatibility
+*  **Without Zone.js** (Angular 18+ zoneless): Full compatibility
+*  **All data binding types**: Property bindings, event bindings, two-way bindings
+*  **Reactive Forms & Template-driven Forms**: Full support
+*  **Signals**: Compatible with Angular signals (Angular 16+)
 
 The component automatically detects whether Zone.js is available and adapts its change detection strategy accordingly.
 
 ---
 
-## 📦 Install
+##  Install
 
 ```bash
 npm i ngxsmk-tel-input intl-tel-input libphonenumber-js
@@ -110,7 +110,7 @@ Ensure your app includes a proper viewport meta tag:
 
 ---
 
-## 🚀 Quick start (Reactive Forms)
+##  Quick start (Reactive Forms)
 
 ```ts
 // app.component.ts
@@ -171,7 +171,7 @@ export class AppComponent {
 
 ---
 
-## 📝 Template‑driven usage
+##  Template‑driven usage
 
 ```html
 <form #f="ngForm">
@@ -182,7 +182,7 @@ export class AppComponent {
 
 ---
 
-## 🈺 Localization & RTL
+##  Localization & RTL
 
 You can localize the dropdown/search labels and override country names.
 
@@ -232,7 +232,7 @@ Arabic + RTL example
 ```
 
 
-## ⚙️ API
+## ️ API
 
 ### Inputs
 
@@ -286,7 +286,7 @@ Arabic + RTL example
 
 ---
 
-## 🧠 Formatting & validity behavior
+##  Formatting & validity behavior
 
 * No formatting while invalid. As-you-type masking only starts when the digits form a valid number for the selected country.
 
@@ -299,7 +299,7 @@ For rare patterns not covered by libphonenumber-js, the control falls back to ra
 ---
 
 
-## 🎨 Theming
+##  Theming
 
 ### CSS Variables
 
@@ -353,7 +353,7 @@ Dark mode: wrap in a `.dark` parent or use `[theme]="'dark'"` — tokens adapt a
 
 ---
 
-## ✔️ Validation patterns
+## ️ Validation patterns
 
 ```html
 <ngxsmk-tel-input formControlName="phone"></ngxsmk-tel-input>
@@ -389,14 +389,14 @@ The component now includes enhanced validation that detects and handles various 
 
 ---
 
-## 🌐 SSR notes
+##  SSR notes
 
 * The library lazy‑imports `intl-tel-input` only in the **browser** (guards with `isPlatformBrowser`).
 * No `window`/`document` usage on the server path.
 
 ---
 
-## 🧪 Local development
+##  Local development
 
 This repo is an Angular workspace with a library.
 
@@ -417,7 +417,7 @@ npm i ../path-to-workspace/dist/ngxsmk-tel-input/ngxsmk-tel-input-<version>.tgz
 
 ---
 
-## 🧯 Troubleshooting
+##  Troubleshooting
 
 **UI looks unstyled / bullets in dropdown**
 Add the CSS and assets in `angular.json` (see Install). Restart the dev server.
@@ -436,11 +436,11 @@ Clear `.angular/cache`, rebuild the lib, and restart `ng serve`.
 
 ---
 
-## 📃 License
+##  License
 
 [MIT](./LICENSE)
 
-## 🙌 Credits
+##  Credits
 
 * UI powered by [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input)
 * Parsing & validation by [`libphonenumber-js`](https://github.com/catamphetamine/libphonenumber-js)
