@@ -1,6 +1,6 @@
 {
   "name": "ngxsmk-tel-input",
-  "version": "1.6.10",
+  "version": "1.6.11",
   "description": "Angular international telephone input (intl-tel-input UI + libphonenumber-js validation). ControlValueAccessor. SSR-safe.",
   "license": "MIT",
   "sideEffects": false,
@@ -10,7 +10,7 @@
   "author": {
     "name": "Sachin Dilshan",
     "email": "sachindilshan040@gmail.com",
-    "url": "https://github.com/toozuuu"
+    "url": "https://www.sachindilshan.com/"
   },
   "homepage": "https://github.com/toozuuu/ngxsmk-tel-input#readme",
   "repository": {

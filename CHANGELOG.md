@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.11] - 2026-05-01
+
+### Changed
+- Bumped stable/current package version references across workspace to `1.6.11`.
+
 ## [1.6.10] - 2026-01-19
 
 ### Changed
