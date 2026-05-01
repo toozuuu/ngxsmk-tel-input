@@ -12,8 +12,8 @@ Only the **latest version published on npm** is currently supported for security
 
 | Version on npm        | Security Fixes |
 |-----------------------|----------------|
-| latest (most recent)  | ✅ Supported   |
-| anything older        | ❌ Unsupported |
+| latest (most recent)  |  Supported   |
+| anything older        |  Unsupported |
 
 **Note:** The library declares Angular peer deps `>=17 <20`. Using unsupported Angular versions may limit our ability to fix or reproduce issues.
 

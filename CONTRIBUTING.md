@@ -6,7 +6,7 @@ By participating in this project, you are expected to uphold the project's goals
 
 ---
 
-## 💡 How to Contribute
+##  How to Contribute
 
 There are several ways you can help improve this project:
 
@@ -14,7 +14,7 @@ There are several ways you can help improve this project:
 2.  **Suggest Features:** Open an issue to propose new functionality.
 3.  **Contribute Code:** Submit a Pull Request with bug fixes or new features.
 
-## 🐛 Reporting Bugs
+##  Reporting Bugs
 
 If you find a bug, please check the [Issues page](https://github.com/toozuuu/ngxsmk-tel-input/issues) to see if it has already been reported.
 
@@ -24,13 +24,13 @@ When submitting a new bug report, please include:
 * Your **Angular version** and the **browser** you are using.
 * A minimal reproduction link (e.g., CodePen, JSFiddle) if possible.
 
-## ✨ Suggesting Enhancements
+##  Suggesting Enhancements
 
 If you have an idea for a new feature or an enhancement, please open a new issue on the [Issues page](https://github.com/toozuuu/ngxsmk-tel-input/issues).
 
 Describe the feature, why you think it would be useful, and how it aligns with the goals of the library.
 
-## 💻 Code Contributions (Pull Requests)
+##  Code Contributions (Pull Requests)
 
 We welcome pull requests for bug fixes and new features.
 

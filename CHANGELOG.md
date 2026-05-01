@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.10] - 2026-01-19
+
 ### Changed
+- **Dependencies**: Updated `intl-tel-input` to version 25 compatibility.
+- **Internal**: Migrated `preferredCountries` to `countryOrder` to support `intl-tel-input` v25.
 - **Example Components**: All example components (E-commerce Checkout, User Registration, Profile Management) now default to dark mode theme
 - **Demo App**: Default theme changed to dark mode for better visibility and consistency
 - **Navigation UI**: Fixed icon and text colors in dark mode navigation menu for better contrast and readability

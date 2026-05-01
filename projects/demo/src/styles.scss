@@ -1,7 +1,7 @@
 /* Tailwind CSS */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 /* Global Styles for Demo */
 * {
@@ -38,75 +38,32 @@ html[data-theme="dark"] body {
   color: #ffffff !important;
 }
 
-/* Ensure base text colors work with Tailwind */
-@layer base {
-  body {
-    @apply text-tf-text-primary;
-  }
-
-  .dark body,
-  html.dark body,
-  html[data-theme="dark"] body {
-    @apply text-tf-dark-text-primary;
-  }
-
-  /* Material Icons default colors */
-  .material-icons {
-    @apply text-tf-text-primary;
-  }
-
-  .dark .material-icons,
-  html.dark .material-icons,
-  html[data-theme="dark"] .material-icons {
-    @apply text-tf-dark-text-primary;
-  }
+/* Material Icons default colors */
+.material-icons {
+  color: rgb(var(--tf-text-primary, 30 41 59));
 }
 
-/* Ensure all text elements are visible in dark mode - using Tailwind dark mode */
-.dark p,
+.dark .material-icons,
+html.dark .material-icons,
+html[data-theme="dark"] .material-icons {
+  color: rgb(var(--tf-dark-text-primary, 255 255 255));
+}
+
+/* Keep dark mode readable without overriding token-based utility classes */
+html.dark body,
+html[data-theme="dark"] body {
+  color: #e2e8f0;
+}
+
 html.dark p,
-html[data-theme="dark"] p {
-  color: #cbd5e1 !important;
-}
-
-.dark h1,
-html.dark h1,
-html[data-theme="dark"] h1,
-.dark h2,
-html.dark h2,
-html[data-theme="dark"] h2,
-.dark h3,
-html.dark h3,
-html[data-theme="dark"] h3,
-.dark h4,
-html.dark h4,
-html[data-theme="dark"] h4,
-.dark h5,
-html.dark h5,
-html[data-theme="dark"] h5,
-.dark h6,
-html.dark h6,
-html[data-theme="dark"] h6 {
-  color: #ffffff !important;
-}
-
-.dark label,
 html.dark label,
-html[data-theme="dark"] label {
-  color: #cbd5e1 !important;
-}
-
-.dark span:not(.feature-icon):not(.logo-icon):not(.brand-icon),
-html.dark span:not(.feature-icon):not(.logo-icon):not(.brand-icon),
-html[data-theme="dark"] span:not(.feature-icon):not(.logo-icon):not(.brand-icon) {
-  color: inherit !important;
-}
-
-.dark strong,
+html.dark li,
 html.dark strong,
+html[data-theme="dark"] p,
+html[data-theme="dark"] label,
+html[data-theme="dark"] li,
 html[data-theme="dark"] strong {
-  color: #ffffff !important;
-  font-weight: 600 !important;
+  color: inherit;
 }
 
 /* Dark mode dashboard styles - using Tailwind dark mode */
@@ -406,9 +363,9 @@ html[data-theme="dark"] .theme-btn:active,
 html.dark .theme-btn.active,
 html[data-theme="dark"] .theme-btn.active,
 :root.dark .theme-btn.active {
-  background: #3b82f6 !important;
+  background: #1d4ed8 !important;
   color: #ffffff !important;
-  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3) !important;
+  box-shadow: 0 2px 6px rgba(29, 78, 216, 0.4) !important;
 }
 
 html.dark .theme-btn.active:hover,
@@ -583,13 +540,6 @@ html[data-theme="dark"] .form-output h4,
   color: #10b981 !important;
 }
 
-html.dark .form-output pre,
-html[data-theme="dark"] .form-output pre,
-:root.dark .form-output pre {
-  color: #cbd5e1 !important;
-  background: transparent !important;
-}
-
 html.dark .form-output p,
 html[data-theme="dark"] .form-output p,
 :root.dark .form-output p {
@@ -605,7 +555,7 @@ html[data-theme="dark"] .form-output strong,
 html.dark .form-output code,
 html[data-theme="dark"] .form-output code,
 :root.dark .form-output code {
-  color: #60a5fa !important;
+  color: #dbeafe !important;
   background: #334155 !important;
   padding: 0.125rem 0.375rem;
   border-radius: 0.25rem;
@@ -620,13 +570,6 @@ html[data-theme="dark"] .form-output pre *,
 }
 
 /* Footer dark mode */
-html.dark .content-footer,
-html[data-theme="dark"] .content-footer,
-:root.dark .content-footer {
-  background: #212121 !important;
-  border-top-color: #334155 !important;
-}
-
 html.dark .content-footer p,
 html[data-theme="dark"] .content-footer p,
 :root.dark .content-footer p {
@@ -664,12 +607,6 @@ html[data-theme="dark"] .tokiforge-link:active,
 }
 
 /* Additional dark mode text fixes */
-html.dark .section-header h2,
-html[data-theme="dark"] .section-header h2,
-:root.dark .section-header h2 {
-  color: #ffffff !important;
-}
-
 html.dark .example-group h3,
 html[data-theme="dark"] .example-group h3,
 :root.dark .example-group h3 {
@@ -683,25 +620,11 @@ html[data-theme="dark"] .api-section h3,
   color: #ffffff !important;
 }
 
-html.dark .api-table th,
-html[data-theme="dark"] .api-table th,
-:root.dark .api-table th {
-  color: #ffffff !important;
-  background: #212121 !important;
-  border-bottom-color: #334155 !important;
-}
-
-html.dark .api-table td,
-html[data-theme="dark"] .api-table td,
-:root.dark .api-table td {
-  color: #cbd5e1 !important;
-}
-
 html.dark .info-card code,
 html[data-theme="dark"] .info-card code,
 :root.dark .info-card code {
   background: #334155 !important;
-  color: #60a5fa !important;
+  color: #dbeafe !important;
 }
 
 html.dark .method-item code,
@@ -793,12 +716,6 @@ html[data-theme="dark"] .main-content span,
 }
 
 /* Ensure form output h4 is visible */
-html.dark .form-output h4,
-html[data-theme="dark"] .form-output h4,
-:root.dark .form-output h4 {
-  color: #10b981 !important;
-}
-
 /* Ensure all code elements are visible */
 html.dark code,
 html[data-theme="dark"] code,
@@ -810,7 +727,7 @@ html.dark .api-table code,
 html[data-theme="dark"] .api-table code,
 :root.dark .api-table code {
   background: #334155 !important;
-  color: #60a5fa !important;
+  color: #dbeafe !important;
 }
 
 /* Code block pre and code elements dark mode */
@@ -819,13 +736,6 @@ html[data-theme="dark"] .code-block pre code,
 :root.dark .code-block pre code {
   color: #e2e8f0 !important;
   background: transparent !important;
-}
-
-html.dark .code-block pre,
-html[data-theme="dark"] .code-block pre,
-:root.dark .code-block pre {
-  background: #212121 !important;
-  color: #e2e8f0 !important;
 }
 
 /* Comprehensive dark mode for all demo elements */
@@ -888,23 +798,15 @@ html[data-theme="dark"] .demo-form,
   background: transparent !important;
 }
 
-/* Ensure all links are visible in dark mode */
-html.dark a:not(.nav-item):not(.footer-links a):not(.tokiforge-link),
-html[data-theme="dark"] a:not(.nav-item):not(.footer-links a):not(.tokiforge-link),
-:root.dark a:not(.nav-item):not(.footer-links a):not(.tokiforge-link) {
-  color: #60a5fa !important;
-}
-
-html.dark a:not(.nav-item):not(.footer-links a):not(.tokiforge-link):hover,
-html[data-theme="dark"] a:not(.nav-item):not(.footer-links a):not(.tokiforge-link):hover,
-:root.dark a:not(.nav-item):not(.footer-links a):not(.tokiforge-link):hover {
+/* Only unstyled content links get a default dark link color */
+html.dark main section a:not([class]),
+html[data-theme="dark"] main section a:not([class]) {
   color: #93c5fd !important;
 }
 
-html.dark a:not(.nav-item):not(.footer-links a):not(.tokiforge-link):visited,
-html[data-theme="dark"] a:not(.nav-item):not(.footer-links a):not(.tokiforge-link):visited,
-:root.dark a:not(.nav-item):not(.footer-links a):not(.tokiforge-link):visited {
-  color: #818cf8 !important;
+html.dark main section a:not([class]):hover,
+html[data-theme="dark"] main section a:not([class]):hover {
+  color: #bfdbfe !important;
 }
 
 /* Ensure all list items are visible */
@@ -926,24 +828,13 @@ html[data-theme="dark"] ol li,
   color: #cbd5e1 !important;
 }
 
-/* Ensure all strong and em elements are visible */
+/* Preserve semantic emphasis without forcing colors globally */
 html.dark strong,
 html.dark b,
 html[data-theme="dark"] strong,
-html[data-theme="dark"] b,
-:root.dark strong,
-:root.dark b {
-  color: #ffffff !important;
-  font-weight: 600 !important;
-}
-
-html.dark em,
-html.dark i,
-html[data-theme="dark"] em,
-html[data-theme="dark"] i,
-:root.dark em,
-:root.dark i {
-  color: #cbd5e1 !important;
+html[data-theme="dark"] b {
+  color: inherit;
+  font-weight: 600;
 }
 
 /* Global scrollbar dark mode */
@@ -977,15 +868,15 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover,
 html.dark ::selection,
 html[data-theme="dark"] ::selection,
 :root.dark ::selection {
-  background: rgba(96, 165, 250, 0.3) !important;
-  color: #ffffff !important;
+  background: #1d4ed8 !important;
+  color: #eff6ff !important;
 }
 
 html.dark ::-moz-selection,
 html[data-theme="dark"] ::-moz-selection,
 :root.dark ::-moz-selection {
-  background: rgba(96, 165, 250, 0.3) !important;
-  color: #ffffff !important;
+  background: #1d4ed8 !important;
+  color: #eff6ff !important;
 }
 
 /* Focus styles for dark mode */
@@ -1015,8 +906,8 @@ html[data-theme="dark"] *:focus,
 
 /* Selection styles */
 ::selection {
-  background: rgba(102, 126, 234, 0.2);
-  color: #1a202c;
+  background: #c7d2fe;
+  color: #111827;
 }
 
 /* Focus styles for accessibility */
@@ -1247,5 +1138,85 @@ html.dark .iti__search-input:focus {
   .demo-header,
   .demo-footer {
     display: none;
+  }
+}
+
+/* Additional demo theme polish */
+:root {
+  --demo-focus-ring: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+
+html body {
+  background-image:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0)),
+    radial-gradient(circle at 20% 0%, rgba(59, 130, 246, 0.09), transparent 42%),
+    radial-gradient(circle at 80% 0%, rgba(168, 85, 247, 0.08), transparent 42%);
+  background-attachment: fixed;
+}
+
+html.dark > body,
+html[data-theme="dark"] > body {
+  background-image:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0)),
+    radial-gradient(circle at 20% 0%, rgba(59, 130, 246, 0.16), transparent 45%),
+    radial-gradient(circle at 80% 0%, rgba(168, 85, 247, 0.14), transparent 45%);
+}
+
+/* Dark mode color normalization for demo content */
+html.dark main,
+html[data-theme="dark"] main {
+  color: #e2e8f0;
+}
+
+html.dark main .rounded-xl,
+html.dark main .rounded-lg,
+html[data-theme="dark"] main .rounded-xl,
+html[data-theme="dark"] main .rounded-lg {
+  border-color: #334155;
+}
+
+html.dark main h1,
+html.dark main h2,
+html.dark main h3,
+html.dark main h4,
+html[data-theme="dark"] main h1,
+html[data-theme="dark"] main h2,
+html[data-theme="dark"] main h3,
+html[data-theme="dark"] main h4 {
+  color: #f8fafc;
+}
+
+html.dark main p,
+html.dark main li,
+html.dark main label,
+html[data-theme="dark"] main p,
+html[data-theme="dark"] main li,
+html[data-theme="dark"] main label {
+  color: #cbd5e1;
+}
+
+html.dark main code,
+html[data-theme="dark"] main code {
+  color: #bfdbfe;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  box-shadow: var(--demo-focus-ring);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
   }
 }

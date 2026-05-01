@@ -42,7 +42,7 @@ import { ProfileComponent } from '../../../examples/profile-management/profile.c
               </div>
               <div class="flex flex-col">
                 <span class="text-lg font-semibold text-tf-text-primary dark:text-tf-dark-text-primary">Ngxsmk Tel Input</span>
-                <span class="text-xs text-tf-text-tertiary dark:text-tf-dark-text-tertiary">v1.6.9</span>
+                <span class="text-xs text-tf-text-tertiary dark:text-tf-dark-text-tertiary">v1.6.10</span>
               </div>
             </div>
             <button 
@@ -165,7 +165,7 @@ import { ProfileComponent } from '../../../examples/profile-management/profile.c
                   <span class="material-icons text-xl sm:text-2xl text-tf-warning">info</span>
                 </div>
                 <div class="min-w-0 flex-1">
-                  <div class="text-xl sm:text-2xl font-bold text-tf-text-primary dark:text-tf-dark-text-primary truncate">v1.6.9</div>
+                  <div class="text-xl sm:text-2xl font-bold text-tf-text-primary dark:text-tf-dark-text-primary truncate">v1.6.10</div>
                   <div class="text-xs text-tf-text-tertiary dark:text-tf-dark-text-tertiary uppercase tracking-wider truncate">Version</div>
                 </div>
               </div>
@@ -1195,12 +1195,12 @@ export class ExampleComponent {
     this.currentThemeSubscription?.unsubscribe();
   }
 
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   onResize(): void {
     this.handleResize();
   }
 
-  @HostListener('window:scroll', ['$event'])
+  @HostListener('window:scroll')
   onScroll(): void {
     this.updateActiveSection();
   }

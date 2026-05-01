@@ -16,11 +16,9 @@ import {
   SimpleChanges,
   ViewChild,
   ChangeDetectionStrategy,
-  signal,
   computed,
   output,
   input,
-  Signal,
   WritableSignal,
   effect,
 } from '@angular/core';
@@ -34,7 +32,7 @@ import {
   Validator
 } from '@angular/forms';
 import { AsYouType, CountryCode, validatePhoneNumberLength } from 'libphonenumber-js';
-import { NgxsmkTelInputService, ParseResult, ParseWithInvalidResult } from './ngxsmk-tel-input.service';
+import { NgxsmkTelInputService } from './ngxsmk-tel-input.service';
 import { CountryMap, IntlTelI18n } from './types';
 import { createPhoneInputState, createFormattedValueSignal, createValidationStatusSignal, createPhoneMetadataSignal, PhoneInputState } from './signals';
 import { PhoneIntelligenceService, CarrierInfo, FormatSuggestion } from './phone-intelligence.service';
@@ -68,7 +66,7 @@ type IntlTelInstance = {
  */
 interface IntlTelInputConfig {
   initialCountry: string;
-  preferredCountries: string[];
+  countryOrder: string[];
   onlyCountries?: string[];
   nationalMode: boolean;
   allowDropdown: boolean;
@@ -204,7 +202,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
   // ========== Signal-based API (Angular 17+) ==========
 
   /** Signal-based input: Initial country to select. Use 'auto' for geo-location detection. */
-  initialCountrySignal = input<CountryCode | 'auto'>('US');
+  initialCountrySignal = input<CountryCode | 'auto' | undefined>(undefined);
 
   /** Signal-based input: Countries to show at the top of the dropdown list. */
   preferredCountriesSignal = input<CountryCode[]>(['US', 'GB']);
@@ -245,8 +243,11 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
   /** Signal-based output: Emitted on every input change */
   inputChangeSignal = output<{ raw: string; e164: string | null; iso2: CountryCode }>();
 
+  /** Signal-based output: Emitted when plugin initialization is complete. */
+  readySignal = output<void>();
+
   /** Internal state signal for reactive state management */
-  private stateSignal: WritableSignal<PhoneInputState> = createPhoneInputState();
+  private readonly stateSignal: WritableSignal<PhoneInputState> = createPhoneInputState();
 
   /** Computed signal: Current phone input state */
   readonly state = this.stateSignal.asReadonly();
@@ -323,10 +324,10 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
   @Input() dropdownAttachToBody = true;
   @Input() dropdownZIndex = 2000;
 
-  @Input('i18n') i18n?: IntlTelI18n;
-  @Input('telI18n') set telI18n(v: IntlTelI18n | undefined) { this.i18n = v; }
-  @Input('localizedCountries') localizedCountries?: CountryMap;
-  @Input('telLocalizedCountries') set telLocalizedCountries(v: CountryMap | undefined) { this.localizedCountries = v; }
+  @Input() i18n?: IntlTelI18n;
+  @Input() set telI18n(v: IntlTelI18n | undefined) { this.i18n = v; }
+  @Input() localizedCountries?: CountryMap;
+  @Input() set telLocalizedCountries(v: CountryMap | undefined) { this.localizedCountries = v; }
 
   @Input() clearAriaLabel = 'Clear phone number';
   @Input() dir: 'ltr' | 'rtl' = 'ltr';
@@ -357,6 +358,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
   @Output() countryChange = new EventEmitter<{ iso2: CountryCode }>();
   @Output() validityChange = new EventEmitter<boolean>();
   @Output() inputChange = new EventEmitter<{ raw: string; e164: string | null; iso2: CountryCode }>();
+  @Output() ready = new EventEmitter<void>();
   @Output() intelligenceChange = new EventEmitter<CarrierInfo | null>();
   @Output() formatSuggestion = new EventEmitter<FormatSuggestion | null>();
 
@@ -366,6 +368,8 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
   private validatorChange?: () => void;
   private lastEmittedValid = false;
   private pendingWrite: string | null = null;
+  private pendingCountrySelection: CountryCode | null = null;
+  private pluginReady = false;
   private touched = false;
   private isDestroyed = false;
   private eventListeners: Array<{ element: HTMLElement; event: string; handler: (event: Event) => void }> = [];
@@ -434,16 +438,22 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
    * Helper method for requestAnimationFrame with fallback for older browsers.
    */
   private requestAnimationFrame(fn: () => void): void {
-    if (typeof window !== 'undefined') {
-      const raf = window.requestAnimationFrame ||
-        (window as any).webkitRequestAnimationFrame ||
-        (window as any).mozRequestAnimationFrame ||
-        (window as any).msRequestAnimationFrame ||
-        ((callback: () => void) => setTimeout(callback, 16));
-      raf(fn);
-    } else {
+    const win = globalThis.window;
+    if (win === undefined) {
       fn();
+      return;
     }
+    const rafWindow = win as Window & {
+      webkitRequestAnimationFrame?: (callback: () => void) => number;
+      mozRequestAnimationFrame?: (callback: () => void) => number;
+      msRequestAnimationFrame?: (callback: () => void) => number;
+    };
+    const raf = rafWindow.requestAnimationFrame ||
+      rafWindow.webkitRequestAnimationFrame ||
+      rafWindow.mozRequestAnimationFrame ||
+      rafWindow.msRequestAnimationFrame ||
+      ((callback: () => void) => setTimeout(callback, 16));
+    raf(fn);
   }
 
   /**
@@ -452,10 +462,10 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
    */
   private shouldAttachToBody(): boolean {
     if (!this.dropdownAttachToBody) return false;
-    if (typeof window === 'undefined') return false;
+    const win = globalThis.window;
+    if (win === undefined) return false;
     // On mobile, don't attach to body to avoid modal popup behavior
-    // Use fallback for older browsers
-    const width = window.innerWidth || (window as any).clientWidth || 1024;
+    const width = win.innerWidth || 1024;
     return width > 768;
   }
 
@@ -484,6 +494,8 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     if (this.isDestroyed) return;
 
     this.bindDomListeners();
+    this.pluginReady = true;
+    this.applyPendingCountrySelection();
 
     if (this.pendingWrite !== null && !this.isDestroyed) {
       const v = this.pendingWrite;
@@ -496,6 +508,8 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
         if (!this.isDestroyed) this.focus();
       });
     }
+
+    this.emitReady();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -529,6 +543,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
 
   ngOnDestroy(): void {
     this.isDestroyed = true;
+    this.pluginReady = false;
     this.destroyPlugin();
     this.cleanupEventListeners();
     this.cleanupSearchInputListeners();
@@ -560,37 +575,23 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
 
     this.suppressEvents = true;
     try {
-      // Call setNumber() FIRST to let intl-tel-input detect and set the correct country
-      // This is critical when the incoming value has a different country code
-      this.iti.setNumber(val || '');
+      // Keep selected country stable when incoming value is empty.
+      // Calling setNumber('') can cause intl-tel-input to drift back to defaults.
+      const hasIncomingValue = !!(val && val.trim().length > 0);
+      if (hasIncomingValue) {
+        // Call setNumber() first so intl-tel-input can infer country from E.164.
+        this.iti.setNumber(val ?? '');
+      } else {
+        this.setInputValue('');
+      }
 
-      // Now get the country code AFTER setNumber has potentially changed it
+      // Read country after setNumber may have changed it (for non-empty values).
       const iso2 = this.currentIso2();
-
-      // Parse with the correct country code
       const parsed = this.tel.parseWithInvalidDetection(val ?? '', iso2);
       const incomingE164 = parsed.e164;
 
-      // Avoid unnecessary updates if E.164 value hasn't changed
-      if (currentE164 === incomingE164) {
-        // Even if E.164 is the same, update if the display value would be different
-        // (e.g., user changed format settings or country changed)
-        const currentRaw = this.stateSignal().raw;
-        const currentIso2 = this.stateSignal().iso2;
-
-        // If country changed, we need to update
-        if (currentIso2 !== iso2) {
-          // Country changed, proceed with update
-        } else {
-          // Same country, check if display value is different
-          const nsn = incomingE164
-            ? this.nsnFromE164(incomingE164, iso2)
-            : this.stripLeadingZero(this.toNSN(parsed.national ?? (val ?? '')));
-          const display = this.displayValue(nsn, iso2);
-          if (currentRaw === display) {
-            return; // Nothing to update
-          }
-        }
+      if (this.shouldSkipWriteUpdate(currentE164, incomingE164, iso2, parsed.national ?? (val ?? ''))) {
+        return;
       }
 
       const nsn = incomingE164
@@ -602,13 +603,14 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
 
       // Update state signal without triggering Angular Forms onChange
       // (writeValue is called BY Angular Forms, so we shouldn't notify it back)
+      const errors = this.buildValidationErrors(parsed.isValid && !parsed.isInvalidInternational, parsed.isInvalidInternational);
       this.stateSignal.update(state => ({
         ...state,
         raw: display,
         e164: incomingE164,
         iso2,
         isValid: parsed.isValid && !parsed.isInvalidInternational,
-        errors: (parsed.isValid && !parsed.isInvalidInternational) ? null : (parsed.isInvalidInternational ? { phoneInvalidCountryCode: true, phoneInvalid: false } : { phoneInvalid: true, phoneInvalidCountryCode: false })
+        errors
       }));
 
       // Emit inputChange for external listeners (but NOT onChange to avoid loop)
@@ -679,13 +681,14 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
       if (control.validator) {
         const testControl = { value: null } as AbstractControl;
         const errors = control.validator(testControl);
-        this.isRequired = !!(errors && errors['required']);
+        this.isRequired = !!errors?.['required'];
       } else {
         this.isRequired = false;
       }
     } catch (e) {
       // Fallback to not required if validator check fails
       this.isRequired = false;
+      this.reportNonCriticalError('Failed to inspect required validator', e);
     }
 
     const raw = this.currentRaw();
@@ -698,10 +701,11 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
       this.lastEmittedValid = valid;
 
       // Update state signal
+      const errors = this.buildValidationErrors(valid, parsed.isInvalidInternational);
       this.stateSignal.update(state => ({
         ...state,
         isValid: valid,
-        errors: valid ? null : (parsed.isInvalidInternational ? { phoneInvalidCountryCode: true, phoneInvalid: false } : { phoneInvalid: true, phoneInvalidCountryCode: false })
+        errors
       }));
 
       // Emit both traditional and signal-based outputs
@@ -747,6 +751,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
             if (el.select) {
               el.select();
             }
+            this.reportNonCriticalError('setSelectionRange failed in focus()', e);
           }
         }
       });
@@ -758,10 +763,13 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
    * @param iso2 - ISO 3166-1 alpha-2 country code (e.g., 'US', 'GB')
    */
   selectCountry(iso2: CountryCode): void {
-    if (this.iti && !this.isDestroyed) {
-      this.iti.setCountry(iso2.toLowerCase());
-      this.handleInput();
+    if (this.isDestroyed) return;
+    if (!this.pluginReady || !this.iti) {
+      this.pendingCountrySelection = iso2;
+      return;
     }
+    this.iti.setCountry(iso2.toLowerCase());
+    this.handleInput();
   }
 
   /**
@@ -778,12 +786,12 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
   private async initIntlTelInput() {
     if (this.isDestroyed) return;
 
-    const [{ default: intlTelInput }] = await Promise.all([import('intl-tel-input')]);
+    const { default: intlTelInput } = await import('intl-tel-input');
 
     const toLowerKeys = (m?: CountryMap) => {
       if (!m) return undefined;
       const out: Record<string, string> = {};
-      for (const k in m) if (Object.prototype.hasOwnProperty.call(m, k)) {
+      for (const k in m) if (Object.hasOwn(m, k)) {
         const v = (m as Record<string, string | undefined>)[k];
         if (v != null) out[k.toLowerCase()] = v;
       }
@@ -791,7 +799,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     };
 
     // Use signal values if available, fallback to traditional inputs
-    const initialCountry = this.initialCountrySignal() || this.initialCountry;
+    const initialCountry = this.initialCountrySignal() ?? this.initialCountry;
     const preferredCountries = this.preferredCountriesSignal() || this.preferredCountries;
     const onlyCountries = this.onlyCountriesSignal() ?? this.onlyCountries;
     const allowDropdown = this.allowDropdownSignal() ?? this.allowDropdown;
@@ -799,7 +807,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
 
     const config: IntlTelInputConfig = {
       initialCountry: initialCountry === 'auto' ? 'auto' : (initialCountry?.toLowerCase() || 'us'),
-      preferredCountries: (preferredCountries ?? []).map(c => c.toLowerCase()),
+      countryOrder: (preferredCountries ?? []).map(c => c.toLowerCase()),
       onlyCountries: (onlyCountries ?? []).map(c => c.toLowerCase()),
       nationalMode: true,
       allowDropdown,
@@ -813,12 +821,12 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
       i18n: this.i18n,
       localizedCountries: toLowerKeys(this.localizedCountries),
       // On mobile, don't attach to body to avoid modal behavior
-      dropdownContainer: this.shouldAttachToBody() ? (typeof document !== 'undefined' ? document.body : undefined) : undefined
+      dropdownContainer: this.shouldAttachToBody() ? document.body : undefined
     };
 
     this.runOutsideZone(() => {
       if (!this.isDestroyed) {
-        this.iti = intlTelInput(this.inputRef.nativeElement, config);
+        this.iti = intlTelInput(this.inputRef.nativeElement, config as any);
       }
     });
 
@@ -831,24 +839,31 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
   private async reinitPlugin() {
     if (this.isDestroyed) return;
 
-    const prevIso2 = (this.iti?.getSelectedCountryData?.().iso2 || this.initialCountry || 'US').toString().toLowerCase();
+    const configuredInitial = (this.initialCountrySignal() ?? this.initialCountry ?? 'US').toString().toLowerCase();
+    const prevIso2 = (this.iti?.getSelectedCountryData?.().iso2 || configuredInitial).toString().toLowerCase();
     const prevValue = this.currentRaw();
 
+    this.pluginReady = false;
     this.destroyPlugin();
     await this.initIntlTelInput();
     this.bindDomListeners();
+    this.pluginReady = true;
 
     if (!this.isDestroyed) {
-      try {
-        this.iti?.setCountry(prevIso2);
-      } catch (e) {
-        // Ignore errors when setting country (e.g., invalid country code)
+      const appliedPendingCountry = this.applyPendingCountrySelection();
+      if (!appliedPendingCountry) {
+        try {
+          this.iti?.setCountry(prevIso2);
+        } catch (e) {
+          this.reportNonCriticalError('Failed to restore country during reinit', e);
+        }
       }
       if (prevValue) {
         this.setInputValue(prevValue);
         this.handleInput();
       }
       this.applyDisabledUi(this.disabled);
+      this.emitReady();
     }
   }
 
@@ -856,6 +871,20 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     if (this.iti) {
       this.iti.destroy();
       this.iti = null;
+    }
+  }
+
+  private applyPendingCountrySelection(): boolean {
+    if (this.isDestroyed || !this.iti || !this.pendingCountrySelection) return false;
+    const pending = this.pendingCountrySelection;
+    this.pendingCountrySelection = null;
+    try {
+      this.iti.setCountry(pending.toLowerCase());
+      this.handleInput();
+      return true;
+    } catch (e) {
+      this.reportNonCriticalError('Failed to apply pending country selection', e);
+      return false;
     }
   }
 
@@ -891,7 +920,6 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
 
         if (this.wouldExceedMax(nsn, iso2)) {
           ev.preventDefault();
-          return;
         }
       };
 
@@ -901,7 +929,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
         const clipboardEvent = e as ClipboardEventWithData;
         // Support both standard ClipboardEvent and IE11 fallback
         const clipboardData = clipboardEvent.clipboardData ||
-          ((window as Window & { clipboardData?: DataTransfer }).clipboardData) ||
+          ((globalThis.window as Window & { clipboardData?: DataTransfer })?.clipboardData) ||
           null;
         let text = '';
         if (clipboardData) {
@@ -910,6 +938,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
           } catch (err) {
             // Fallback for browsers without clipboardData support
             text = '';
+            this.reportNonCriticalError('Failed to read clipboard text', err);
           }
         }
         e.preventDefault();
@@ -932,6 +961,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
           } catch (e) {
             // Fallback for browsers without setRangeText support
             el.value = el.value.substring(0, start) + digits + el.value.substring(end);
+            this.reportNonCriticalError('setRangeText failed, using fallback', e);
           }
         } else {
           el.value = el.value.substring(0, start) + digits + el.value.substring(end);
@@ -1036,7 +1066,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
             el.select();
           }
         } catch (e) {
-          // Ignore errors in older browsers
+          this.reportNonCriticalError('setSelectionRange failed in onFocus()', e);
         }
       }
     });
@@ -1054,13 +1084,14 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     const isValid = parsed.isValid && !parsed.isInvalidInternational;
 
     // Batch state signal update
-    this.stateSignal.update(state => ({
+      const errors = this.buildValidationErrors(isValid, parsed.isInvalidInternational);
+      this.stateSignal.update(state => ({
       ...state,
       raw: rawValue,
       e164: parsed.e164,
       iso2,
       isValid,
-      errors: isValid ? null : (parsed.isInvalidInternational ? { phoneInvalidCountryCode: true, phoneInvalid: false } : { phoneInvalid: true, phoneInvalidCountryCode: false })
+        errors
     }));
 
     // Intelligence features
@@ -1103,7 +1134,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
   }
   /** Convert any string to digits only (NSN basis). */
   private toNSN(v: string | null | undefined): string {
-    return (v ?? '').replace(/\D/g, '');
+    return (v ?? '').replaceAll(/\D/g, '');
   }
 
   /** Strip exactly one leading trunk '0' from national input. */
@@ -1117,6 +1148,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
       return (this.iti?.getSelectedCountryData?.()?.dialCode ?? '').toString();
     } catch (e) {
       // Return empty string if country data is unavailable
+      this.reportNonCriticalError('Failed to read current dial code', e);
       return '';
     }
   }
@@ -1136,6 +1168,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
       return fmt.input(nsn);
     } catch (e) {
       // Return unformatted NSN if formatting fails
+      this.reportNonCriticalError('Failed to format NSN', e);
       return nsn;
     }
   }
@@ -1194,14 +1227,16 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
 
   private currentIso2(): CountryCode {
     if (this.isDestroyed) return 'US';
+    const configuredInitial = (this.initialCountrySignal() ?? this.initialCountry ?? 'US').toString().toUpperCase();
 
     try {
-      const iso2 = (this.iti?.getSelectedCountryData?.()?.iso2 ?? this.initialCountry ?? 'US')
+      const iso2 = (this.iti?.getSelectedCountryData?.()?.iso2 ?? configuredInitial)
         .toString().toUpperCase();
       return iso2 as CountryCode;
     } catch (e) {
       // Fallback to initial country or default if country data is unavailable
-      return (this.initialCountry ?? 'US') as CountryCode;
+      this.reportNonCriticalError('Failed to resolve current ISO2', e);
+      return configuredInitial as CountryCode;
     }
   }
 
@@ -1238,6 +1273,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
       return res === 'TOO_LONG';
     } catch (e) {
       // Return false if validation fails (assume not too long)
+      this.reportNonCriticalError('Failed to validate max phone length', e);
       return false;
     }
   }
@@ -1259,32 +1295,28 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     // Fix precedence: Check signal first, but if it's 'auto' (default), fallback to legacy input
     // This allows [theme]="'light'" to work even if signal defaults to 'auto'
     const signalTheme = this.themeSignal();
-    const theme = signalTheme !== 'auto' ? signalTheme : this.theme;
+    const theme = signalTheme === 'auto' ? this.theme : signalTheme;
 
     if (theme === 'auto') {
       // Check for matchMedia support (not available in older browsers)
       try {
-        if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) {
+        if (globalThis.window.matchMedia?.('(prefers-color-scheme: dark)').matches) {
           detectedTheme = 'dark';
         }
       } catch (e) {
-        // Fallback for browsers without matchMedia support
+        this.reportNonCriticalError('matchMedia unavailable while detecting theme', e);
       }
 
-      // Check for dark class on document element
-      if (document.documentElement?.classList?.contains('dark')) {
-        detectedTheme = 'dark';
-      }
-      // Check for data-theme attribute
-      else if (document.documentElement?.getAttribute('data-theme') === 'dark') {
+      // Check for dark class or dark theme attribute on document element.
+      if (
+        document.documentElement?.classList?.contains('dark') ||
+        document.documentElement?.dataset?.['theme'] === 'dark'
+      ) {
         detectedTheme = 'dark';
       }
     } else {
       detectedTheme = theme;
     }
-
-    // Always apply theme (even if same) to ensure it's set on the element
-    console.log(`[NgxsmkTelInput] Applying theme: ${detectedTheme} (Config: ${theme}, System Dark: ${typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches})`);
 
     this.currentTheme = detectedTheme;
     this.applyTheme(detectedTheme);
@@ -1297,7 +1329,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     const hostElement = this.hostElementRef?.nativeElement as HTMLElement;
     if (hostElement) {
       // Set the theme attribute - this is the primary way CSS selects the theme
-      hostElement.setAttribute('data-theme', theme);
+      hostElement.dataset['theme'] = theme;
 
       // Also add/remove dark class for additional CSS selector support
       if (theme === 'dark') {
@@ -1309,7 +1341,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
       }
 
       // Force style recalculation to ensure CSS is applied
-      void hostElement.offsetHeight; // Trigger reflow
+      hostElement.getBoundingClientRect(); // Trigger reflow
 
       // Mark for check to update view with OnPush strategy
       this.cdr.markForCheck();
@@ -1329,8 +1361,8 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
   }
 
   private applyCustomColors(theme: 'light' | 'dark') {
-    if (!this.customColors || !this.customColors[theme]) return;
-    const p = this.customColors[theme]!;
+    const p = this.customColors?.[theme];
+    if (!p) return;
     // Use hostElementRef since we used it above
     const hostElement = this.hostElementRef?.nativeElement as HTMLElement;
     if (!hostElement) return;
@@ -1353,11 +1385,11 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
 
     try {
       const dropdown = document.querySelector('.iti__country-list') as HTMLElement;
-      if (dropdown && dropdown.setAttribute) {
-        dropdown.setAttribute('data-theme', theme);
+      if (dropdown) {
+        dropdown.dataset['theme'] = theme;
       }
     } catch (e) {
-      // Fallback for browsers without querySelector support
+      this.reportNonCriticalError('Failed to apply theme to dropdown', e);
     }
   }
 
@@ -1385,7 +1417,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     setTimeout(() => {
       const dropdown = document.querySelector('.iti__country-list') as HTMLElement;
       if (dropdown) {
-        dropdown.setAttribute('data-theme', this.currentTheme);
+        dropdown.dataset['theme'] = this.currentTheme;
 
         if (this.currentTheme === 'dark') {
           dropdown.classList.add('dark-theme');
@@ -1399,7 +1431,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
 
         const searchInput = dropdown.querySelector('.iti__search-input') as HTMLInputElement;
         if (searchInput) {
-          searchInput.setAttribute('data-theme', this.currentTheme);
+          searchInput.dataset['theme'] = this.currentTheme;
           if (this.currentTheme === 'dark') {
             searchInput.classList.add('dark-theme');
           } else {
@@ -1443,7 +1475,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     clearButton.setAttribute('tabindex', '-1');
 
     // Make search input container relative if needed
-    const containerStyle = window.getComputedStyle(searchContainer);
+    const containerStyle = globalThis.window.getComputedStyle(searchContainer);
     if (containerStyle.position === 'static') {
       searchContainer.style.position = 'relative';
     }
@@ -1453,7 +1485,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
 
     // Show/hide clear button based on input value
     const updateClearButton = () => {
-      if (searchInput.value && searchInput.value.trim()) {
+      if (searchInput.value?.trim()) {
         clearButton.style.display = 'flex';
       } else {
         clearButton.style.display = 'none';
@@ -1510,7 +1542,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
   /** Setup observer to watch for dropdown changes and apply theme */
   private setupDropdownThemeObserver(): void {
     if (!isPlatformBrowser(this.platformId)) return;
-    if (typeof window === 'undefined' || !window.MutationObserver) return;
+    if (!globalThis.window?.MutationObserver) return;
 
     // Only create observer if it doesn't already exist
     if (this.themeObserver) return;
@@ -1522,7 +1554,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
             mutation.addedNodes.forEach((node) => {
               if (node.nodeType === Node.ELEMENT_NODE || node.nodeType === 1) {
                 const element = node as HTMLElement;
-                if (element.classList && element.classList.contains('iti__country-list')) {
+                if (element.classList?.contains('iti__country-list')) {
                   this.updateDropdownTheme();
                 }
               }
@@ -1540,6 +1572,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     } catch (e) {
       // Fallback for browsers without MutationObserver support
       this.themeObserver = null;
+      this.reportNonCriticalError('Failed to setup dropdown theme observer', e);
     }
   }
 
@@ -1550,7 +1583,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     // Watch for class changes on document.documentElement (html tag)
     // This supports Tailwind and other class-based theming systems
     const target = document.documentElement;
-    if (!target || !window.MutationObserver) return;
+    if (!target || !globalThis.window.MutationObserver) return;
 
     this.globalThemeObserver = new MutationObserver((mutations) => {
       // Only re-check if we are in auto mode
@@ -1563,6 +1596,45 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     this.globalThemeObserver.observe(target, {
       attributes: true,
       attributeFilter: ['class', 'data-theme']
+    });
+  }
+
+  private shouldSkipWriteUpdate(
+    currentE164: string | null,
+    incomingE164: string | null,
+    iso2: CountryCode,
+    parsedNationalFallback: string
+  ): boolean {
+    if (currentE164 !== incomingE164) return false;
+    const currentRaw = this.stateSignal().raw;
+    const currentIso2 = this.stateSignal().iso2;
+    if (currentIso2 !== iso2) return false;
+    const nsn = incomingE164
+      ? this.nsnFromE164(incomingE164, iso2)
+      : this.stripLeadingZero(this.toNSN(parsedNationalFallback));
+    const display = this.displayValue(nsn, iso2);
+    return currentRaw === display;
+  }
+
+  private buildValidationErrors(valid: boolean, isInvalidInternational: boolean): ValidationErrors | null {
+    if (valid) return null;
+    if (isInvalidInternational) {
+      return { phoneInvalidCountryCode: true, phoneInvalid: false };
+    }
+    return { phoneInvalid: true, phoneInvalidCountryCode: false };
+  }
+
+  private reportNonCriticalError(message: string, error: unknown): void {
+    if (typeof console !== 'undefined') {
+      console.debug(`[ngxsmk-tel-input] ${message}`, error);
+    }
+  }
+
+  private emitReady(): void {
+    if (this.isDestroyed) return;
+    this.runInZone(() => {
+      this.ready.emit();
+      this.readySignal.emit();
     });
   }
 }
