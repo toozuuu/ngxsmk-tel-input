@@ -7,7 +7,6 @@ import {
   SchematicContext,
   Tree,
   chain,
-  externalSchematic,
   mergeWith,
   apply,
   url,
@@ -20,8 +19,7 @@ import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 import {
   getWorkspace,
   updateWorkspace,
-  getProjectFromWorkspace,
-  getProjectTargets
+  getProjectFromWorkspace
 } from '@schematics/angular/utility/workspace';
 import { getProjectTargetOptions } from '@schematics/angular/utility/project-targets';
 import { normalize } from '@angular-devkit/core';
@@ -51,7 +49,7 @@ export default function ngAdd(options: Schema): Rule {
       options.addAssets ? updateAngularJsonAssets(projectName, projectType) : noop(),
       
       // Add theme files if needed
-      options.theme !== 'default' ? addThemeFiles(options.theme, projectName) : noop(),
+      options.theme === 'default' ? noop() : addThemeFiles(options.theme, projectName),
       
       // Create example component
       createExampleComponent(projectName, projectType, options.theme),
@@ -107,13 +105,7 @@ function updateAngularJsonStyles(projectName: string, projectType: string): Rule
       styles.push(intlTelInputCss);
     }
 
-    // Add theme styles if needed
-    if (projectType === 'app') {
-      const themeStyle = 'node_modules/ngxsmk-tel-input/themes/default.css';
-      if (!styles.includes(themeStyle)) {
-        styles.push(themeStyle);
-      }
-    }
+    // Component styles are self-contained; only intl-tel-input base css is required here.
   });
 }
 

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { PLATFORM_ID } from '@angular/core';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { NgxsmkTelInputComponent } from './ngxsmk-tel-input.component';
 import { NgxsmkTelInputService } from './ngxsmk-tel-input.service';
 import { CountryCode } from 'libphonenumber-js';
@@ -61,15 +61,27 @@ describe('NgxsmkTelInputComponent', () => {
       component.variant = 'filled';
       expect(component.variant).toBe('filled');
     });
+
+    it('should use traditional size and variant when signal inputs are not provided', () => {
+      fixture.componentRef.setInput('size', 'lg');
+      fixture.componentRef.setInput('variant', 'filled');
+      fixture.detectChanges();
+
+      const root = fixture.nativeElement.querySelector('.ngxsmk-tel');
+      expect(root.dataset.size).toBe('lg');
+      expect(root.dataset.variant).toBe('filled');
+    });
+
+    it('should keep signal inputs undefined until explicitly bound', () => {
+      expect(component.initialCountrySignal()).toBeUndefined();
+      expect(component.preferredCountriesSignal()).toBeUndefined();
+      expect(component.formatWhenValidSignal()).toBeUndefined();
+      expect(component.sizeSignal()).toBeUndefined();
+      expect(component.themeSignal()).toBeUndefined();
+    });
   });
 
   describe('ControlValueAccessor', () => {
-    let formControl: FormControl;
-
-    beforeEach(() => {
-      formControl = new FormControl('');
-    });
-
     it('should implement writeValue', () => {
       const value = '+12025551234';
       component.writeValue(value);
@@ -120,7 +132,7 @@ describe('NgxsmkTelInputComponent', () => {
       const control = new FormControl('123');
       // Mock currentRaw to return invalid number
       spyOn(component, 'currentRaw').and.returnValue('123');
-      spyOn(component, 'currentIso2').and.returnValue('US' as CountryCode);
+      spyOn(component as any, 'currentIso2').and.returnValue('US' as CountryCode);
       
       const errors = component.validate(control);
       expect(errors).toEqual({ phoneInvalid: true });
@@ -129,7 +141,7 @@ describe('NgxsmkTelInputComponent', () => {
     it('should return phoneInvalidCountryCode for invalid country codes', () => {
       const control = new FormControl('1123456789');
       spyOn(component, 'currentRaw').and.returnValue('1123456789');
-      spyOn(component, 'currentIso2').and.returnValue('US' as CountryCode);
+      spyOn(component as any, 'currentIso2').and.returnValue('US' as CountryCode);
       
       // Mock service to return invalid international
       spyOn(service, 'parseWithInvalidDetection').and.returnValue({
@@ -146,7 +158,7 @@ describe('NgxsmkTelInputComponent', () => {
     it('should return null for valid numbers', () => {
       const control = new FormControl('+12025551234');
       spyOn(component, 'currentRaw').and.returnValue('2025551234');
-      spyOn(component, 'currentIso2').and.returnValue('US' as CountryCode);
+      spyOn(component as any, 'currentIso2').and.returnValue('US' as CountryCode);
       
       spyOn(service, 'parseWithInvalidDetection').and.returnValue({
         e164: '+12025551234',
@@ -164,7 +176,7 @@ describe('NgxsmkTelInputComponent', () => {
       const control = new FormControl('2025551234');
       
       spyOn(component, 'currentRaw').and.returnValue('2025551234');
-      spyOn(component, 'currentIso2').and.returnValue('US' as CountryCode);
+      spyOn(component as any, 'currentIso2').and.returnValue('US' as CountryCode);
       spyOn(service, 'parseWithInvalidDetection').and.returnValue({
         e164: '+12025551234',
         national: '(202) 555-1234',
@@ -252,17 +264,23 @@ describe('NgxsmkTelInputComponent', () => {
 
   describe('Lifecycle', () => {
     it('should handle ngOnDestroy', () => {
-      spyOn(component, 'destroyPlugin');
-      spyOn(component, 'cleanupEventListeners');
+      const destroyPluginSpy = spyOn(component as any, 'destroyPlugin');
+      const cleanupEventListenersSpy = spyOn(component as any, 'cleanupEventListeners');
       
       component.ngOnDestroy();
       
-      expect(component.destroyPlugin).toHaveBeenCalled();
-      expect(component.cleanupEventListeners).toHaveBeenCalled();
+      expect(destroyPluginSpy).toHaveBeenCalled();
+      expect(cleanupEventListenersSpy).toHaveBeenCalled();
     });
 
     it('should handle ngOnChanges', () => {
-      spyOn(component, 'reinitPlugin');
+      const reinitRequestSpy = spyOn(component as any, 'requestPluginReinit');
+      (component as any).iti = {
+        setNumber: () => undefined,
+        setCountry: () => undefined,
+        getSelectedCountryData: () => ({ iso2: 'us', dialCode: '1' }),
+        destroy: () => undefined
+      };
       
       component.ngOnChanges({
         initialCountry: {
@@ -273,15 +291,54 @@ describe('NgxsmkTelInputComponent', () => {
         }
       });
       
-      // Should trigger reinit if config changed
-      expect(component).toBeTruthy();
+      expect(reinitRequestSpy).toHaveBeenCalled();
     });
+  });
+
+  describe('Runtime regressions', () => {
+    it('should request plugin reinit when signal config input changes', fakeAsync(() => {
+      (component as any).iti = {
+        setNumber: () => undefined,
+        setCountry: () => undefined,
+        getSelectedCountryData: () => ({ iso2: 'us', dialCode: '1' }),
+        destroy: () => undefined
+      };
+      const reinitRequestSpy = spyOn(component as any, 'requestPluginReinit');
+
+      fixture.componentRef.setInput('initialCountrySignal', 'GB' as CountryCode);
+      fixture.detectChanges();
+      tick();
+
+      expect(reinitRequestSpy).toHaveBeenCalled();
+    }));
+
+    it('should not mutate global dark classes during dropdown theme update', fakeAsync(() => {
+      const htmlHadDark = document.documentElement.classList.contains('dark');
+      const bodyHadDark = document.body.classList.contains('dark');
+      const dropdown = document.createElement('ul');
+      dropdown.className = 'iti__country-list';
+      document.body.appendChild(dropdown);
+      component.setTheme('dark');
+
+      (component as any).updateDropdownTheme(dropdown);
+      tick(20);
+
+      expect(dropdown.classList.contains('dark-theme')).toBeTrue();
+      expect(document.documentElement.classList.contains('dark')).toBe(htmlHadDark);
+      expect(document.body.classList.contains('dark')).toBe(bodyHadDark);
+
+      dropdown.remove();
+    }));
   });
 
   describe('Accessibility', () => {
     it('should have aria-invalid attribute when error', () => {
       component.showErrorWhenTouched = false;
-      spyOn(component, 'validate').and.returnValue({ phoneInvalid: true });
+      (component as any).stateSignal.update((state: any) => ({
+        ...state,
+        errors: { phoneInvalid: true },
+        touched: true
+      }));
       
       fixture.detectChanges();
       
