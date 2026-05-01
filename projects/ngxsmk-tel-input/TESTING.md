@@ -8,7 +8,7 @@ The `ngxsmk-tel-input` library provides comprehensive testing utilities for unit
 
 ```typescript
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MockNgxsmkTelInputService } from 'ngxsmk-tel-input/testing';
+import { MockNgxsmkTelInputService } from 'ngxsmk-tel-input';
 import { NgxsmkTelInputComponent } from 'ngxsmk-tel-input';
 
 describe('MyComponent', () => {
@@ -63,7 +63,7 @@ import {
   getPhoneInputComponent,
   setPhoneInputValue,
   triggerInputEvent
-} from 'ngxsmk-tel-input/testing';
+} from 'ngxsmk-tel-input';
 
 describe('PhoneInputComponent', () => {
   it('should handle valid US number', () => {
@@ -108,7 +108,7 @@ import {
   getPhoneInputValue,
   isErrorDisplayed,
   E2E_SCENARIOS
-} from 'ngxsmk-tel-input/testing';
+} from 'ngxsmk-tel-input';
 
 describe('Phone Input E2E', () => {
   it('should validate phone number', async () => {
@@ -147,7 +147,7 @@ describe('Phone Input E2E', () => {
 Use the testing module for easy setup:
 
 ```typescript
-import { NgxsmkTelInputTestingModule } from 'ngxsmk-tel-input/testing';
+import { NgxsmkTelInputTestingModule } from 'ngxsmk-tel-input';
 
 TestBed.configureTestingModule({
   imports: [NgxsmkTelInputTestingModule]

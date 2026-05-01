@@ -8,19 +8,19 @@ The `ngxsmk-tel-input` library provides integrations with popular phone verifica
 
 ```typescript
 import { provideTwilioVerification } from 'ngxsmk-tel-input';
-import { HttpClientModule } from '@angular/common/http';
+import { ApplicationConfig } from '@angular/core';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 
-@Component({
+export const appConfig: ApplicationConfig = {
   providers: [
+    provideHttpClient(withFetch()),
     provideTwilioVerification({
       accountSid: 'your-account-sid',
       authToken: 'your-auth-token',
       serviceSid: 'your-service-sid'
     })
-  ],
-  imports: [HttpClientModule]
-})
-export class AppComponent {}
+  ]
+};
 ```
 
 ### Usage
@@ -89,19 +89,19 @@ export class MyComponent {
 
 ```typescript
 import { provideVonageVerification } from 'ngxsmk-tel-input';
-import { HttpClientModule } from '@angular/common/http';
+import { ApplicationConfig } from '@angular/core';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 
-@Component({
+export const appConfig: ApplicationConfig = {
   providers: [
+    provideHttpClient(withFetch()),
     provideVonageVerification({
       apiKey: 'your-api-key',
       apiSecret: 'your-api-secret',
       brand: 'Your App Name'
     })
-  ],
-  imports: [HttpClientModule]
-})
-export class AppComponent {}
+  ]
+};
 ```
 
 ### Usage
@@ -166,19 +166,19 @@ export class MyComponent {
 
 ```typescript
 import { provideAwsSnsVerification } from 'ngxsmk-tel-input';
-import { HttpClientModule } from '@angular/common/http';
+import { ApplicationConfig } from '@angular/core';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 
-@Component({
+export const appConfig: ApplicationConfig = {
   providers: [
+    provideHttpClient(withFetch()),
     provideAwsSnsVerification({
       accessKeyId: 'your-access-key-id',
       secretAccessKey: 'your-secret-access-key',
       region: 'us-east-1'
     })
-  ],
-  imports: [HttpClientModule]
-})
-export class AppComponent {}
+  ]
+};
 ```
 
 ### Usage
@@ -340,9 +340,40 @@ export class PhoneVerificationComponent {
 
 ## Notes
 
-- All services require `HttpClientModule` to be imported
+- All services require `provideHttpClient(...)` to be configured at app bootstrap
 - Configuration should be stored securely (use environment variables)
 - In production, verification should be handled server-side for security
 - AWS SNS integration requires AWS SDK for full functionality
 - All services return Observables for reactive programming
+
+## Ionic + Capacitor Integration
+
+Use these settings when embedding the component inside Ionic overlays (`ion-modal`, `ion-popover`, `ion-content`):
+
+- Keep the dropdown attached locally inside overlays:
+  - Set `[dropdownAttachToBody]="false"` inside modal/popover forms.
+- If body attachment is required, raise stacking context:
+  - Set `[dropdownZIndex]="3000"` (or higher than your overlay stack).
+- Keep touch keyboard behavior stable on mobile:
+  - Preserve `type="tel"` + numeric input mode defaults.
+  - Avoid forcing autofocus inside modal transitions.
+- Theme interop with Ionic:
+  - Prefer component-level theme input (`[theme]="'dark'"`) and CSS variables.
+  - Do not rely on global `html/body` class toggling for this component.
+
+Minimal Ionic form example:
+
+```html
+<ion-content>
+  <form [formGroup]="fg">
+    <ngxsmk-tel-input
+      formControlName="phone"
+      [dropdownAttachToBody]="false"
+      [dropdownZIndex]="3000"
+      [theme]="'auto'"
+      [initialCountry]="'US'">
+    </ngxsmk-tel-input>
+  </form>
+</ion-content>
+```
 

@@ -189,5 +189,5 @@ export class MyComponent {
 }
 ```
 
-The component will use signal values when available, falling back to traditional inputs.
+Signal inputs are optional; when a signal input is not explicitly bound, the component falls back to the traditional `@Input` value.
 

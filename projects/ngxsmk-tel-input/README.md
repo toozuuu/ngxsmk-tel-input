@@ -14,7 +14,7 @@ Wraps [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input) for the UI 
 ## ✨ Features
 
 * Country dropdown with flags
-* E.164 output (display can be national with `nationalMode`)
+* E.164 output (display can be configured via `nationalDisplay`)
 * Reactive & template‑driven Forms support (CVA)
 * Built‑in validation using libphonenumber‑js
 * **Enhanced validation**: Detects invalid country codes (like "11", "99") and shows appropriate error states
@@ -31,10 +31,10 @@ Wraps [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input) for the UI 
 
 ## ✅ Requirements
 
-* Angular **17+** (17, 18, 19, 20, 21+)
+* Angular **17+** (actively tested on Angular 19)
 * Node **18** or **20**
 
-> Library `peerDependencies` target Angular `>=17`. Fully compatible with Angular 17, 18, 19, 20, 21, and future versions.
+> Library `peerDependencies` target Angular `>=17`.
 
 ---
 
@@ -210,13 +210,13 @@ Arabic + RTL example
 
 | Name                   | Type                                        | Default                 | Description                                                                   |
 |------------------------|---------------------------------------------|-------------------------|-------------------------------------------------------------------------------|
-| `initialCountry`       | `CountryCode \| 'auto'`                     | `'US'`                  | Starting country. `'auto'` uses geoIp stub (`US` by default).                 |
+| `initialCountry`       | `CountryCode \| 'auto'`                     | `'US'`                  | Starting country (also respected when initial form value is `''`). `'auto'` uses geoIp stub (`US` by default). |
 | `preferredCountries`   | `CountryCode[]`                             | `['US','GB']`           | Pin these at the top.                                                         |
 | `onlyCountries`        | `CountryCode[]`                             | —                       | Limit selectable countries.                                                   |
-| `nationalMode`         | `boolean`                                   | `false`                 | If `true`, **display** national format in the input. Value still emits E.164. |
-| `separateDialCode`     | `boolean`                                   | `false`                 | Show dial code outside the input.                                             |
+| `nationalDisplay`      | `'formatted' \| 'digits'`                   | `'formatted'`           | Controls visible input format. Value still emits E.164.                      |
+| `separateDialCode`     | `boolean`                                   | `true`                  | Show dial code outside the input.                                             |
 | `allowDropdown`        | `boolean`                                   | `true`                  | Enable/disable dropdown.                                                      |
-| `placeholder`          | `string`                                    | `'Enter phone number'`  | Input placeholder.                                                            |
+| `placeholder`          | `string`                                    | —                       | Input placeholder.                                                            |
 | `autocomplete`         | `string`                                    | `'tel'`                 | Native autocomplete.                                                          |
 | `disabled`             | `boolean`                                   | `false`                 | Disable the control.                                                          |
 | `label`                | `string`                                    | —                       | Optional floating label text.                                                 |
@@ -227,14 +227,14 @@ Arabic + RTL example
 | `showClear`            | `boolean`                                   | `true`                  | Show a clear (×) button when not empty.                                       |
 | `autoFocus`            | `boolean`                                   | `false`                 | Focus on init.                                                                |
 | `selectOnFocus`        | `boolean`                                   | `false`                 | Select all text on focus.                                                     |
-| `formatOnBlur`         | `boolean`                                   | `true`                  | Pretty‑print on blur (national if `nationalMode`).                            |
+| `formatWhenValid`      | `'off' \| 'blur' \| 'typing'`               | `'typing'`              | When to format the display value.                                            |
 | `showErrorWhenTouched` | `boolean`                                   | `true`                  | Show error styles only after blur.                                            |
 | `dropdownAttachToBody` | `boolean`                                   | `true`                  | Attach dropdown to `<body>` (avoids clipping/overflow).                       |
 | `dropdownZIndex`       | `number`                                    | `2000`                  | Z‑index for dropdown panel.                                                   |
 | `i18n`                 | `IntlTelI18n`                               | —                       | Localize dropdown/search/ARIA labels.                                         |
 | `localizedCountries`   | `Partial<Record<CountryCode, string>>`      | —                       | Override country display names (ISO-2 keys).                                  |
 | `dir`                  | `'ltr' \| 'rtl'`                            | `'ltr'`                 | Text direction for the control.                                               |
-| `autoPlaceholder`      | `'off' \| 'polite' \| 'aggressive'`         | `'polite'`              | Example placeholders. Requires `utilsScript` unless `off`.                    |
+| `autoPlaceholder`      | `'off' \| 'polite' \| 'aggressive'`         | `'off'`                 | Example placeholders. Requires `utilsScript` unless `off`.                    |
 | `utilsScript`          | `string`                                    | —                       | Path/URL to `utils.js` (needed for example placeholders).                     |
 | `customPlaceholder`    | `(example: string, country: any) => string` | —                       | Transform the example placeholder.                                            |
 | `clearAriaLabel`       | `string`                                    | `'Clear phone number'`  | ARIA label for the clear button.                                              |
