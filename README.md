@@ -1,7 +1,7 @@
 # ngxsmk-tel-input
 
-An Angular **telephone input** component with country dropdown, flags, and robust validation/formatting.
-Wraps [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input) for the UI and [`libphonenumber-js`](https://github.com/catamphetamine/libphonenumber-js) for parsing/validation. Implements `ControlValueAccessor` so it plugs into Angular Forms.
+An Angular **phone input / telephone input** component with country dropdown, flags, international formatting, and robust validation.
+Built on top of [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input) + [`libphonenumber-js`](https://github.com/catamphetamine/libphonenumber-js), and fully compatible with Angular Reactive Forms and template-driven forms through `ControlValueAccessor`.
 
 > Emits **E.164** by default (e.g. `+14155550123`). SSR‑safe via lazy browser‑only import.
 
@@ -19,13 +19,22 @@ Wraps [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input) for the UI 
 * Built‑in validation using libphonenumber‑js
 * **Enhanced validation**: Detects invalid country codes (like "11", "99") and shows appropriate error states
 * **Mobile responsive**: Optimized for touch devices with proper tap targets, prevents iOS zoom, and responsive dropdown
-* **Dark & Light themes**: Comprehensive theme system with automatic system preference detection
+* **Dark & Light themes**: Improved dark-mode contrast, consistent code/readout colors, and automatic system preference detection
 * **Accessibility**: Full ARIA support, screen reader compatibility, keyboard navigation
 * SSR‑friendly (no `window` on the server)
 * Easy theming via CSS variables
 * Nice UX options: label/hint/error text, sizes, variants, clear button, autofocus, select-on-focus
 * Masking & caret-friendly as-you-type formatting (optional)
 * Format only when valid (formatWhenValid) and lock once valid (lockWhenValid) to prevent extra digits
+
+### Demo app highlights
+
+The workspace demo (`ng serve demo`) now includes:
+
+* polished documentation-style layout with improved spacing and visual hierarchy
+* responsive sidebar/header behavior for mobile and desktop
+* cleaner dark-mode palette with better text/background contrast
+* improved focus states and reduced-motion support for accessibility
 
 ---
 
@@ -278,11 +287,14 @@ Arabic + RTL example
 | `countryChange`  | `{ iso2: CountryCode }`                                    | Fired when selected country changes. |
 | `validityChange` | `boolean`                                                  | Fired when validity flips.           |
 | `inputChange`    | `{ raw: string; e164: string \| null; iso2: CountryCode }` | Emitted on every keystroke.          |
+| `ready`          | `void`                                                     | Emitted after plugin + listeners finish wiring (including each re-init cycle). |
 
 ### Public methods
 
 * `focus(): void`
 * `selectCountry(iso2: CountryCode): void`
+
+For deterministic first render behavior, prefer setting `[initialCountry]` directly. If you call imperative APIs like `selectCountry(...)` immediately after mount, wait for `(ready)` first.
 
 ---
 
@@ -445,4 +457,4 @@ Clear `.angular/cache`, rebuild the lib, and restart `ng serve`.
 * UI powered by [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input)
 * Parsing & validation by [`libphonenumber-js`](https://github.com/catamphetamine/libphonenumber-js)
 
-Last updated: 2025-01-21
+Last updated: 2026-05-01

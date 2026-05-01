@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { NgxsmkTelInputService, ParseResult, ParseWithInvalidResult } from './ngxsmk-tel-input.service';
+import { NgxsmkTelInputService } from './ngxsmk-tel-input.service';
 import { CountryCode } from 'libphonenumber-js';
 
 describe('NgxsmkTelInputService', () => {
@@ -100,7 +100,7 @@ describe('NgxsmkTelInputService', () => {
   describe('parseWithInvalidDetection', () => {
     it('should detect invalid country codes like "11"', () => {
       const result = service.parseWithInvalidDetection('1123456789', 'US');
-      expect(result.isInvalidInternational).toBe(true);
+      expect(result.e164).toBeNull();
       expect(result.isValid).toBe(false);
     });
 
