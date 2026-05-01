@@ -1,6 +1,6 @@
 {
   "name": "ngxsmk-tel-input",
-  "version": "1.6.10",
+  "version": "1.6.11",
   "description": "Angular phone input component with country flags, international formatting (E.164), validation, dark mode, and Angular Forms support",
   "homepage": "https://github.com/toozuuu/ngxsmk-tel-input#readme",
   "repository": {
@@ -18,7 +18,7 @@
   "author": {
     "email": "sachindilshan040@gmail.com",
     "name": "Sachin Dilshan",
-    "url": "https://github.com/toozuuu"
+    "url": "https://www.sachindilshan.com/"
   },
   "keywords": [
     "ngxsmk-tel-input",
