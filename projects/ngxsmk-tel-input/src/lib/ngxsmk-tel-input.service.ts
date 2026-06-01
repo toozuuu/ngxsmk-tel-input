@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { parsePhoneNumberFromString, type CountryCode } from 'libphonenumber-js';
+import { parsePhoneNumberFromString, type CountryCode } from 'libphonenumber-js/min';
 
 /**
  * Result of phone number parsing.
@@ -40,7 +40,7 @@ export class NgxsmkTelInputService {
   private parseCache = new Map<string, ParseResult>();
   private parseWithInvalidCache = new Map<string, ParseWithInvalidResult>();
   private validationCache = new Map<string, boolean>();
-  private readonly CACHE_SIZE_LIMIT = 1000;
+  private readonly CACHE_SIZE_LIMIT = 150;
 
   /**
    * Parses a phone number string and returns formatted results.

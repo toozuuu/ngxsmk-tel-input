@@ -32,7 +32,7 @@ import {
   ValidationErrors,
   Validator
 } from '@angular/forms';
-import { AsYouType, CountryCode, validatePhoneNumberLength } from 'libphonenumber-js';
+import { AsYouType, CountryCode, validatePhoneNumberLength } from 'libphonenumber-js/min';
 import { NgxsmkTelInputService } from './ngxsmk-tel-input.service';
 import { CountryMap, IntlTelI18n } from './types';
 import { createPhoneInputState, createFormattedValueSignal, createValidationStatusSignal, createPhoneMetadataSignal, PhoneInputState } from './signals';
@@ -640,6 +640,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
 
       // Emit inputChange for external listeners (but NOT onChange to avoid loop)
       this.runInZone(() => {
+        if (this.isDestroyed) return;
         this.inputChange.emit({ raw: display, e164: incomingE164, iso2 });
         this.inputChangeSignal.emit({ raw: display, e164: incomingE164, iso2 });
       });
@@ -1007,6 +1008,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
         }));
 
         this.runInZone(() => {
+          if (this.isDestroyed) return;
           const changeEvent = { iso2 };
 
           // Emit both traditional and signal-based outputs
@@ -1117,7 +1119,7 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     // Intelligence features
     if (this.enableIntelligence && this.intelligence && parsed.e164) {
       const carrierInfo = this.intelligence.detectCarrierAndType(parsed.e164, iso2);
-      if (carrierInfo) {
+      if (carrierInfo && !this.isDestroyed) {
         this.intelligenceChange.emit(carrierInfo);
       }
     }
@@ -1125,13 +1127,14 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
     // Format suggestions
     if (this.enableFormatSuggestions && this.intelligence && !parsed.isValid) {
       const suggestion = this.intelligence.suggestFormatCorrection(rawValue, iso2);
-      if (suggestion) {
+      if (suggestion && !this.isDestroyed) {
         this.formatSuggestion.emit(suggestion);
       }
     }
 
     // Batch zone operations and emissions
     this.runInZone(() => {
+      if (this.isDestroyed) return;
       this.onChange(parsed.e164);
 
       const changeEvent = { raw: rawValue, e164: parsed.e164, iso2 };
