@@ -1,53 +1,45 @@
 # ngxsmk-tel-input
 
-An Angular **phone input / telephone input** component with country dropdown, flags, international formatting, and robust validation.
-Built on top of [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input) + [`libphonenumber-js`](https://github.com/catamphetamine/libphonenumber-js), and fully compatible with Angular Reactive Forms and template-driven forms through `ControlValueAccessor`.
+An Angular **telephone input** component with country dropdown, flags, and robust validation/formatting.
+Wraps [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input) for the UI and [`libphonenumber-js`](https://github.com/catamphetamine/libphonenumber-js) for parsing/validation. Implements `ControlValueAccessor` so it plugs into Angular Forms.
 
 > Emits **E.164** by default (e.g. `+14155550123`). SSR‑safe via lazy browser‑only import.
 
-##  Try it live on StackBlitz
+## Try it live on StackBlitz
 
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/toozuuu/ngxsmk-tel-input)
 
 ---
 
-##  Features
+## Features
 
 * Country dropdown with flags
-* E.164 output (display can be national with `nationalMode`)
+* E.164 output (display can be configured via `nationalDisplay`)
 * Reactive & template‑driven Forms support (CVA)
 * Built‑in validation using libphonenumber‑js
 * **Enhanced validation**: Detects invalid country codes (like "11", "99") and shows appropriate error states
 * **Mobile responsive**: Optimized for touch devices with proper tap targets, prevents iOS zoom, and responsive dropdown
-* **Dark & Light themes**: Improved dark-mode contrast, consistent code/readout colors, and automatic system preference detection
+* **Dark & Light themes**: Comprehensive theme system with automatic system preference detection
 * **Accessibility**: Full ARIA support, screen reader compatibility, keyboard navigation
+* **Integrations & Ionic ready**: Built-in support for Twilio, Vonage, AWS SNS, and Ionic Framework overlays/themes (see [INTEGRATIONS.md](./INTEGRATIONS.md))
 * SSR‑friendly (no `window` on the server)
 * Easy theming via CSS variables
 * Nice UX options: label/hint/error text, sizes, variants, clear button, autofocus, select-on-focus
 * Masking & caret-friendly as-you-type formatting (optional)
 * Format only when valid (formatWhenValid) and lock once valid (lockWhenValid) to prevent extra digits
 
-### Demo app highlights
-
-The workspace demo (`ng serve demo`) now includes:
-
-* polished documentation-style layout with improved spacing and visual hierarchy
-* responsive sidebar/header behavior for mobile and desktop
-* cleaner dark-mode palette with better text/background contrast
-* improved focus states and reduced-motion support for accessibility
-
 ---
 
-##  Requirements
+## Requirements
 
-* Angular **17+** (17, 18, 19, 20, 21+)
+* Angular **17+** (actively tested on Angular 19)
 * Node **18** or **20**
 
-> Library `peerDependencies` target Angular `>=17`. Fully compatible with Angular 17, 18, 19, 20, 21, and future versions.
+> Library `peerDependencies` target Angular `>=17`.
 
 ---
 
-##  Install
+## Install
 
 ```bash
 npm i ngxsmk-tel-input intl-tel-input libphonenumber-js
@@ -91,7 +83,7 @@ Restart the dev server after changes.
 
 ---
 
-##  Quick start (Reactive Forms)
+## Quick start (Reactive Forms)
 
 ```ts
 // app.component.ts
@@ -152,7 +144,7 @@ export class AppComponent {
 
 ---
 
-##  Template‑driven usage
+## Template‑driven usage
 
 ```html
 <form #f="ngForm">
@@ -163,7 +155,7 @@ export class AppComponent {
 
 ---
 
-##  Localization & RTL
+## Localization & RTL
 
 You can localize the dropdown/search labels and override country names.
 
@@ -213,19 +205,23 @@ Arabic + RTL example
 ```
 
 
-## ️ API
+## API
 
 ### Inputs
 
 | Name                   | Type                                        | Default                 | Description                                                                   |
 |------------------------|---------------------------------------------|-------------------------|-------------------------------------------------------------------------------|
-| `initialCountry`       | `CountryCode \| 'auto'`                     | `'US'`                  | Starting country. `'auto'` uses geoIp stub (`US` by default).                 |
+| `initialCountry`       | `CountryCode \| 'auto'`                     | `'US'`                  | Starting country (also respected when initial form value is `''`). `'auto'` uses geoIp stub (`US` by default). |
 | `preferredCountries`   | `CountryCode[]`                             | `['US','GB']`           | Pin these at the top.                                                         |
 | `onlyCountries`        | `CountryCode[]`                             | —                       | Limit selectable countries.                                                   |
-| `nationalMode`         | `boolean`                                   | `false`                 | If `true`, **display** national format in the input. Value still emits E.164. |
-| `separateDialCode`     | `boolean`                                   | `false`                 | Show dial code outside the input.                                             |
+| `excludeCountries`     | `CountryCode[]`                             | `[]`                    | Exclude specific countries from the dropdown list.                            |
+| `searchPlaceholder`    | `string`                                    | `''`                    | Custom placeholder text for the dropdown search input.                        |
+| `showFlags`            | `boolean`                                   | `true`                  | Hide flags completely for minimalist/text-only layouts.                       |
+| `searchCountryFlag`    | `boolean`                                   | `true`                  | Hide flag icons inside the country dropdown list.                             |
+| `nationalDisplay`      | `'formatted' \| 'digits'`                   | `'formatted'`           | Controls visible input format. Value still emits E.164.                      |
+| `separateDialCode`     | `boolean`                                   | `true`                  | Show dial code outside the input.                                             |
 | `allowDropdown`        | `boolean`                                   | `true`                  | Enable/disable dropdown.                                                      |
-| `placeholder`          | `string`                                    | `'Enter phone number'`  | Input placeholder.                                                            |
+| `placeholder`          | `string`                                    | —                       | Input placeholder.                                                            |
 | `autocomplete`         | `string`                                    | `'tel'`                 | Native autocomplete.                                                          |
 | `disabled`             | `boolean`                                   | `false`                 | Disable the control.                                                          |
 | `label`                | `string`                                    | —                       | Optional floating label text.                                                 |
@@ -236,14 +232,14 @@ Arabic + RTL example
 | `showClear`            | `boolean`                                   | `true`                  | Show a clear (×) button when not empty.                                       |
 | `autoFocus`            | `boolean`                                   | `false`                 | Focus on init.                                                                |
 | `selectOnFocus`        | `boolean`                                   | `false`                 | Select all text on focus.                                                     |
-| `formatOnBlur`         | `boolean`                                   | `true`                  | Pretty‑print on blur (national if `nationalMode`).                            |
+| `formatWhenValid`      | `'off' \| 'blur' \| 'typing'`               | `'typing'`              | When to format the display value.                                            |
 | `showErrorWhenTouched` | `boolean`                                   | `true`                  | Show error styles only after blur.                                            |
 | `dropdownAttachToBody` | `boolean`                                   | `true`                  | Attach dropdown to `<body>` (avoids clipping/overflow).                       |
 | `dropdownZIndex`       | `number`                                    | `2000`                  | Z‑index for dropdown panel.                                                   |
 | `i18n`                 | `IntlTelI18n`                               | —                       | Localize dropdown/search/ARIA labels.                                         |
 | `localizedCountries`   | `Partial<Record<CountryCode, string>>`      | —                       | Override country display names (ISO-2 keys).                                  |
 | `dir`                  | `'ltr' \| 'rtl'`                            | `'ltr'`                 | Text direction for the control.                                               |
-| `autoPlaceholder`      | `'off' \| 'polite' \| 'aggressive'`         | `'polite'`              | Example placeholders. Requires `utilsScript` unless `off`.                    |
+| `autoPlaceholder`      | `'off' \| 'polite' \| 'aggressive'`         | `'off'`                 | Example placeholders. Requires `utilsScript` unless `off`.                    |
 | `utilsScript`          | `string`                                    | —                       | Path/URL to `utils.js` (needed for example placeholders).                     |
 | `customPlaceholder`    | `(example: string, country: any) => string` | —                       | Transform the example placeholder.                                            |
 | `clearAriaLabel`       | `string`                                    | `'Clear phone number'`  | ARIA label for the clear button.                                              |
@@ -259,18 +255,15 @@ Arabic + RTL example
 | `countryChange`  | `{ iso2: CountryCode }`                                    | Fired when selected country changes. |
 | `validityChange` | `boolean`                                                  | Fired when validity flips.           |
 | `inputChange`    | `{ raw: string; e164: string \| null; iso2: CountryCode }` | Emitted on every keystroke.          |
-| `ready`          | `void`                                                     | Emitted after plugin + listeners finish wiring (including each re-init cycle). |
 
 ### Public methods
 
 * `focus(): void`
 * `selectCountry(iso2: CountryCode): void`
 
-For deterministic first render behavior, prefer setting `[initialCountry]` directly. If you call imperative APIs like `selectCountry(...)` immediately after mount, wait for `(ready)` first.
-
 ---
 
-##  Formatting & validity behavior
+## Formatting & validity behavior
 
 * No formatting while invalid. As-you-type masking only starts when the digits form a valid number for the selected country.
 
@@ -282,7 +275,7 @@ For rare patterns not covered by libphonenumber-js, the control falls back to ra
 
 ---
 
-##  Theming
+## Theming
 
 ### CSS Variables
 
@@ -336,7 +329,7 @@ Dark mode: wrap in a `.dark` parent or use `[theme]="'dark'"` — tokens adapt a
 
 ---
 
-## ️ Validation patterns
+## Validation patterns
 
 ```html
 <ngxsmk-tel-input formControlName="phone"></ngxsmk-tel-input>
@@ -372,14 +365,14 @@ The component now includes enhanced validation that detects and handles various 
 
 ---
 
-##  SSR notes
+## SSR notes
 
 * The library lazy‑imports `intl-tel-input` only in the **browser** (guards with `isPlatformBrowser`).
 * No `window`/`document` usage on the server path.
 
 ---
 
-##  Local development
+## Local development
 
 This repo is an Angular workspace with a library.
 
@@ -400,7 +393,7 @@ npm i ../path-to-workspace/dist/ngxsmk-tel-input/ngxsmk-tel-input-<version>.tgz
 
 ---
 
-##  Troubleshooting
+## Troubleshooting
 
 **UI looks unstyled / bullets in dropdown**
 Add the CSS and assets in `angular.json` (see Install). Restart the dev server.
@@ -419,13 +412,13 @@ Clear `.angular/cache`, rebuild the lib, and restart `ng serve`.
 
 ---
 
-##  License
+## License
 
 [MIT](./LICENSE)
 
-##  Credits
+## Credits
 
 * UI powered by [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input)
 * Parsing & validation by [`libphonenumber-js`](https://github.com/catamphetamine/libphonenumber-js)
 
-Last updated: 2026-05-01
+Last updated: 2025-01-21

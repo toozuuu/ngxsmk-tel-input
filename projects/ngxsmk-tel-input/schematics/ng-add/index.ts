@@ -18,8 +18,10 @@ import {
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 import {
   getWorkspace,
-  updateWorkspace
+  updateWorkspace,
+  getProjectFromWorkspace
 } from '@schematics/angular/utility/workspace';
+import { getProjectTargetOptions } from '@schematics/angular/utility/project-targets';
 import { normalize } from '@angular-devkit/core';
 import { Schema } from './schema';
 
@@ -29,14 +31,13 @@ import { Schema } from './schema';
 export default function ngAdd(options: Schema): Rule {
   return async (tree: Tree, context: SchematicContext) => {
     const workspace = await getWorkspace(tree);
-    const projectName = options.project || workspace.extensions['defaultProject'] as string;
-    const theme = options.theme ?? 'default';
+    const projectName = options.project || workspace.extensions.defaultProject as string;
     
     if (!projectName) {
       throw new Error('No project specified. Use --project flag.');
     }
 
-    const project = getProjectByName(workspace, projectName);
+    const project = getProjectFromWorkspace(workspace, projectName);
     const projectType = project.extensions.projectType === 'application' ? 'app' : 'lib';
 
     return chain([
@@ -44,14 +45,14 @@ export default function ngAdd(options: Schema): Rule {
       options.skipPackageJson ? noop() : addDependencies(),
       
       // Update angular.json
-      options.addStyles ? updateAngularJsonStyles(projectName) : noop(),
-      options.addAssets ? updateAngularJsonAssets(projectName) : noop(),
+      options.addStyles ? updateAngularJsonStyles(projectName, projectType) : noop(),
+      options.addAssets ? updateAngularJsonAssets(projectName, projectType) : noop(),
       
       // Add theme files if needed
-      theme === 'default' ? noop() : addThemeFiles(theme, projectName),
+      options.theme === 'default' ? noop() : addThemeFiles(options.theme, projectName),
       
       // Create example component
-      createExampleComponent(projectName, projectType, theme),
+      createExampleComponent(projectName, projectType, options.theme),
       
       // Install dependencies
       options.skipPackageJson ? noop() : installDependencies(context)
@@ -76,7 +77,7 @@ function addDependencies(): Rule {
     }
 
     // Add required dependencies
-    packageJsonContent.dependencies['ngxsmk-tel-input'] = '^1.6.11';
+    packageJsonContent.dependencies['ngxsmk-tel-input'] = '^1.7.0';
     packageJsonContent.dependencies['intl-tel-input'] = '^25.3.2';
     packageJsonContent.dependencies['libphonenumber-js'] = '^1.12.11';
 
@@ -85,38 +86,19 @@ function addDependencies(): Rule {
   };
 }
 
-function getProjectByName(workspace: any, projectName: string): any {
-  const project = workspace.projects.get(projectName);
-  if (!project) {
-    throw new Error(`Project "${projectName}" not found in workspace.`);
-  }
-  return project;
-}
-
-function getBuildTargetOptions(project: any): Record<string, unknown> {
-  const buildTarget = project.targets.get('build');
-  if (!buildTarget) {
-    throw new Error(`Project does not have a build target.`);
-  }
-  if (!buildTarget.options) {
-    buildTarget.options = {};
-  }
-  return buildTarget.options as Record<string, unknown>;
-}
-
 /**
  * Update angular.json to include styles
  */
-function updateAngularJsonStyles(projectName: string): Rule {
+function updateAngularJsonStyles(projectName: string, projectType: string): Rule {
   return updateWorkspace((workspace) => {
-    const project = getProjectByName(workspace, projectName);
-    const targetOptions = getBuildTargetOptions(project);
+    const project = getProjectFromWorkspace(workspace, projectName);
+    const targetOptions = getProjectTargetOptions(project, 'build');
 
-    if (!targetOptions['styles']) {
-      targetOptions['styles'] = [];
+    if (!targetOptions.styles) {
+      targetOptions.styles = [];
     }
 
-    const styles = targetOptions['styles'] as string[];
+    const styles = targetOptions.styles as string[];
     const intlTelInputCss = 'node_modules/intl-tel-input/build/css/intlTelInput.css';
 
     if (!styles.includes(intlTelInputCss)) {
@@ -130,16 +112,16 @@ function updateAngularJsonStyles(projectName: string): Rule {
 /**
  * Update angular.json to include assets
  */
-function updateAngularJsonAssets(projectName: string): Rule {
+function updateAngularJsonAssets(projectName: string, projectType: string): Rule {
   return updateWorkspace((workspace) => {
-    const project = getProjectByName(workspace, projectName);
-    const targetOptions = getBuildTargetOptions(project);
+    const project = getProjectFromWorkspace(workspace, projectName);
+    const targetOptions = getProjectTargetOptions(project, 'build');
 
-    if (!targetOptions['assets']) {
-      targetOptions['assets'] = [];
+    if (!targetOptions.assets) {
+      targetOptions.assets = [];
     }
 
-    const assets = targetOptions['assets'] as any[];
+    const assets = targetOptions.assets as any[];
     const flagAssets = {
       glob: '**/*',
       input: 'node_modules/intl-tel-input/build/img',

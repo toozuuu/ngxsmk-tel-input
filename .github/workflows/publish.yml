@@ -21,6 +21,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - run: npm ci
+      - run: npx ng test ngxsmk-tel-input --watch=false --browsers=ChromeHeadless
       - run: npx ng build ngxsmk-tel-input --configuration production
 
       - name: Publish to npm (with provenance)

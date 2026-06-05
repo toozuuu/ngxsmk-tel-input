@@ -35,6 +35,9 @@ jobs:
       - name: Build library
         run: npx ng build ngxsmk-tel-input --configuration production
 
+      - name: Run library tests
+        run: npx ng test ngxsmk-tel-input --watch=false --browsers=ChromeHeadless
+
       - name: Build demo
         run: |
           REPO_NAME=${GITHUB_REPOSITORY#*/}

@@ -7,19 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.6.11] - 2026-05-01
+### Added
+- **excludeCountries / excludeCountriesSignal**: Exclude specific country ISO codes from appearing in the dropdown list.
+- **searchPlaceholder / searchPlaceholderSignal**: Customizable placeholder text for the country search input.
+- **showFlags / showFlagsSignal**: Hides flags completely from the selected input and country dropdown.
+- **searchCountryFlag / searchCountryFlagSignal**: Hides flag icons only within the dropdown list items while maintaining the selected flag display.
+
+---
+
+## [1.7.0] - 2026-06-06
 
 ### Changed
-- Bumped stable/current package version references across workspace to `1.6.11`.
-
-## [1.6.10] - 2026-01-19
-
-### Changed
-- **Dependencies**: Updated `intl-tel-input` to version 25 compatibility.
-- **Internal**: Migrated `preferredCountries` to `countryOrder` to support `intl-tel-input` v25.
 - **Example Components**: All example components (E-commerce Checkout, User Registration, Profile Management) now default to dark mode theme
 - **Demo App**: Default theme changed to dark mode for better visibility and consistency
 - **Navigation UI**: Fixed icon and text colors in dark mode navigation menu for better contrast and readability
+
+### Fixed
+- **Invalid Country Code False Positive**: Fixed `isInvalidInternationalNumber()` incorrectly flagging valid international numbers whose country code starts with a single-digit prefix that is itself not a country code (e.g. Greece `+30`, France `+33`, Germany `+49`, Australia `+61`, India `+91`). The loop now continues through all 1–3 digit prefix candidates and only flags a number as invalid if none of them produce a valid parse, rather than short-circuiting on the first failure. Non-`+` prefixed (national-format) inputs are also no longer passed through the loop at all.
 
 ## [1.6.9] - 2025-01-21
 

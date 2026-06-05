@@ -1,15 +1,7 @@
 {
   "name": "ngxsmk-tel-input",
-  "version": "1.6.11",
-  "description": "Angular phone input component with country flags, international formatting (E.164), validation, dark mode, and Angular Forms support",
-  "homepage": "https://github.com/toozuuu/ngxsmk-tel-input#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/toozuuu/ngxsmk-tel-input.git"
-  },
-  "bugs": {
-    "url": "https://github.com/toozuuu/ngxsmk-tel-input/issues"
-  },
+  "version": "1.7.0",
+  "description": "Angular telephone input with intl-tel-input + libphonenumber-js",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -18,7 +10,7 @@
   "author": {
     "email": "sachindilshan040@gmail.com",
     "name": "Sachin Dilshan",
-    "url": "https://www.sachindilshan.com/"
+    "url": "https://github.com/toozuuu"
   },
   "keywords": [
     "ngxsmk-tel-input",
@@ -36,9 +28,6 @@
     "cva",
     "phone-input",
     "telephone-input",
-    "phone-number-input",
-    "angular-phone-input",
-    "international-telephone-input",
     "phone-number",
     "international-phone",
     "intl-tel-input",
@@ -47,7 +36,6 @@
     "e164",
     "phone-validation",
     "phone-number-validation",
-    "phone-formatting",
     "country-code",
     "dial-code",
     "separate-dial-code",

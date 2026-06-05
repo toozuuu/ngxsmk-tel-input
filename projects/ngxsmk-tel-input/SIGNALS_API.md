@@ -12,6 +12,10 @@ All major inputs are available as signals:
     <ngxsmk-tel-input
       [initialCountrySignal]="'US'"
       [preferredCountriesSignal]="['US', 'GB']"
+      [excludeCountriesSignal]="['CA', 'MX']"
+      [searchPlaceholderSignal]="'Search...'"
+      [showFlagsSignal]="true"
+      [searchCountryFlagSignal]="true"
       [sizeSignal]="'md'"
       [variantSignal]="'outline'"
       [themeSignal]="'auto'"
@@ -189,5 +193,5 @@ export class MyComponent {
 }
 ```
 
-The component will use signal values when available, falling back to traditional inputs.
+Signal inputs are optional; when a signal input is not explicitly bound, the component falls back to the traditional `@Input` value.
 

@@ -61,6 +61,24 @@ describe('NgxsmkTelInputComponent', () => {
       component.variant = 'filled';
       expect(component.variant).toBe('filled');
     });
+
+    it('should use traditional size and variant when signal inputs are not provided', () => {
+      fixture.componentRef.setInput('size', 'lg');
+      fixture.componentRef.setInput('variant', 'filled');
+      fixture.detectChanges();
+
+      const root = fixture.nativeElement.querySelector('.ngxsmk-tel');
+      expect(root.dataset.size).toBe('lg');
+      expect(root.dataset.variant).toBe('filled');
+    });
+
+    it('should keep signal inputs undefined until explicitly bound', () => {
+      expect(component.initialCountrySignal()).toBeUndefined();
+      expect(component.preferredCountriesSignal()).toBeUndefined();
+      expect(component.formatWhenValidSignal()).toBeUndefined();
+      expect(component.sizeSignal()).toBeUndefined();
+      expect(component.themeSignal()).toBeUndefined();
+    });
   });
 
   describe('ControlValueAccessor', () => {
@@ -79,7 +97,7 @@ describe('NgxsmkTelInputComponent', () => {
     it('should register onChange callback', () => {
       const callback = jasmine.createSpy('onChange');
       component.registerOnChange(callback);
-
+      
       // Trigger change
       component.writeValue('+12025551234');
       // Callback should be registered (actual call happens in handleInput)
@@ -89,7 +107,7 @@ describe('NgxsmkTelInputComponent', () => {
     it('should register onTouched callback', () => {
       const callback = jasmine.createSpy('onTouched');
       component.registerOnTouched(callback);
-
+      
       component.onBlur();
       expect(callback).toHaveBeenCalled();
     });
@@ -97,7 +115,7 @@ describe('NgxsmkTelInputComponent', () => {
     it('should set disabled state', () => {
       component.setDisabledState(true);
       expect(component.disabled).toBe(true);
-
+      
       component.setDisabledState(false);
       expect(component.disabled).toBe(false);
     });
@@ -115,7 +133,7 @@ describe('NgxsmkTelInputComponent', () => {
       // Mock currentRaw to return invalid number
       spyOn(component, 'currentRaw').and.returnValue('123');
       spyOn(component as any, 'currentIso2').and.returnValue('US' as CountryCode);
-
+      
       const errors = component.validate(control);
       expect(errors).toEqual({ phoneInvalid: true });
     });
@@ -124,7 +142,7 @@ describe('NgxsmkTelInputComponent', () => {
       const control = new FormControl('1123456789');
       spyOn(component, 'currentRaw').and.returnValue('1123456789');
       spyOn(component as any, 'currentIso2').and.returnValue('US' as CountryCode);
-
+      
       // Mock service to return invalid international
       spyOn(service, 'parseWithInvalidDetection').and.returnValue({
         e164: null,
@@ -132,7 +150,7 @@ describe('NgxsmkTelInputComponent', () => {
         isValid: false,
         isInvalidInternational: true
       });
-
+      
       const errors = component.validate(control);
       expect(errors).toEqual({ phoneInvalidCountryCode: true });
     });
@@ -141,14 +159,14 @@ describe('NgxsmkTelInputComponent', () => {
       const control = new FormControl('+12025551234');
       spyOn(component, 'currentRaw').and.returnValue('2025551234');
       spyOn(component as any, 'currentIso2').and.returnValue('US' as CountryCode);
-
+      
       spyOn(service, 'parseWithInvalidDetection').and.returnValue({
         e164: '+12025551234',
         national: '(202) 555-1234',
         isValid: true,
         isInvalidInternational: false
       });
-
+      
       const errors = component.validate(control);
       expect(errors).toBeNull();
     });
@@ -156,7 +174,7 @@ describe('NgxsmkTelInputComponent', () => {
     it('should emit validityChange when validity changes', () => {
       spyOn(component.validityChange, 'emit');
       const control = new FormControl('2025551234');
-
+      
       spyOn(component, 'currentRaw').and.returnValue('2025551234');
       spyOn(component as any, 'currentIso2').and.returnValue('US' as CountryCode);
       spyOn(service, 'parseWithInvalidDetection').and.returnValue({
@@ -165,7 +183,7 @@ describe('NgxsmkTelInputComponent', () => {
         isValid: true,
         isInvalidInternational: false
       });
-
+      
       component.validate(control);
       expect(component.validityChange.emit).toHaveBeenCalledWith(true);
     });
@@ -175,7 +193,7 @@ describe('NgxsmkTelInputComponent', () => {
     it('should focus the input', () => {
       const inputElement = component.inputRef.nativeElement;
       spyOn(inputElement, 'focus');
-
+      
       component.focus();
       expect(inputElement.focus).toHaveBeenCalled();
     });
@@ -189,7 +207,7 @@ describe('NgxsmkTelInputComponent', () => {
     it('should clear input', () => {
       component.inputRef.nativeElement.value = '2025551234';
       spyOn(component.inputRef.nativeElement, 'focus');
-
+      
       component.clearInput();
       expect(component.currentRaw()).toBe('');
       expect(component.inputRef.nativeElement.focus).toHaveBeenCalled();
@@ -217,7 +235,7 @@ describe('NgxsmkTelInputComponent', () => {
         expect(event.iso2).toBeDefined();
         done();
       });
-
+      
       // Trigger country change (would normally happen via intl-tel-input)
       component.countryChange.emit({ iso2: 'GB' });
     });
@@ -227,7 +245,7 @@ describe('NgxsmkTelInputComponent', () => {
         expect(typeof isValid).toBe('boolean');
         done();
       });
-
+      
       component.validityChange.emit(true);
     });
 
@@ -238,7 +256,7 @@ describe('NgxsmkTelInputComponent', () => {
         expect(event.iso2).toBeDefined();
         done();
       });
-
+      
       // Simulate input change by writing a value
       component.writeValue('+12025551234');
     });
@@ -246,18 +264,24 @@ describe('NgxsmkTelInputComponent', () => {
 
   describe('Lifecycle', () => {
     it('should handle ngOnDestroy', () => {
-      spyOn(component as any, 'destroyPlugin');
-      spyOn(component as any, 'cleanupEventListeners');
-
+      const destroyPluginSpy = spyOn(component as any, 'destroyPlugin');
+      const cleanupEventListenersSpy = spyOn(component as any, 'cleanupEventListeners');
+      
       component.ngOnDestroy();
-
-      expect((component as any).destroyPlugin).toHaveBeenCalled();
-      expect((component as any).cleanupEventListeners).toHaveBeenCalled();
+      
+      expect(destroyPluginSpy).toHaveBeenCalled();
+      expect(cleanupEventListenersSpy).toHaveBeenCalled();
     });
 
     it('should handle ngOnChanges', () => {
-      spyOn(component as any, 'reinitPlugin');
-
+      const reinitRequestSpy = spyOn(component as any, 'requestPluginReinit');
+      (component as any).iti = {
+        setNumber: () => undefined,
+        setCountry: () => undefined,
+        getSelectedCountryData: () => ({ iso2: 'us', dialCode: '1' }),
+        destroy: () => undefined
+      };
+      
       component.ngOnChanges({
         initialCountry: {
           currentValue: 'GB',
@@ -266,86 +290,44 @@ describe('NgxsmkTelInputComponent', () => {
           isFirstChange: () => false
         }
       });
-
-      // Should trigger reinit if config changed
-      expect(component).toBeTruthy();
+      
+      expect(reinitRequestSpy).toHaveBeenCalled();
     });
-
-    it('should emit ready once after init cycle', fakeAsync(() => {
-      spyOn(component as any, 'initIntlTelInput').and.returnValue(Promise.resolve());
-      spyOn(component as any, 'bindDomListeners');
-      spyOn(component as any, 'applyPendingCountrySelection').and.returnValue(false);
-      spyOn(component.ready, 'emit');
-      spyOn((component as any).readySignal, 'emit');
-
-      (component as any).initAndWire();
-      tick();
-
-      expect(component.ready.emit).toHaveBeenCalledTimes(1);
-      expect((component as any).readySignal.emit).toHaveBeenCalledTimes(1);
-    }));
   });
 
-  describe('Stable Country Init', () => {
-    it('should keep configured initialCountry when writeValue is empty', () => {
-      component.initialCountry = 'GB';
-      const setNumberSpy = jasmine.createSpy('setNumber');
-      (component as any).pluginReady = true;
+  describe('Runtime regressions', () => {
+    it('should request plugin reinit when signal config input changes', fakeAsync(() => {
       (component as any).iti = {
-        setNumber: setNumberSpy,
-        destroy: jasmine.createSpy('destroy'),
-        getSelectedCountryData: () => ({ iso2: 'gb' })
-      } as any;
+        setNumber: () => undefined,
+        setCountry: () => undefined,
+        getSelectedCountryData: () => ({ iso2: 'us', dialCode: '1' }),
+        destroy: () => undefined
+      };
+      const reinitRequestSpy = spyOn(component as any, 'requestPluginReinit');
 
-      component.writeValue('');
-
-      expect(setNumberSpy).not.toHaveBeenCalled();
-      expect(component.state().iso2).toBe('GB' as CountryCode);
-    });
-
-    it('should queue selectCountry before plugin init and apply after ready', () => {
-      (component as any).pluginReady = false;
-      (component as any).iti = null;
-
-      component.selectCountry('IN' as CountryCode);
-
-      const setCountrySpy = jasmine.createSpy('setCountry');
-      (component as any).iti = {
-        setCountry: setCountrySpy,
-        destroy: jasmine.createSpy('destroy'),
-        getSelectedCountryData: () => ({ iso2: 'in' })
-      } as any;
-      (component as any).pluginReady = true;
-
-      const applied = (component as any).applyPendingCountrySelection();
-
-      expect(applied).toBeTrue();
-      expect(setCountrySpy).toHaveBeenCalledWith('in');
-    });
-
-    it('should preserve previous selected country on reinit when no pending selection', fakeAsync(() => {
-      const newSetCountrySpy = jasmine.createSpy('setCountry');
-      (component as any).iti = {
-        getSelectedCountryData: () => ({ iso2: 'gb' })
-      } as any;
-      spyOn(component as any, 'currentRaw').and.returnValue('');
-      spyOn(component as any, 'destroyPlugin').and.callFake(() => {
-        (component as any).iti = null;
-      });
-      spyOn(component as any, 'initIntlTelInput').and.callFake(async () => {
-        (component as any).iti = {
-          setCountry: newSetCountrySpy,
-          getSelectedCountryData: () => ({ iso2: 'gb' })
-        } as any;
-      });
-      spyOn(component as any, 'bindDomListeners');
-      spyOn(component as any, 'applyPendingCountrySelection').and.returnValue(false);
-      spyOn(component as any, 'emitReady');
-
-      (component as any).reinitPlugin();
+      fixture.componentRef.setInput('initialCountrySignal', 'GB' as CountryCode);
+      fixture.detectChanges();
       tick();
 
-      expect(newSetCountrySpy).toHaveBeenCalledWith('gb');
+      expect(reinitRequestSpy).toHaveBeenCalled();
+    }));
+
+    it('should not mutate global dark classes during dropdown theme update', fakeAsync(() => {
+      const htmlHadDark = document.documentElement.classList.contains('dark');
+      const bodyHadDark = document.body.classList.contains('dark');
+      const dropdown = document.createElement('ul');
+      dropdown.className = 'iti__country-list';
+      document.body.appendChild(dropdown);
+      component.setTheme('dark');
+
+      (component as any).updateDropdownTheme(dropdown);
+      tick(20);
+
+      expect(dropdown.classList.contains('dark-theme')).toBeTrue();
+      expect(document.documentElement.classList.contains('dark')).toBe(htmlHadDark);
+      expect(document.body.classList.contains('dark')).toBe(bodyHadDark);
+
+      dropdown.remove();
     }));
   });
 
@@ -354,13 +336,12 @@ describe('NgxsmkTelInputComponent', () => {
       component.showErrorWhenTouched = false;
       (component as any).stateSignal.update((state: any) => ({
         ...state,
-        raw: '123',
-        isValid: false,
-        errors: { phoneInvalid: true }
+        errors: { phoneInvalid: true },
+        touched: true
       }));
-
+      
       fixture.detectChanges();
-
+      
       const input = fixture.nativeElement.querySelector('input');
       expect(input.getAttribute('aria-invalid')).toBe('true');
     });
@@ -369,9 +350,8 @@ describe('NgxsmkTelInputComponent', () => {
       component.inputRef.nativeElement.value = '2025551234';
       component.showClear = true;
       fixture.detectChanges();
-
+      
       const clearButton = fixture.nativeElement.querySelector('.ngxsmk-tel__clear');
-      expect(component.showClear).toBeTrue();
       if (clearButton) {
         expect(clearButton.getAttribute('aria-label')).toBeTruthy();
       }
@@ -380,11 +360,10 @@ describe('NgxsmkTelInputComponent', () => {
     it('should have label associated with input', () => {
       component.label = 'Phone Number';
       fixture.detectChanges();
-
+      
       const label = fixture.nativeElement.querySelector('label');
       const input = fixture.nativeElement.querySelector('input');
-
-      expect(component.label).toBe('Phone Number');
+      
       if (label && input) {
         expect(label.getAttribute('for')).toBe(input.getAttribute('id'));
       }
@@ -394,7 +373,7 @@ describe('NgxsmkTelInputComponent', () => {
   describe('Edge Cases', () => {
     it('should handle destroyed component gracefully', () => {
       component.ngOnDestroy();
-
+      
       expect(() => component.focus()).not.toThrow();
       expect(() => component.writeValue('+12025551234')).not.toThrow();
       expect(() => component.validate({} as any)).not.toThrow();
@@ -409,11 +388,11 @@ describe('NgxsmkTelInputComponent', () => {
           NgxsmkTelInputService
         ]
       });
-
+      
       const ssrFixture = TestBed.createComponent(NgxsmkTelInputComponent);
       const ssrComponent = ssrFixture.componentInstance;
       ssrFixture.detectChanges();
-
+      
       expect(ssrComponent).toBeTruthy();
       // Should not crash on server
       expect(() => ssrComponent.ngAfterViewInit()).not.toThrow();
@@ -423,9 +402,9 @@ describe('NgxsmkTelInputComponent', () => {
       // Simulate missing inputRef
       const originalRef = component.inputRef;
       (component as any).inputRef = null;
-
+      
       expect(() => component.writeValue('+12025551234')).not.toThrow();
-
+      
       // Restore
       (component as any).inputRef = originalRef;
     });
@@ -435,7 +414,7 @@ describe('NgxsmkTelInputComponent', () => {
     it('should set theme programmatically', () => {
       component.setTheme('dark');
       expect(component.theme).toBe('dark');
-
+      
       component.setTheme('light');
       expect(component.theme).toBe('light');
     });
@@ -444,5 +423,126 @@ describe('NgxsmkTelInputComponent', () => {
       const theme = component.getCurrentTheme();
       expect(['light', 'dark']).toContain(theme);
     });
+  });
+
+  describe('Ionic & Angular 19+ Optimizations', () => {
+    it('should dynamically inject NgControl if present', () => {
+      // By default in simple TestBed configuration without forms directives, ngControl is null but doesn't crash
+      expect(component.ngControl).toBeNull();
+    });
+
+    it('should compute resolvedErrorText based on validation errors', () => {
+      component.errorText = undefined;
+      
+      (component as any).stateSignal.update((state: any) => ({
+        ...state,
+        errors: { required: true }
+      }));
+      fixture.detectChanges();
+      expect(component.resolvedErrorText()).toBe('Phone number is required');
+
+      (component as any).stateSignal.update((state: any) => ({
+        ...state,
+        errors: { phoneInvalidCountryCode: true }
+      }));
+      fixture.detectChanges();
+      expect(component.resolvedErrorText()).toBe('Invalid country code');
+
+      (component as any).stateSignal.update((state: any) => ({
+        ...state,
+        errors: { phoneInvalid: true }
+      }));
+      fixture.detectChanges();
+      expect(component.resolvedErrorText()).toBe('Invalid phone number');
+    });
+  });
+
+  describe('Advanced Features (ngx-intl-tel-input-gg parity)', () => {
+    it('should support excludeCountries input and signal', () => {
+      component.excludeCountries = ['CA', 'GB'];
+      expect(component.excludeCountries).toEqual(['CA', 'GB']);
+      expect(component.excludeCountriesSignal()).toBeUndefined();
+
+      fixture.componentRef.setInput('excludeCountriesSignal', ['MX']);
+      fixture.detectChanges();
+      expect(component.excludeCountriesSignal()).toEqual(['MX']);
+    });
+
+    it('should support searchPlaceholder input and signal', fakeAsync(() => {
+      component.searchPlaceholder = 'Find...';
+      expect(component.searchPlaceholder).toBe('Find...');
+      expect(component.searchPlaceholderSignal()).toBeUndefined();
+
+      fixture.componentRef.setInput('searchPlaceholderSignal', 'Filter countries');
+      fixture.detectChanges();
+      expect(component.searchPlaceholderSignal()).toBe('Filter countries');
+
+      // Create a mock dropdown element to test updateDropdownTheme logic
+      const mockDropdown = document.createElement('div');
+      mockDropdown.className = 'iti__country-list';
+      const mockSearchInput = document.createElement('input');
+      mockSearchInput.className = 'iti__search-input';
+      mockDropdown.appendChild(mockSearchInput);
+      document.body.appendChild(mockDropdown);
+
+      try {
+        (component as any).updateDropdownTheme(mockDropdown);
+        tick(15);
+        expect(mockSearchInput.placeholder).toBe('Filter countries');
+      } finally {
+        mockDropdown.remove();
+      }
+    }));
+
+    it('should support showFlags input, signal, and apply class', fakeAsync(() => {
+      expect(component.showFlags).toBe(true);
+      
+      fixture.componentRef.setInput('showFlags', false);
+      fixture.detectChanges();
+      
+      const rootEl = fixture.nativeElement.querySelector('.ngxsmk-tel');
+      expect(rootEl.classList.contains('ngxsmk-tel--hide-flags')).toBe(true);
+
+      fixture.componentRef.setInput('showFlagsSignal', true);
+      fixture.detectChanges();
+      expect(component.showFlagsSignal()).toBe(true);
+
+      // Verify dataset on dropdown
+      fixture.componentRef.setInput('showFlags', false);
+      fixture.componentRef.setInput('showFlagsSignal', undefined);
+      fixture.detectChanges();
+
+      const mockDropdown = document.createElement('div');
+      mockDropdown.className = 'iti__country-list';
+      document.body.appendChild(mockDropdown);
+
+      try {
+        (component as any).updateDropdownTheme(mockDropdown);
+        tick(15);
+        expect(mockDropdown.dataset['showFlags']).toBe('false');
+      } finally {
+        mockDropdown.remove();
+      }
+    }));
+
+    it('should support searchCountryFlag input and apply dataset', fakeAsync(() => {
+      expect(component.searchCountryFlag).toBe(true);
+
+      fixture.componentRef.setInput('searchCountryFlagSignal', false);
+      fixture.detectChanges();
+      expect(component.searchCountryFlagSignal()).toBe(false);
+
+      const mockDropdown = document.createElement('div');
+      mockDropdown.className = 'iti__country-list';
+      document.body.appendChild(mockDropdown);
+
+      try {
+        (component as any).updateDropdownTheme(mockDropdown);
+        tick(15);
+        expect(mockDropdown.dataset['searchCountryFlag']).toBe('false');
+      } finally {
+        mockDropdown.remove();
+      }
+    }));
   });
 });

@@ -14,13 +14,7 @@ import { ProfileComponent } from '../../../examples/profile-management/profile.c
   imports: [ReactiveFormsModule, NgxsmkTelInputComponent, JsonPipe, CommonModule, CheckoutComponent, RegistrationComponent, ProfileComponent],
   styleUrls: ['./app.component.scss'],
   template: `
-    @if (isDecember) {
-      <div class="snow-container">
-        @for (flake of snowflakes; track flake.id) {
-          <div class="snowflake" [style.left.%]="flake.left" [style.animation-duration]="flake.duration + 's'" [style.animation-delay]="flake.delay + 's'">❄</div>
-        }
-      </div>
-    }
+
 
     <div class="flex min-h-screen w-full max-w-full overflow-x-hidden bg-tf-bg-secondary dark:bg-tf-dark-bg-primary transition-colors duration-300" [class.sidebar-open]="sidebarOpen">
       <button 
@@ -42,7 +36,7 @@ import { ProfileComponent } from '../../../examples/profile-management/profile.c
               </div>
               <div class="flex flex-col">
                 <span class="text-lg font-semibold text-tf-text-primary dark:text-tf-dark-text-primary">Ngxsmk Tel Input</span>
-                <span class="text-xs text-tf-text-tertiary dark:text-tf-dark-text-tertiary">v1.6.11</span>
+                <span class="text-xs text-tf-text-tertiary dark:text-tf-dark-text-tertiary">v1.7.0</span>
               </div>
             </div>
             <button 
@@ -110,7 +104,7 @@ import { ProfileComponent } from '../../../examples/profile-management/profile.c
                   Documentation
                 </div>
                 <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-tf-text-primary dark:text-tf-dark-text-primary mb-2">Ngxsmk Tel Input</h1>
-                <p class="text-sm sm:text-base text-tf-text-secondary dark:text-tf-dark-text-secondary">High-performance Angular international telephone input component</p>
+                <p class="text-sm sm:text-base text-tf-text-secondary dark:text-tf-dark-text-secondary">NGXSMK Elite Signal-Based Phone Input — High-performance international telephone input component</p>
               </div>
               <div class="flex flex-wrap gap-2 sm:gap-3">
                 <a 
@@ -165,7 +159,7 @@ import { ProfileComponent } from '../../../examples/profile-management/profile.c
                   <span class="material-icons text-xl sm:text-2xl text-tf-warning">info</span>
                 </div>
                 <div class="min-w-0 flex-1">
-                  <div class="text-xl sm:text-2xl font-bold text-tf-text-primary dark:text-tf-dark-text-primary truncate">v1.6.11</div>
+                  <div class="text-xl sm:text-2xl font-bold text-tf-text-primary dark:text-tf-dark-text-primary truncate">v1.7.0</div>
                   <div class="text-xs text-tf-text-tertiary dark:text-tf-dark-text-tertiary uppercase tracking-wider truncate">Version</div>
                 </div>
               </div>
@@ -186,42 +180,42 @@ import { ProfileComponent } from '../../../examples/profile-management/profile.c
 
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             <div class="bg-tf-bg-primary dark:bg-tf-dark-bg-secondary rounded-xl p-4 sm:p-6 shadow-tf-sm hover:shadow-tf-md transition-all duration-300 text-center border border-tf-border-primary dark:border-tf-dark-border-primary hover:border-tf-link dark:hover:border-tf-dark-link">
-              <div class="text-4xl sm:text-5xl mb-3 sm:mb-4">⚡</div>
+              <span class="material-icons text-4xl sm:text-5xl text-tf-link mb-3 sm:mb-4">speed</span>
               <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-2">Performance Optimized</h3>
               <p class="text-xs sm:text-sm text-tf-text-secondary dark:text-tf-dark-text-secondary">OnPush change detection strategy reduces change detection cycles by 50%+</p>
             </div>
             <div class="bg-tf-bg-primary dark:bg-tf-dark-bg-secondary rounded-xl p-4 sm:p-6 shadow-tf-sm hover:shadow-tf-md transition-all duration-300 text-center border border-tf-border-primary dark:border-tf-dark-border-primary hover:border-tf-link dark:hover:border-tf-dark-link">
-              <div class="text-4xl sm:text-5xl mb-3 sm:mb-4">🌍</div>
+              <span class="material-icons text-4xl sm:text-5xl text-tf-link mb-3 sm:mb-4">language</span>
               <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-2">International Support</h3>
               <p class="text-xs sm:text-sm text-tf-text-secondary dark:text-tf-dark-text-secondary">Supports all countries with automatic country detection and validation</p>
             </div>
             <div class="bg-tf-bg-primary dark:bg-tf-dark-bg-secondary rounded-xl p-4 sm:p-6 shadow-tf-sm hover:shadow-tf-md transition-all duration-300 text-center border border-tf-border-primary dark:border-tf-dark-border-primary hover:border-tf-link dark:hover:border-tf-dark-link">
-              <div class="text-4xl sm:text-5xl mb-3 sm:mb-4">♿</div>
+              <span class="material-icons text-4xl sm:text-5xl text-tf-link mb-3 sm:mb-4">accessibility_new</span>
               <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-2">Accessible</h3>
               <p class="text-xs sm:text-sm text-tf-text-secondary dark:text-tf-dark-text-secondary">Full ARIA support, keyboard navigation, and screen reader compatibility</p>
             </div>
             <div class="bg-tf-bg-primary dark:bg-tf-dark-bg-secondary rounded-xl p-4 sm:p-6 shadow-tf-sm hover:shadow-tf-md transition-all duration-300 text-center border border-tf-border-primary dark:border-tf-dark-border-primary hover:border-tf-link dark:hover:border-tf-dark-link">
-              <div class="text-4xl sm:text-5xl mb-3 sm:mb-4">🎨</div>
+              <span class="material-icons text-4xl sm:text-5xl text-tf-link mb-3 sm:mb-4">palette</span>
               <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-2">Customizable</h3>
               <p class="text-xs sm:text-sm text-tf-text-secondary dark:text-tf-dark-text-secondary">Multiple size variants, style options, and theme support</p>
             </div>
             <div class="bg-tf-bg-primary dark:bg-tf-dark-bg-secondary rounded-xl p-4 sm:p-6 shadow-tf-sm hover:shadow-tf-md transition-all duration-300 text-center border border-tf-border-primary dark:border-tf-dark-border-primary hover:border-tf-link dark:hover:border-tf-dark-link">
-              <div class="text-4xl sm:text-5xl mb-3 sm:mb-4">📦</div>
+              <span class="material-icons text-4xl sm:text-5xl text-tf-link mb-3 sm:mb-4">workspace_premium</span>
               <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-2">Lightweight</h3>
               <p class="text-xs sm:text-sm text-tf-text-secondary dark:text-tf-dark-text-secondary">Optimized bundle size with tree-shaking support</p>
             </div>
             <div class="bg-tf-bg-primary dark:bg-tf-dark-bg-secondary rounded-xl p-4 sm:p-6 shadow-tf-sm hover:shadow-tf-md transition-all duration-300 text-center border border-tf-border-primary dark:border-tf-dark-border-primary hover:border-tf-link dark:hover:border-tf-dark-link">
-              <div class="text-4xl sm:text-5xl mb-3 sm:mb-4">🔄</div>
+              <span class="material-icons text-4xl sm:text-5xl text-tf-link mb-3 sm:mb-4">sync_alt</span>
               <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-2">Framework Agnostic Core</h3>
               <p class="text-xs sm:text-sm text-tf-text-secondary dark:text-tf-dark-text-secondary">Works with any Angular version, with or without Zone.js</p>
             </div>
             <div class="bg-tf-bg-primary dark:bg-tf-dark-bg-secondary rounded-xl p-4 sm:p-6 shadow-tf-sm hover:shadow-tf-md transition-all duration-300 text-center border border-tf-border-primary dark:border-tf-dark-border-primary hover:border-tf-link dark:hover:border-tf-dark-link">
-              <div class="text-4xl sm:text-5xl mb-3 sm:mb-4">🛠️</div>
+              <span class="material-icons text-4xl sm:text-5xl text-tf-link mb-3 sm:mb-4">integration_instructions</span>
               <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-2">Type Safe</h3>
               <p class="text-xs sm:text-sm text-tf-text-secondary dark:text-tf-dark-text-secondary">Full TypeScript support with comprehensive type definitions</p>
             </div>
             <div class="bg-tf-bg-primary dark:bg-tf-dark-bg-secondary rounded-xl p-4 sm:p-6 shadow-tf-sm hover:shadow-tf-md transition-all duration-300 text-center border border-tf-border-primary dark:border-tf-dark-border-primary hover:border-tf-link dark:hover:border-tf-dark-link">
-              <div class="text-4xl sm:text-5xl mb-3 sm:mb-4">📱</div>
+              <span class="material-icons text-4xl sm:text-5xl text-tf-link mb-3 sm:mb-4">settings_cell</span>
               <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-2">Mobile Responsive</h3>
               <p class="text-xs sm:text-sm text-tf-text-secondary dark:text-tf-dark-text-secondary">Optimized for mobile devices with touch-friendly interactions</p>
             </div>
@@ -348,7 +342,7 @@ import { ProfileComponent } from '../../../examples/profile-management/profile.c
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div class="bg-tf-bg-primary dark:bg-tf-dark-bg-secondary rounded-xl p-4 sm:p-6 shadow-tf-md border border-tf-border-primary dark:border-tf-dark-border-primary hover:shadow-tf-lg transition-all duration-300">
-              <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-3 sm:mb-4">⚡ Performance</h3>
+              <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-3 sm:mb-4">Performance</h3>
               <ul class="space-y-2 text-xs sm:text-sm text-tf-text-secondary dark:text-tf-dark-text-secondary">
                 <li class="flex items-start gap-2">
                   <span class="text-tf-link dark:text-tf-dark-link mt-1">•</span>
@@ -374,7 +368,7 @@ import { ProfileComponent } from '../../../examples/profile-management/profile.c
             </div>
 
             <div class="bg-tf-bg-primary dark:bg-tf-dark-bg-secondary rounded-xl p-4 sm:p-6 shadow-tf-md border border-tf-border-primary dark:border-tf-dark-border-primary hover:shadow-tf-lg transition-all duration-300">
-              <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-3 sm:mb-4">🌍 International</h3>
+              <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-3 sm:mb-4">International</h3>
               <ul class="space-y-2 text-xs sm:text-sm text-tf-text-secondary dark:text-tf-dark-text-secondary">
                 <li class="flex items-start gap-2">
                   <span class="text-tf-link dark:text-tf-dark-link mt-1">•</span>
@@ -400,7 +394,7 @@ import { ProfileComponent } from '../../../examples/profile-management/profile.c
             </div>
 
             <div class="bg-tf-bg-primary dark:bg-tf-dark-bg-secondary rounded-xl p-4 sm:p-6 shadow-tf-md border border-tf-border-primary dark:border-tf-dark-border-primary hover:shadow-tf-lg transition-all duration-300">
-              <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-3 sm:mb-4">♿ Accessibility</h3>
+              <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-3 sm:mb-4">Accessibility</h3>
               <ul class="space-y-2 text-xs sm:text-sm text-tf-text-secondary dark:text-tf-dark-text-secondary">
                 <li class="flex items-start gap-2">
                   <span class="text-tf-link dark:text-tf-dark-link mt-1">•</span>
@@ -426,7 +420,7 @@ import { ProfileComponent } from '../../../examples/profile-management/profile.c
             </div>
 
             <div class="bg-tf-bg-primary dark:bg-tf-dark-bg-secondary rounded-xl p-4 sm:p-6 shadow-tf-md border border-tf-border-primary dark:border-tf-dark-border-primary hover:shadow-tf-lg transition-all duration-300">
-              <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-3 sm:mb-4">🎨 Customization</h3>
+              <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-3 sm:mb-4">Customization</h3>
               <ul class="space-y-2 text-xs sm:text-sm text-tf-text-secondary dark:text-tf-dark-text-secondary">
                 <li class="flex items-start gap-2">
                   <span class="text-tf-link dark:text-tf-dark-link mt-1">•</span>
@@ -452,7 +446,7 @@ import { ProfileComponent } from '../../../examples/profile-management/profile.c
             </div>
 
             <div class="bg-tf-bg-primary dark:bg-tf-dark-bg-secondary rounded-xl p-4 sm:p-6 shadow-tf-md border border-tf-border-primary dark:border-tf-dark-border-primary hover:shadow-tf-lg transition-all duration-300">
-              <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-3 sm:mb-4">✅ Validation</h3>
+              <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-3 sm:mb-4">Validation</h3>
               <ul class="space-y-2 text-xs sm:text-sm text-tf-text-secondary dark:text-tf-dark-text-secondary">
                 <li class="flex items-start gap-2">
                   <span class="text-tf-link dark:text-tf-dark-link mt-1">•</span>
@@ -478,7 +472,7 @@ import { ProfileComponent } from '../../../examples/profile-management/profile.c
             </div>
 
             <div class="bg-tf-bg-primary dark:bg-tf-dark-bg-secondary rounded-xl p-4 sm:p-6 shadow-tf-md border border-tf-border-primary dark:border-tf-dark-border-primary hover:shadow-tf-lg transition-all duration-300">
-              <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-3 sm:mb-4">📱 Mobile</h3>
+              <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-3 sm:mb-4">Mobile</h3>
               <ul class="space-y-2 text-xs sm:text-sm text-tf-text-secondary dark:text-tf-dark-text-secondary">
                 <li class="flex items-start gap-2">
                   <span class="text-tf-link dark:text-tf-dark-link mt-1">•</span>
@@ -504,7 +498,7 @@ import { ProfileComponent } from '../../../examples/profile-management/profile.c
             </div>
 
             <div class="bg-tf-bg-primary dark:bg-tf-dark-bg-secondary rounded-xl p-4 sm:p-6 shadow-tf-md border border-tf-border-primary dark:border-tf-dark-border-primary hover:shadow-tf-lg transition-all duration-300">
-              <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-3 sm:mb-4">🧠 Intelligence</h3>
+              <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-3 sm:mb-4">Intelligence</h3>
               <ul class="space-y-2 text-xs sm:text-sm text-tf-text-secondary dark:text-tf-dark-text-secondary">
                 <li class="flex items-start gap-2">
                   <span class="text-tf-link dark:text-tf-dark-link mt-1">•</span>
@@ -530,7 +524,7 @@ import { ProfileComponent } from '../../../examples/profile-management/profile.c
             </div>
 
             <div class="bg-tf-bg-primary dark:bg-tf-dark-bg-secondary rounded-xl p-4 sm:p-6 shadow-tf-md border border-tf-border-primary dark:border-tf-dark-border-primary hover:shadow-tf-lg transition-all duration-300">
-              <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-3 sm:mb-4">📡 Signals API</h3>
+              <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-3 sm:mb-4">Signals API</h3>
               <ul class="space-y-2 text-xs sm:text-sm text-tf-text-secondary dark:text-tf-dark-text-secondary">
                 <li class="flex items-start gap-2">
                   <span class="text-tf-link dark:text-tf-dark-link mt-1">•</span>
@@ -556,7 +550,7 @@ import { ProfileComponent } from '../../../examples/profile-management/profile.c
             </div>
 
             <div class="bg-tf-bg-primary dark:bg-tf-dark-bg-secondary rounded-xl p-4 sm:p-6 shadow-tf-md border border-tf-border-primary dark:border-tf-dark-border-primary hover:shadow-tf-lg transition-all duration-300">
-              <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-3 sm:mb-4">🔌 Integrations</h3>
+              <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-3 sm:mb-4">Integrations</h3>
               <ul class="space-y-2 text-xs sm:text-sm text-tf-text-secondary dark:text-tf-dark-text-secondary">
                 <li class="flex items-start gap-2">
                   <span class="text-tf-link dark:text-tf-dark-link mt-1">•</span>
@@ -572,6 +566,10 @@ import { ProfileComponent } from '../../../examples/profile-management/profile.c
                 </li>
                 <li class="flex items-start gap-2">
                   <span class="text-tf-link dark:text-tf-dark-link mt-1">•</span>
+                  <span>Ionic & Capacitor optimized</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-tf-link dark:text-tf-dark-link mt-1">•</span>
                   <span>Custom verification services</span>
                 </li>
                 <li class="flex items-start gap-2">
@@ -582,7 +580,7 @@ import { ProfileComponent } from '../../../examples/profile-management/profile.c
             </div>
 
             <div class="bg-tf-bg-primary dark:bg-tf-dark-bg-secondary rounded-xl p-4 sm:p-6 shadow-tf-md border border-tf-border-primary dark:border-tf-dark-border-primary hover:shadow-tf-lg transition-all duration-300">
-              <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-3 sm:mb-4">🛠️ Developer Tools</h3>
+              <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-3 sm:mb-4">Developer Tools</h3>
               <ul class="space-y-2 text-xs sm:text-sm text-tf-text-secondary dark:text-tf-dark-text-secondary">
                 <li class="flex items-start gap-2">
                   <span class="text-tf-link dark:text-tf-dark-link mt-1">•</span>
@@ -952,7 +950,7 @@ import { ProfileComponent } from '../../../examples/profile-management/profile.c
 
             <!-- E-commerce Checkout Example -->
             <div class="bg-tf-bg-primary dark:bg-tf-dark-bg-secondary rounded-xl p-4 sm:p-6 shadow-tf-md border border-tf-border-primary dark:border-tf-dark-border-primary">
-              <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-3 sm:mb-4">🛒 E-commerce Checkout</h3>
+              <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-3 sm:mb-4">E-commerce Checkout</h3>
               <p class="text-xs sm:text-sm text-tf-text-secondary dark:text-tf-dark-text-secondary mb-3 sm:mb-4">
                 Real-world example of phone input in an e-commerce checkout form with shipping information.
               </p>
@@ -961,7 +959,7 @@ import { ProfileComponent } from '../../../examples/profile-management/profile.c
 
             <!-- User Registration Example -->
             <div class="bg-tf-bg-primary dark:bg-tf-dark-bg-secondary rounded-xl p-4 sm:p-6 shadow-tf-md border border-tf-border-primary dark:border-tf-dark-border-primary">
-              <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-3 sm:mb-4">👤 User Registration</h3>
+              <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-3 sm:mb-4">User Registration</h3>
               <p class="text-xs sm:text-sm text-tf-text-secondary dark:text-tf-dark-text-secondary mb-3 sm:mb-4">
                 Registration form with phone intelligence features enabled (carrier detection and format suggestions).
               </p>
@@ -970,7 +968,7 @@ import { ProfileComponent } from '../../../examples/profile-management/profile.c
 
             <!-- Profile Management Example -->
             <div class="bg-tf-bg-primary dark:bg-tf-dark-bg-secondary rounded-xl p-4 sm:p-6 shadow-tf-md border border-tf-border-primary dark:border-tf-dark-border-primary">
-              <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-3 sm:mb-4">⚙️ Profile Management</h3>
+              <h3 class="text-lg sm:text-xl font-semibold text-tf-text-primary dark:text-tf-dark-text-primary mb-3 sm:mb-4">Profile Management</h3>
               <p class="text-xs sm:text-sm text-tf-text-secondary dark:text-tf-dark-text-secondary mb-3 sm:mb-4">
                 Profile settings form with phone intelligence to detect number type and carrier information.
               </p>
@@ -1032,7 +1030,7 @@ import { ProfileComponent } from '../../../examples/profile-management/profile.c
 
         <footer class="py-6 sm:py-8 lg:py-12 px-4 sm:px-6 lg:px-8 bg-tf-bg-primary dark:bg-tf-dark-bg-secondary border-t border-tf-border-primary dark:border-tf-dark-border-primary" role="contentinfo">
           <div class="max-w-7xl mx-auto text-center">
-            <p class="text-xs sm:text-sm text-tf-text-secondary dark:text-tf-dark-text-secondary mb-4 sm:mb-6 px-2">Built with ❤️ using Angular 17+ | Optimized for performance and accessibility</p>
+            <p class="text-xs sm:text-sm text-tf-text-secondary dark:text-tf-dark-text-secondary mb-4 sm:mb-6 px-2">Built with modern Angular 17+ | High-Performance & Accessible | Optimized for performance and accessibility</p>
             <div class="flex flex-wrap justify-center gap-4 sm:gap-6 mb-4 sm:mb-6">
               <a href="https://github.com/toozuuu/ngxsmk-tel-input" target="_blank" rel="noopener noreferrer" class="text-tf-link dark:text-tf-dark-link hover:text-tf-link-hover dark:hover:text-tf-dark-link-hover transition-colors font-medium text-sm sm:text-base">GitHub</a>
               <a href="https://www.npmjs.com/package/ngxsmk-tel-input" target="_blank" rel="noopener noreferrer" class="text-tf-link dark:text-tf-dark-link hover:text-tf-link-hover dark:hover:text-tf-dark-link-hover transition-colors font-medium text-sm sm:text-base">NPM</a>
@@ -1164,13 +1162,7 @@ export class ExampleComponent {
     MX: 'Mexico'
   };
 
-  isDecember = new Date().getMonth() === 11;
-  snowflakes = Array.from({ length: 50 }, (_, i) => ({
-    id: i,
-    left: Math.random() * 100,
-    duration: 5 + Math.random() * 10,
-    delay: Math.random() * 5
-  }));
+
 
   ngOnInit(): void {
     this.themeSubscription = this.tokiForgeService.theme$.subscribe(theme => {
@@ -1195,12 +1187,12 @@ export class ExampleComponent {
     this.currentThemeSubscription?.unsubscribe();
   }
 
-  @HostListener('window:resize')
+  @HostListener('window:resize', ['$event'])
   onResize(): void {
     this.handleResize();
   }
 
-  @HostListener('window:scroll')
+  @HostListener('window:scroll', ['$event'])
   onScroll(): void {
     this.updateActiveSection();
   }
