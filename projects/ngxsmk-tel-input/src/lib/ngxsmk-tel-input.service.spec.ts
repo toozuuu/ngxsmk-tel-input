@@ -105,7 +105,7 @@ describe('NgxsmkTelInputService', () => {
     });
 
     it('should detect invalid country codes like "99"', () => {
-      const result = service.parseWithInvalidDetection('99123456789', 'US');
+      const result = service.parseWithInvalidDetection('+99123456789', 'US');
       expect(result.isInvalidInternational).toBe(true);
       expect(result.isValid).toBe(false);
     });
@@ -136,6 +136,57 @@ describe('NgxsmkTelInputService', () => {
       const result = service.parseWithInvalidDetection('12', 'US');
       // Short inputs shouldn't trigger invalid international detection
       expect(result.isInvalidInternational).toBe(false);
+    });
+
+    // ── Regression tests for multi-digit country codes ────────────────────
+
+    it('[regression] should NOT flag Greece (+30) as invalid international', () => {
+      // +30 is the dial code for Greece; +306977443408 is a valid Greek mobile number.
+      // The old code incorrectly returned isInvalidInternational=true because it
+      // tried prefix "3" (i=1) first, got null, and short-circuited.
+      const result = service.parseWithInvalidDetection('+306977443408', 'GR');
+      expect(result.isInvalidInternational).toBe(false);
+      expect(result.isValid).toBe(true);
+      expect(result.e164).toBe('+306977443408');
+    });
+
+    it('[regression] should NOT flag France (+33) as invalid international', () => {
+      // +33 is the dial code for France
+      const result = service.parseWithInvalidDetection('+33612345678', 'FR');
+      expect(result.isInvalidInternational).toBe(false);
+      expect(result.isValid).toBe(true);
+    });
+
+    it('[regression] should NOT flag Germany (+49) as invalid international', () => {
+      // +49 is the dial code for Germany
+      const result = service.parseWithInvalidDetection('+4915123456789', 'DE');
+      expect(result.isInvalidInternational).toBe(false);
+    });
+
+    it('[regression] should NOT flag Australia (+61) as invalid international', () => {
+      // +61 is the dial code for Australia
+      const result = service.parseWithInvalidDetection('+61412345678', 'AU');
+      expect(result.isInvalidInternational).toBe(false);
+      expect(result.isValid).toBe(true);
+    });
+
+    it('[regression] should NOT flag India (+91) as invalid international', () => {
+      // +91 is the dial code for India
+      const result = service.parseWithInvalidDetection('+919876543210', 'IN');
+      expect(result.isInvalidInternational).toBe(false);
+      expect(result.isValid).toBe(true);
+    });
+
+    it('[regression] national-format inputs should never be flagged as invalid international', () => {
+      // Numbers without '+' prefix should never trigger the international check
+      const result = service.parseWithInvalidDetection('6977443408', 'GR');
+      expect(result.isInvalidInternational).toBe(false);
+    });
+
+    it('[regression] should correctly flag truly invalid +XX codes as invalid international', () => {
+      // +99 is not a valid country code
+      const result = service.parseWithInvalidDetection('+99123456789', 'US');
+      expect(result.isInvalidInternational).toBe(true);
     });
   });
 

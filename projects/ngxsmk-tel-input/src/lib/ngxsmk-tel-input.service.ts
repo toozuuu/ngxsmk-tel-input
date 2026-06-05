@@ -155,31 +155,36 @@ export class NgxsmkTelInputService {
    */
   private isInvalidInternationalNumber(input: string): boolean {
     if (!input || input.length < 3) return false;
-    
+
+    // This check is only meaningful for international-format inputs (starting with '+')
+    if (!input.startsWith('+')) return false;
+
     const digits = input.replace(/\D/g, '');
     if (digits.length < 3) return false;
-    
+
+    // Try all 1–3 digit country code prefixes. If ANY yields a valid parse,
+    // the number is not an invalid international number.
     for (let i = 1; i <= 3 && i <= digits.length; i++) {
       const potentialCountryCode = digits.substring(0, i);
       const remainingDigits = digits.substring(i);
-      
+
       if (remainingDigits.length >= 3) {
         try {
           const internationalNumber = `+${potentialCountryCode}${remainingDigits}`;
           const phone = parsePhoneNumberFromString(internationalNumber);
-          
-          if (!phone) {
-            if (input.startsWith('+') || (potentialCountryCode.length >= 1 && potentialCountryCode.length <= 3)) {
-              return true;
-            }
+
+          if (phone) {
+            // At least one valid parse found — not an invalid international number
+            return false;
           }
         } catch {
-          return true;
+          // This prefix threw an exception; continue trying longer prefixes
         }
       }
     }
-    
-    return false;
+
+    // No valid parse found for any prefix — flag as invalid international
+    return true;
   }
 
   /**

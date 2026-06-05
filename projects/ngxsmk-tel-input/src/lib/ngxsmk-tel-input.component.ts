@@ -22,6 +22,9 @@ import {
   Signal,
   WritableSignal,
   effect,
+  OnInit,
+  HostBinding,
+  Injector,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import {
@@ -30,7 +33,8 @@ import {
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
   ValidationErrors,
-  Validator
+  Validator,
+  NgControl
 } from '@angular/forms';
 import { AsYouType, CountryCode, validatePhoneNumberLength } from 'libphonenumber-js/min';
 import { NgxsmkTelInputService } from './ngxsmk-tel-input.service';
@@ -158,7 +162,7 @@ interface BeforeInputEvent extends Event {
             [attr.aria-invalid]="showError() ? 'true' : 'false'"
             [attr.aria-required]="isRequired ? 'true' : null"
             [attr.aria-describedby]="getAriaDescribedBy()"
-            [attr.aria-errormessage]="showError() && errorText ? resolvedId + '-error' : null"
+            [attr.aria-errormessage]="showError() && resolvedErrorText() ? resolvedId + '-error' : null"
             (blur)="onBlur()"
             (focus)="onFocus()"
           />
@@ -178,11 +182,11 @@ interface BeforeInputEvent extends Event {
       @if (hint && !showError()) {
         <div class="ngxsmk-tel__hint" [id]="resolvedId + '-hint'">{{ hint }}</div>
       }
-      @if (showError() && errorText) {
+      @if (showError() && resolvedErrorText()) {
         <div class="ngxsmk-tel__error" 
              [id]="resolvedId + '-error'"
              role="alert"
-             [attr.aria-live]="'polite'">{{ errorText }}</div>
+             [attr.aria-live]="'polite'">{{ resolvedErrorText() }}</div>
       }
       <div [id]="resolvedId + '-status'" 
            class="sr-only" 
@@ -197,8 +201,29 @@ interface BeforeInputEvent extends Event {
     { provide: NG_VALIDATORS, useExisting: forwardRef(() => NgxsmkTelInputComponent), multi: true }
   ]
 })
-export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDestroy, ControlValueAccessor, Validator {
+export class NgxsmkTelInputComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy, ControlValueAccessor, Validator {
   @ViewChild('telInput', { static: true }) inputRef!: ElementRef<HTMLInputElement>;
+
+  private readonly injector = inject(Injector);
+  ngControl: NgControl | null = null;
+
+  @HostBinding('class.ion-touched') get ionTouched() { return this.ngControl?.touched ?? false; }
+  @HostBinding('class.ion-untouched') get ionUntouched() { return this.ngControl?.untouched ?? false; }
+  @HostBinding('class.ion-valid') get ionValid() { return this.ngControl?.valid ?? false; }
+  @HostBinding('class.ion-invalid') get ionInvalid() { return (this.ngControl?.invalid && (this.ngControl?.touched || this.ngControl?.dirty)) ?? false; }
+  @HostBinding('class.ion-dirty') get ionDirty() { return this.ngControl?.dirty ?? false; }
+  @HostBinding('class.ion-pristine') get ionPristine() { return this.ngControl?.pristine ?? false; }
+
+  @HostBinding('class.ng-touched') get ngTouched() { return this.ngControl?.touched ?? false; }
+  @HostBinding('class.ng-untouched') get ngUntouched() { return this.ngControl?.untouched ?? false; }
+  @HostBinding('class.ng-valid') get ngValid() { return this.ngControl?.valid ?? false; }
+  @HostBinding('class.ng-invalid') get ngInvalid() { return (this.ngControl?.invalid && (this.ngControl?.touched || this.ngControl?.dirty)) ?? false; }
+  @HostBinding('class.ng-dirty') get ngDirty() { return this.ngControl?.dirty ?? false; }
+  @HostBinding('class.ng-pristine') get ngPristine() { return this.ngControl?.pristine ?? false; }
+
+  ngOnInit(): void {
+    this.ngControl = this.injector.get(NgControl, null);
+  }
 
   // ========== Signal-based API (Angular 17+) ==========
 
@@ -275,8 +300,27 @@ export class NgxsmkTelInputComponent implements AfterViewInit, OnChanges, OnDest
   readonly showError = computed(() => {
     if (this.isDestroyed) return false;
     const state = this.stateSignal();
-    const hasErrors = state.errors !== null && Object.keys(state.errors).length > 0;
-    return this.showErrorWhenTouched ? (state.touched && hasErrors) : hasErrors;
+    const formErrors = this.ngControl?.control?.errors;
+    const hasErrors = (state.errors !== null && Object.keys(state.errors).length > 0) || (formErrors !== null && formErrors !== undefined);
+    const isTouched = state.touched || (this.ngControl?.touched ?? false);
+    return this.showErrorWhenTouched ? (isTouched && hasErrors) : hasErrors;
+  });
+
+  /** Computed signal: Resolved validation error message */
+  readonly resolvedErrorText = computed(() => {
+    if (this.errorText) return this.errorText;
+    const errors = this.ngControl?.control?.errors || this.stateSignal().errors;
+    if (!errors) return '';
+    if (errors['required']) {
+      return 'Phone number is required';
+    }
+    if (errors['phoneInvalidCountryCode']) {
+      return 'Invalid country code';
+    }
+    if (errors['phoneInvalid']) {
+      return 'Invalid phone number';
+    }
+    return 'Invalid phone number';
   });
 
   /** Computed signal: Current E.164 value */

@@ -424,4 +424,36 @@ describe('NgxsmkTelInputComponent', () => {
       expect(['light', 'dark']).toContain(theme);
     });
   });
+
+  describe('Ionic & Angular 19+ Optimizations', () => {
+    it('should dynamically inject NgControl if present', () => {
+      // By default in simple TestBed configuration without forms directives, ngControl is null but doesn't crash
+      expect(component.ngControl).toBeNull();
+    });
+
+    it('should compute resolvedErrorText based on validation errors', () => {
+      component.errorText = undefined;
+      
+      (component as any).stateSignal.update((state: any) => ({
+        ...state,
+        errors: { required: true }
+      }));
+      fixture.detectChanges();
+      expect(component.resolvedErrorText()).toBe('Phone number is required');
+
+      (component as any).stateSignal.update((state: any) => ({
+        ...state,
+        errors: { phoneInvalidCountryCode: true }
+      }));
+      fixture.detectChanges();
+      expect(component.resolvedErrorText()).toBe('Invalid country code');
+
+      (component as any).stateSignal.update((state: any) => ({
+        ...state,
+        errors: { phoneInvalid: true }
+      }));
+      fixture.detectChanges();
+      expect(component.resolvedErrorText()).toBe('Invalid phone number');
+    });
+  });
 });

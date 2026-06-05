@@ -358,8 +358,11 @@ Use these settings when embedding the component inside Ionic overlays (`ion-moda
   - Preserve `type="tel"` + numeric input mode defaults.
   - Avoid forcing autofocus inside modal transitions.
 - Theme interop with Ionic:
-  - Prefer component-level theme input (`[theme]="'dark'"`) and CSS variables.
-  - Do not rely on global `html/body` class toggling for this component.
+  - Default CSS custom properties (`--tel-bg`, `--tel-fg`, `--tel-border`, etc.) automatically fall back to Ionic design tokens (like `--ion-background-color`, `--ion-text-color`, `--ion-border-color`, and `--ion-color-primary`).
+  - Supports automatic light/dark mode adaptation out of the box.
+- Form validation classes propagation:
+  - Dynamically binds Ionic validation classes (`ion-touched`, `ion-dirty`, `ion-valid`, `ion-invalid`, etc.) directly to the host element, allowing seamless CSS styling and form feedback integration.
+  - Custom validator error messages fallback dynamically (e.g. for `required`, `phoneInvalidCountryCode`, and `phoneInvalid`) if no custom `errorText` is provided.
 
 Minimal Ionic form example:
 

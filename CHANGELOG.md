@@ -7,10 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+---
+
+## [1.7.0] - 2026-06-06
+
 ### Changed
 - **Example Components**: All example components (E-commerce Checkout, User Registration, Profile Management) now default to dark mode theme
 - **Demo App**: Default theme changed to dark mode for better visibility and consistency
 - **Navigation UI**: Fixed icon and text colors in dark mode navigation menu for better contrast and readability
+
+### Fixed
+- **Invalid Country Code False Positive**: Fixed `isInvalidInternationalNumber()` incorrectly flagging valid international numbers whose country code starts with a single-digit prefix that is itself not a country code (e.g. Greece `+30`, France `+33`, Germany `+49`, Australia `+61`, India `+91`). The loop now continues through all 1–3 digit prefix candidates and only flags a number as invalid if none of them produce a valid parse, rather than short-circuiting on the first failure. Non-`+` prefixed (national-format) inputs are also no longer passed through the loop at all.
 
 ## [1.6.9] - 2025-01-21
 

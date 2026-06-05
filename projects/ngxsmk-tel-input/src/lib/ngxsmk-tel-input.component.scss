@@ -1,24 +1,24 @@
 :host {
-  /* Default to light theme */
-  --tel-bg: #fff;
-  --tel-fg: #0f172a;
-  --tel-border: #c0c0c0;
-  --tel-border-hover: #9aa0a6;
-  --tel-ring: #2563eb;
-  --tel-placeholder: #9ca3af;
-  --tel-error: #ef4444;
-  --tel-success: #10b981;
-  --tel-warning: #f59e0b;
-  --tel-radius: 8px;
-  --tel-focus-shadow: 0 0 0 2px rgba(37, 99, 235, .2);
+  /* Default to light theme, falling back to Ionic design tokens if present */
+  --tel-bg: var(--ion-background-color, #fff);
+  --tel-fg: var(--ion-text-color, #0f172a);
+  --tel-border: var(--ion-border-color, #c0c0c0);
+  --tel-border-hover: var(--ion-color-step-300, #9aa0a6);
+  --tel-ring: var(--ion-color-primary, #2563eb);
+  --tel-placeholder: var(--ion-color-step-400, #9ca3af);
+  --tel-error: var(--ion-color-danger, #ef4444);
+  --tel-success: var(--ion-color-success, #10b981);
+  --tel-warning: var(--ion-color-warning, #f59e0b);
+  --tel-radius: var(--ion-border-radius, 8px);
+  --tel-focus-shadow: 0 0 0 2px rgba(var(--ion-color-primary-rgb, 37, 99, 235), .2);
 
-  --tel-dd-bg: #fff;
-  --tel-dd-border: var(--tel-border);
+  --tel-dd-bg: var(--ion-background-color, #fff);
+  --tel-dd-border: var(--ion-border-color, var(--tel-border));
   --tel-dd-shadow: 0 24px 60px rgba(0, 0, 0, .18);
-  --tel-dd-radius: 8px;
-  --tel-dd-item-hover: rgba(37, 99, 235, .08);
+  --tel-dd-radius: var(--ion-border-radius, 8px);
+  --tel-dd-item-hover: var(--ion-color-step-100, rgba(37, 99, 235, .08));
   --tel-dd-z: 2000;
-  --tel-dd-search-bg: rgba(148, 163, 184, .08);
+  --tel-dd-search-bg: var(--ion-color-step-50, rgba(148, 163, 184, .08));
 
   display: block;
   /* contain property with fallback for older browsers */
