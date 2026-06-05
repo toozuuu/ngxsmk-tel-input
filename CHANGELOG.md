@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **excludeCountries / excludeCountriesSignal**: Exclude specific country ISO codes from appearing in the dropdown list.
+- **searchPlaceholder / searchPlaceholderSignal**: Customizable placeholder text for the country search input.
+- **showFlags / showFlagsSignal**: Hides flags completely from the selected input and country dropdown.
+- **searchCountryFlag / searchCountryFlagSignal**: Hides flag icons only within the dropdown list items while maintaining the selected flag display.
+
 ---
 
 ## [1.7.0] - 2026-06-06

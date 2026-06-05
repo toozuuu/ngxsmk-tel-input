@@ -12,6 +12,10 @@ All major inputs are available as signals:
     <ngxsmk-tel-input
       [initialCountrySignal]="'US'"
       [preferredCountriesSignal]="['US', 'GB']"
+      [excludeCountriesSignal]="['CA', 'MX']"
+      [searchPlaceholderSignal]="'Search...'"
+      [showFlagsSignal]="true"
+      [searchCountryFlagSignal]="true"
       [sizeSignal]="'md'"
       [variantSignal]="'outline'"
       [themeSignal]="'auto'"

@@ -242,6 +242,10 @@ Arabic + RTL example
 | `initialCountry`       | `CountryCode \| 'auto'`                     | `'US'`                  | Starting country (also respected when initial form value is `''`). `'auto'` uses geoIp stub (`US` by default). |
 | `preferredCountries`   | `CountryCode[]`                             | `['US','GB']`           | Pin these at the top.                                                                      |
 | `onlyCountries`        | `CountryCode[]`                             | —                       | Limit selectable countries.                                                                |
+| `excludeCountries`     | `CountryCode[]`                             | `[]`                    | Exclude specific countries from the dropdown list.                                         |
+| `searchPlaceholder`    | `string`                                    | `''`                    | Custom placeholder text for the dropdown search input.                                     |
+| `showFlags`            | `boolean`                                   | `true`                  | Hide flags completely for minimalist/text-only layouts.                                    |
+| `searchCountryFlag`    | `boolean`                                   | `true`                  | Hide flag icons inside the country dropdown list.                                          |
 | `nationalDisplay`      | `'formatted' \| 'digits'`                   | `'formatted'`           | Controls visible input format. Value still emits E.164.                                   |
 | `separateDialCode`     | `boolean`                                   | `true`                  | Show dial code outside the input.                                                          |
 | `allowDropdown`        | `boolean`                                   | `true`                  | Enable/disable dropdown.                                                                   |

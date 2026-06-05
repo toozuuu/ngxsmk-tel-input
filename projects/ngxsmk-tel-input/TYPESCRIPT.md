@@ -228,6 +228,10 @@ import { StrictPhoneInputConfig } from 'ngxsmk-tel-input';
 const config: StrictPhoneInputConfig = {
   initialCountry: 'US',
   preferredCountries: ['US', 'GB'] as const,
+  excludeCountries: ['CA', 'MX'] as const,
+  searchPlaceholder: 'Search...',
+  showFlags: true,
+  searchCountryFlag: true,
   separateDialCode: true,
   allowDropdown: true,
   nationalDisplay: 'formatted',

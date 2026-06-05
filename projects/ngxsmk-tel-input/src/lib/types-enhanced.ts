@@ -70,6 +70,10 @@ export interface StrictPhoneInputConfig {
   readonly initialCountry: CountryCode | 'auto';
   readonly preferredCountries: readonly CountryCode[];
   readonly onlyCountries?: readonly CountryCode[];
+  readonly excludeCountries?: readonly CountryCode[];
+  readonly searchPlaceholder?: string;
+  readonly showFlags?: boolean;
+  readonly searchCountryFlag?: boolean;
   readonly separateDialCode: boolean;
   readonly allowDropdown: boolean;
   readonly nationalDisplay: 'formatted' | 'digits';

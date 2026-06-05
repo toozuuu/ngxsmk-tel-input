@@ -456,4 +456,93 @@ describe('NgxsmkTelInputComponent', () => {
       expect(component.resolvedErrorText()).toBe('Invalid phone number');
     });
   });
+
+  describe('Advanced Features (ngx-intl-tel-input-gg parity)', () => {
+    it('should support excludeCountries input and signal', () => {
+      component.excludeCountries = ['CA', 'GB'];
+      expect(component.excludeCountries).toEqual(['CA', 'GB']);
+      expect(component.excludeCountriesSignal()).toBeUndefined();
+
+      fixture.componentRef.setInput('excludeCountriesSignal', ['MX']);
+      fixture.detectChanges();
+      expect(component.excludeCountriesSignal()).toEqual(['MX']);
+    });
+
+    it('should support searchPlaceholder input and signal', fakeAsync(() => {
+      component.searchPlaceholder = 'Find...';
+      expect(component.searchPlaceholder).toBe('Find...');
+      expect(component.searchPlaceholderSignal()).toBeUndefined();
+
+      fixture.componentRef.setInput('searchPlaceholderSignal', 'Filter countries');
+      fixture.detectChanges();
+      expect(component.searchPlaceholderSignal()).toBe('Filter countries');
+
+      // Create a mock dropdown element to test updateDropdownTheme logic
+      const mockDropdown = document.createElement('div');
+      mockDropdown.className = 'iti__country-list';
+      const mockSearchInput = document.createElement('input');
+      mockSearchInput.className = 'iti__search-input';
+      mockDropdown.appendChild(mockSearchInput);
+      document.body.appendChild(mockDropdown);
+
+      try {
+        (component as any).updateDropdownTheme(mockDropdown);
+        tick(15);
+        expect(mockSearchInput.placeholder).toBe('Filter countries');
+      } finally {
+        mockDropdown.remove();
+      }
+    }));
+
+    it('should support showFlags input, signal, and apply class', fakeAsync(() => {
+      expect(component.showFlags).toBe(true);
+      
+      fixture.componentRef.setInput('showFlags', false);
+      fixture.detectChanges();
+      
+      const rootEl = fixture.nativeElement.querySelector('.ngxsmk-tel');
+      expect(rootEl.classList.contains('ngxsmk-tel--hide-flags')).toBe(true);
+
+      fixture.componentRef.setInput('showFlagsSignal', true);
+      fixture.detectChanges();
+      expect(component.showFlagsSignal()).toBe(true);
+
+      // Verify dataset on dropdown
+      fixture.componentRef.setInput('showFlags', false);
+      fixture.componentRef.setInput('showFlagsSignal', undefined);
+      fixture.detectChanges();
+
+      const mockDropdown = document.createElement('div');
+      mockDropdown.className = 'iti__country-list';
+      document.body.appendChild(mockDropdown);
+
+      try {
+        (component as any).updateDropdownTheme(mockDropdown);
+        tick(15);
+        expect(mockDropdown.dataset['showFlags']).toBe('false');
+      } finally {
+        mockDropdown.remove();
+      }
+    }));
+
+    it('should support searchCountryFlag input and apply dataset', fakeAsync(() => {
+      expect(component.searchCountryFlag).toBe(true);
+
+      fixture.componentRef.setInput('searchCountryFlagSignal', false);
+      fixture.detectChanges();
+      expect(component.searchCountryFlagSignal()).toBe(false);
+
+      const mockDropdown = document.createElement('div');
+      mockDropdown.className = 'iti__country-list';
+      document.body.appendChild(mockDropdown);
+
+      try {
+        (component as any).updateDropdownTheme(mockDropdown);
+        tick(15);
+        expect(mockDropdown.dataset['searchCountryFlag']).toBe('false');
+      } finally {
+        mockDropdown.remove();
+      }
+    }));
+  });
 });

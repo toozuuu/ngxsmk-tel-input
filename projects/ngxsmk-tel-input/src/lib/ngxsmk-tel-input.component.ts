@@ -73,6 +73,7 @@ interface IntlTelInputConfig {
   initialCountry: string;
   countryOrder: string[];
   onlyCountries?: string[];
+  excludeCountries?: string[];
   nationalMode: boolean;
   allowDropdown: boolean;
   separateDialCode: boolean;
@@ -137,6 +138,7 @@ interface BeforeInputEvent extends Event {
   template: `
       <div class="ngxsmk-tel"
          [class.disabled]="(disabledSignal() ?? disabled)"
+         [class.ngxsmk-tel--hide-flags]="!(showFlagsSignal() ?? showFlags)"
          [attr.data-size]="(sizeSignal() ?? size)"
          [attr.data-variant]="(variantSignal() ?? variant)"
          [attr.dir]="dir"
@@ -174,7 +176,10 @@ interface BeforeInputEvent extends Event {
                   (click)="clearInput()"
                   [attr.aria-label]="clearAriaLabel"
                   [attr.aria-describedby]="resolvedId">
-            ×
+            <svg class="ngxsmk-tel__clear-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
           </button>
         }
       </div>
@@ -235,6 +240,18 @@ export class NgxsmkTelInputComponent implements OnInit, AfterViewInit, OnChanges
 
   /** Signal-based input: Restrict selectable countries to this list. */
   onlyCountriesSignal = input<CountryCode[] | undefined>(undefined);
+
+  /** Signal-based input: Exclude specific countries from the dropdown list. */
+  excludeCountriesSignal = input<CountryCode[] | undefined>(undefined);
+
+  /** Signal-based input: Custom placeholder for the search input field. */
+  searchPlaceholderSignal = input<string | undefined>(undefined);
+
+  /** Signal-based input: Whether to show flags in the input and dropdown. */
+  showFlagsSignal = input<boolean | undefined>(undefined);
+
+  /** Signal-based input: Whether to show flags in the search results. */
+  searchCountryFlagSignal = input<boolean | undefined>(undefined);
 
   /** Signal-based input: When true, shows dial code outside the input field. */
   separateDialCodeSignal = input<boolean | undefined>(undefined);
@@ -340,6 +357,14 @@ export class NgxsmkTelInputComponent implements OnInit, AfterViewInit, OnChanges
   @Input() preferredCountries: CountryCode[] = ['US', 'GB'];
   /** Restrict selectable countries to this list. If not provided, all countries are available. */
   @Input() onlyCountries?: CountryCode[];
+  /** Exclude specific countries from the dropdown list. */
+  @Input() excludeCountries: CountryCode[] = [];
+  /** Custom placeholder for the search input field. */
+  @Input() searchPlaceholder: string = '';
+  /** Whether to show flags in the input and dropdown. */
+  @Input() showFlags: boolean = true;
+  /** Whether to show flags in the search results. */
+  @Input() searchCountryFlag: boolean = true;
   /** When true, shows dial code outside the input field (after the flag). */
   @Input() separateDialCode: boolean = true;
   /** Enable or disable the country dropdown. */
@@ -459,6 +484,7 @@ export class NgxsmkTelInputComponent implements OnInit, AfterViewInit, OnChanges
         initialCountry: this.initialCountrySignal(),
         preferredCountries: this.preferredCountriesSignal(),
         onlyCountries: this.onlyCountriesSignal(),
+        excludeCountries: this.excludeCountriesSignal(),
         allowDropdown: this.allowDropdownSignal(),
         separateDialCode: this.separateDialCodeSignal(),
         i18n: this.i18n,
@@ -573,7 +599,7 @@ export class NgxsmkTelInputComponent implements OnInit, AfterViewInit, OnChanges
 
     // Check for signal changes or traditional input changes
     const configChanged = [
-      'initialCountry', 'preferredCountries', 'onlyCountries',
+      'initialCountry', 'preferredCountries', 'onlyCountries', 'excludeCountries',
       'separateDialCode', 'allowDropdown',
       'i18n', 'localizedCountries', 'dir',
       'autoPlaceholder', 'utilsScript', 'customPlaceholder'
@@ -869,6 +895,7 @@ export class NgxsmkTelInputComponent implements OnInit, AfterViewInit, OnChanges
     const initialCountry = this.initialCountrySignal() ?? this.initialCountry;
     const preferredCountries = this.preferredCountriesSignal() ?? this.preferredCountries;
     const onlyCountries = this.onlyCountriesSignal() ?? this.onlyCountries;
+    const excludeCountries = this.excludeCountriesSignal() ?? this.excludeCountries;
     const allowDropdown = this.allowDropdownSignal() ?? this.allowDropdown;
     const separateDialCode = this.separateDialCodeSignal() ?? this.separateDialCode;
 
@@ -876,6 +903,7 @@ export class NgxsmkTelInputComponent implements OnInit, AfterViewInit, OnChanges
       initialCountry: initialCountry === 'auto' ? 'auto' : (initialCountry?.toLowerCase() || 'us'),
       countryOrder: (preferredCountries ?? []).map(c => c.toLowerCase()),
       onlyCountries: (onlyCountries ?? []).map(c => c.toLowerCase()),
+      excludeCountries: (excludeCountries ?? []).map(c => c.toLowerCase()),
       nationalMode: true,
       allowDropdown,
       separateDialCode,
@@ -1449,7 +1477,7 @@ export class NgxsmkTelInputComponent implements OnInit, AfterViewInit, OnChanges
     try {
       const dropdown = this.getThemeDropdownElement();
       if (dropdown) {
-        dropdown.dataset['theme'] = theme;
+        this.updateDropdownTheme(dropdown);
       }
     } catch (error) {
       // Fallback for browsers without querySelector support
@@ -1487,6 +1515,9 @@ export class NgxsmkTelInputComponent implements OnInit, AfterViewInit, OnChanges
       const dropdown = this.getThemeDropdownElement(dropdownElement);
       if (dropdown) {
         dropdown.dataset['theme'] = this.currentTheme;
+        dropdown.dataset['size'] = this.sizeSignal() ?? this.size;
+        dropdown.dataset['showFlags'] = String(this.showFlagsSignal() ?? this.showFlags);
+        dropdown.dataset['searchCountryFlag'] = String(this.searchCountryFlagSignal() ?? this.searchCountryFlag);
 
         if (this.currentTheme === 'dark') {
           dropdown.classList.add('dark-theme');
@@ -1501,6 +1532,11 @@ export class NgxsmkTelInputComponent implements OnInit, AfterViewInit, OnChanges
             searchInput.classList.add('dark-theme');
           } else {
             searchInput.classList.remove('dark-theme');
+          }
+
+          const placeholder = this.searchPlaceholderSignal() ?? this.searchPlaceholder;
+          if (placeholder) {
+            searchInput.placeholder = placeholder;
           }
 
           searchInput.style.pointerEvents = 'auto';
@@ -1536,7 +1572,12 @@ export class NgxsmkTelInputComponent implements OnInit, AfterViewInit, OnChanges
     clearButton.type = 'button';
     clearButton.className = 'iti__search-clear';
     clearButton.setAttribute('aria-label', 'Clear search');
-    clearButton.innerHTML = '×';
+    clearButton.innerHTML = `
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    `;
     clearButton.setAttribute('tabindex', '-1');
 
     // Make search input container relative if needed
@@ -1621,6 +1662,11 @@ export class NgxsmkTelInputComponent implements OnInit, AfterViewInit, OnChanges
                 const element = node as HTMLElement;
                 if (element.classList?.contains('iti__country-list')) {
                   this.updateDropdownTheme(element);
+                } else if (element.classList?.contains('iti') || element.querySelector?.('.iti__country-list')) {
+                  const countryList = element.querySelector('.iti__country-list') as HTMLElement | null;
+                  if (countryList) {
+                    this.updateDropdownTheme(countryList);
+                  }
                 }
               }
             });
