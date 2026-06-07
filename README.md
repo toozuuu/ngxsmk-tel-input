@@ -171,6 +171,62 @@ export class AppComponent {
 
 **Value semantics:** the form control value is **E.164** (e.g., `+14155550123`) when valid, or `null` when empty/invalid.
 
+### Using Signals with Reactive Forms
+
+You can leverage Angular Signals in combination with Reactive Forms to dynamically control input configurations (such as changing countries, placeholders, or themes) or reactively bind metadata (such as carrier info or format suggestions).
+
+```ts
+import { Component, inject, signal } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
+import { NgxsmkTelInputComponent, FormatSuggestion, CarrierInfo } from 'ngxsmk-tel-input';
+
+@Component({
+  selector: 'app-signup',
+  standalone: true,
+  imports: [ReactiveFormsModule, NgxsmkTelInputComponent],
+  template: `
+    <form [formGroup]="form">
+      <ngxsmk-tel-input
+        formControlName="phone"
+        [initialCountry]="countryCode()"
+        [placeholder]="placeholder()"
+        [theme]="appTheme()"
+        (inputChange)="onInputChange($event)">
+      </ngxsmk-tel-input>
+    </form>
+
+    @if (carrier()) {
+      <p>Detected Carrier: {{ carrier()?.carrierName }}</p>
+    }
+    @if (suggestion()) {
+      <p>Format suggestion: {{ suggestion()?.formatted }}</p>
+    }
+  `
+})
+export class SignupComponent {
+  private readonly fb = inject(FormBuilder);
+  
+  // Configurations managed as Signals
+  countryCode = signal('US');
+  placeholder = signal('Enter your mobile number');
+  appTheme = signal<'light' | 'dark' | 'auto'>('auto');
+
+  // Real-time metadata signals
+  carrier = signal<CarrierInfo | null>(null);
+  suggestion = signal<FormatSuggestion | null>(null);
+
+  form = this.fb.group({
+    phone: ['']
+  });
+
+  onInputChange(event: any) {
+    this.carrier.set(event.intelligence?.carrier || null);
+    this.suggestion.set(event.intelligence?.suggestion || null);
+  }
+}
+```
+
+
 ---
 
 ## Template‑driven usage
