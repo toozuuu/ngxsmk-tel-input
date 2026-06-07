@@ -1,6 +1,6 @@
 {
   "name": "ngxsmk-tel-input",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "description": "Angular telephone input with intl-tel-input + libphonenumber-js",
   "license": "MIT",
   "publishConfig": {
@@ -21,6 +21,7 @@
     "angular19",
     "angular20",
     "angular21",
+    "angular22",
     "angular-forms",
     "reactive-forms",
     "template-driven-forms",
@@ -52,7 +53,7 @@
     "typescript"
   ],
   "scripts": {
-    "ng": "ng",
+    "ng": "ng", 
     "start": "ng serve demo",
     "build": "ng build",
     "build:lib": "ng build ngxsmk-tel-input",

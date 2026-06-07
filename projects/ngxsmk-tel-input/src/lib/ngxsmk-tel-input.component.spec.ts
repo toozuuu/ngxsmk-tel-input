@@ -124,10 +124,9 @@ describe('NgxsmkTelInputComponent', () => {
 
     it('should detect when input is natively disabled (e.g. by parent fieldset)', () => {
       const inputEl = component.inputRef.nativeElement;
-      spyOn(inputEl, 'matches').and.callFake((selector) => {
-        if (selector === ':disabled') return true;
-        return false;
-      });
+      spyOn(inputEl, 'matches').and.callFake(((selector: string) => {
+        return selector === ':disabled';
+      }) as any);
 
       expect(component.isNativelyDisabled).toBe(false);
       
@@ -444,7 +443,7 @@ describe('NgxsmkTelInputComponent', () => {
     });
   });
 
-  describe('Ionic & Angular 19+ Optimizations', () => {
+  describe('Ionic & Angular 19-22+ Optimizations', () => {
     it('should dynamically inject NgControl if present', () => {
       // By default in simple TestBed configuration without forms directives, ngControl is null but doesn't crash
       expect(component.ngControl).toBeNull();
